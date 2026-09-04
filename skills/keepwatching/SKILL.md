@@ -43,6 +43,12 @@ npm install && npm run setup
 npx kw check
 ```
 
+The 24 gallery previews are committed, so `npx kw gallery` shows the page in
+seconds without rendering anything. `npm run setup` is only needed to render
+video. If you change a format's `scene`, its committed preview becomes stale —
+re-render and commit it with `npx kw gallery --no-serve && git add site/previews`,
+or CI's `kw previews check` will fail.
+
 `kw check` printing `no problems` means you are ready. If it reports missing
 fonts, run `npm run setup` again — the composition refuses to render with a
 fallback font, because a substituted font would silently change every frame the
