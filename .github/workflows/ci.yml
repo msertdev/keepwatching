@@ -68,9 +68,16 @@ jobs:
       - name: Render with determinism check
         run: npx kw render stat-counter-rise --check-determinism
 
+      # The previews are committed, so this needs no rendering — it recomputes
+      # each format's variant id and compares it with the manifest. A spec that
+      # changed without its preview being re-rendered fails here, which is the
+      # only thing standing between an edited format and a stale clip on the
+      # published gallery.
+      - name: Committed previews match their specs
+        run: npx kw previews check
+
       - name: Gallery builds
-        # CI renders one format on purpose, so the partial build is explicit.
-        run: npx kw site build --allow-missing
+        run: npx kw site build
 
       - name: The generated format index is committed and current
         run: git diff --exit-code skills/keepwatching/references/formats.md

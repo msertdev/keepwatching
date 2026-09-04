@@ -35,6 +35,14 @@ import { renderFormat } from "./render.js";
 import { startPreview } from "./preview.js";
 import { buildSite } from "./site.js";
 import { checkFrame0, reportFrame0 } from "./frame0.js";
+import {
+  checkPreviews,
+  previewStatus,
+  readManifest,
+  reportPreviewCheck,
+  syncPreview,
+  writeManifest,
+} from "./previews.js";
 
 const argv = process.argv.slice(2);
 const cmd = argv[0] ?? "help";
@@ -61,8 +69,10 @@ keepwatching — a measured retention database for short-form formats, that rend
   kw preview <slug> [--port=5173] scrub a format in a browser
   kw new <slug> [--from=<slug>]   scaffold a new format directory
   kw variant <slug>               print the variant id for the current spec
-  kw gallery [--port=8080]        render anything missing, build and open the gallery
+  kw gallery [--port=8080]        refresh stale previews, build and open the gallery
       --no-serve                  build only, do not start the server
+      --force                     re-render every preview, not just stale ones
+  kw previews check               verify committed previews match their specs
   kw site build [--allow-missing] rebuild site/gallery.json from existing renders
   kw site serve [--port=8080]     serve site/ locally
   kw measure                      ingest CSVs, then report
@@ -343,34 +353,61 @@ function cmdNew(): void {
  */
 async function cmdGallery(): Promise<void> {
   const formats = loadAllFormats();
-  const todo = formats.filter(
-    (f) => !fs.existsSync(path.join(OUT_DIR, f.slug, "preview.mp4"))
-  );
+  const manifest = readManifest();
+  const force = has("force");
 
-  if (todo.length) {
+  const statuses = formats.map((f) => previewStatus(f, manifest));
+  const needRender = force
+    ? formats
+    : formats.filter((f) => {
+        const st = statuses.find((s) => s.slug === f.slug)!;
+        return st.state === "missing" || st.state === "stale";
+      });
+  const needSync = force
+    ? []
+    : formats.filter((f) => statuses.find((s) => s.slug === f.slug)!.state === "syncable");
+
+  const stale = statuses.filter((s) => s.state === "stale");
+  console.log(`
+▸ gallery`);
+  if (stale.length) {
+    console.log(`  ${stale.length} preview(s) are stale — their spec changed since they were rendered:`);
+    for (const s of stale) console.log(`    ${s.slug}  ${s.recorded ?? "?"} -> ${s.current}`);
+  }
+
+  if (needSync.length) {
+    for (const fmt of needSync) syncPreview(fmt, manifest);
+    console.log(`  ${needSync.length} preview(s) copied from an existing render in out/`);
+  }
+
+  if (needRender.length) {
     console.log(
-      `
-▸ gallery
-  ${todo.length} of ${formats.length} formats need rendering ` +
-        `(~25s each, about ${Math.ceil((todo.length * 25) / 60)} min)
+      `  ${needRender.length} of ${formats.length} need rendering ` +
+        `(~25s each, about ${Math.ceil((needRender.length * 25) / 60)} min)
 `
     );
     const t0 = Date.now();
-    for (const [i, fmt] of todo.entries()) {
+    for (const [i, fmt] of needRender.entries()) {
       await renderFormat(fmt, { quiet: true });
+      syncPreview(fmt, manifest);
       const done = i + 1;
       const elapsed = (Date.now() - t0) / 1000;
-      const eta = (elapsed / done) * (todo.length - done);
+      const eta = (elapsed / done) * (needRender.length - done);
       process.stdout.write(
-        `
-  ${String(done).padStart(2)}/${todo.length} rendered  ` +
+        `  ${String(done).padStart(2)}/${needRender.length} rendered  ` +
           `${fmt.slug.padEnd(22)} ${elapsed.toFixed(0)}s elapsed` +
-          `${done < todo.length ? `, ~${eta.toFixed(0)}s left` : ""}      `
+          `${done < needRender.length ? `, ~${eta.toFixed(0)}s left` : ""}      `
       );
     }
     process.stdout.write("\n");
-  } else {
-    console.log(`\n▸ gallery\n  all ${formats.length} previews already rendered`);
+  } else if (!needSync.length) {
+    console.log(`  all ${formats.length} previews are current`);
+  }
+
+  if (needRender.length || needSync.length) {
+    manifest.generatedAt = new Date().toISOString().slice(0, 10);
+    writeManifest(manifest);
+    console.log(`  site/previews/manifest.json updated — commit site/previews/`);
   }
 
   buildSite();
@@ -381,6 +418,17 @@ async function cmdGallery(): Promise<void> {
     return;
   }
   serveSite(Number(opt("port") ?? 8080));
+}
+
+/**
+ * The drift guard. Committed previews are the gallery's visible surface, so a
+ * preview that no longer matches its spec must never ship quietly.
+ */
+function cmdPreviews(): void {
+  const sub = positional[0] ?? "check";
+  if (sub !== "check") fail(new Error(`unknown: kw previews ${sub}`));
+  const formats = loadAllFormats();
+  if (!reportPreviewCheck(checkPreviews(formats), formats.length)) process.exit(1);
 }
 
 function cmdSite(): void {
@@ -480,6 +528,8 @@ async function main(): Promise<void> {
       return cmdVariant();
     case "gallery":
       return cmdGallery();
+    case "previews":
+      return cmdPreviews();
     case "site":
       return cmdSite();
     case "measure":
