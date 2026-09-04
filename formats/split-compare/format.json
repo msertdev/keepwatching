@@ -1,0 +1,84 @@
+{
+  "id": "split-compare",
+  "version": "1.0.0",
+  "canvas": {
+    "w": 1080,
+    "h": 1920,
+    "fps": 30,
+    "durationSec": 12
+  },
+  "theme": {
+    "accent": "#38bdf8",
+    "accent2": "#f472b6",
+    "glow": 0.1,
+    "glowY": 640
+  },
+  "data": {
+    "question": "Which uses more water?",
+    "verdict": "One almond costs a gallon. One almond."
+  },
+  "scene": [
+    {
+      "id": "question",
+      "type": "text",
+      "box": {
+        "y": 360
+      },
+      "text": "{{question}}",
+      "font": {
+        "size": 76,
+        "weight": 800,
+        "color": "fg"
+      }
+    },
+    {
+      "id": "panels",
+      "type": "split",
+      "box": {
+        "y": 620
+      },
+      "at": 0.8,
+      "rightDelay": 3.2,
+      "height": 520,
+      "gap": 26,
+      "divider": "vs",
+      "font": {
+        "size": 44
+      },
+      "left": {
+        "title": "1 cup of coffee",
+        "value": "34 L",
+        "body": "beans, roasting, brewing",
+        "color": "#38bdf8"
+      },
+      "right": {
+        "title": "1 almond",
+        "value": "12 L",
+        "body": "irrigation only",
+        "color": "#f472b6"
+      }
+    },
+    {
+      "id": "verdict",
+      "type": "text",
+      "box": {
+        "y": 1280
+      },
+      "text": "{{verdict}}",
+      "font": {
+        "size": 66,
+        "weight": 800,
+        "color": "fg"
+      },
+      "at": 7.4,
+      "in": {
+        "at": 7.4,
+        "dur": 0.4,
+        "move": [
+          0,
+          32
+        ]
+      }
+    }
+  ]
+}

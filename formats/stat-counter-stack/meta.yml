@@ -1,0 +1,17 @@
+name: "Stat counter — stacking proof"
+family: stat-counter
+hypothesis: >-
+  Icons filling in at the same rate as the digits turn an abstract number into a countable pile, holding attention past the point where a bare number stops being new.
+useWhen: >-
+  The number counts discrete things a viewer can picture one at a time.
+avoidWhen: >-
+  The quantity is continuous (money, time, mass) — the icons will read as decoration.
+tags:
+  - "number"
+  - "icons"
+  - "proof"
+inputs:
+  - key: label
+    description: "What is being counted."
+  - key: closer
+    description: "The line that lands once the grid is full."

@@ -1,0 +1,73 @@
+{
+  "id": "loop-seam",
+  "version": "1.0.0",
+  "canvas": {
+    "w": 1080,
+    "h": 1920,
+    "fps": 30,
+    "durationSec": 8
+  },
+  "theme": {
+    "accent": "#a855f7",
+    "glow": 0.12,
+    "glowY": 820
+  },
+  "data": {
+    "line": "The reason you are still watching",
+    "answer": "is that this sentence never finishes."
+  },
+  "scene": [
+    {
+      "id": "line",
+      "type": "text",
+      "box": {
+        "y": 760
+      },
+      "text": "{{line}}",
+      "font": {
+        "size": 88,
+        "weight": 800,
+        "color": "fg",
+        "lineHeight": 1.1
+      },
+      "wrapAt": 4
+    },
+    {
+      "id": "answer",
+      "type": "text",
+      "box": {
+        "y": 1020
+      },
+      "text": "{{answer}}",
+      "font": {
+        "size": 66,
+        "weight": 700,
+        "color": "accent",
+        "lineHeight": 1.16
+      },
+      "at": 2.4,
+      "until": 7.2,
+      "out": {
+        "at": 6.9,
+        "dur": 0.3
+      }
+    },
+    {
+      "id": "ring",
+      "type": "bar",
+      "box": {
+        "y": 1300,
+        "x": 300,
+        "w": 480
+      },
+      "from": 0,
+      "to": 1,
+      "startSec": 0,
+      "endSec": 8,
+      "height": 10,
+      "radius": 5,
+      "fill": "accent",
+      "trackColor": "rgba(255,255,255,0.08)"
+    }
+  ]
+}

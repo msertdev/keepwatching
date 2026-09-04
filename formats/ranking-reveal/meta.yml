@@ -1,0 +1,15 @@
+name: "Ranking — top down"
+family: ranking
+hypothesis: >-
+  Showing rank 1 immediately trades suspense for clarity: the viewer learns the answer in the first two seconds and stays only if the rest of the list surprises them.
+useWhen: >-
+  The headline is the ranking itself and you want shares over watch-through.
+avoidWhen: >-
+  You are optimising for completion — this format gives away its own ending.
+tags:
+  - "list"
+  - "ranking"
+  - "shareable"
+inputs:
+  - key: title
+    description: "What is being ranked."

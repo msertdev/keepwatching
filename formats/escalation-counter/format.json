@@ -1,0 +1,129 @@
+{
+  "id": "escalation-counter",
+  "version": "1.0.0",
+  "canvas": {
+    "w": 1080,
+    "h": 1920,
+    "fps": 30,
+    "durationSec": 13
+  },
+  "theme": {
+    "accent": "#eab308",
+    "glow": 0.14,
+    "glowY": 720
+  },
+  "data": {
+    "label": "Litres of water to make one pair of jeans"
+  },
+  "scene": [
+    {
+      "id": "label",
+      "type": "text",
+      "box": {
+        "y": 420
+      },
+      "text": "{{label}}",
+      "font": {
+        "size": 56,
+        "weight": 600,
+        "color": "muted",
+        "lineHeight": 1.18
+      }
+    },
+    {
+      "id": "value",
+      "type": "counter",
+      "box": {
+        "y": 620
+      },
+      "from": 0,
+      "to": 7600,
+      "startSec": 0.4,
+      "endSec": 9.4,
+      "ease": "linear",
+      "suffix": " L",
+      "font": {
+        "size": 220,
+        "weight": 800
+      }
+    },
+    {
+      "id": "m1",
+      "type": "text",
+      "box": {
+        "y": 940
+      },
+      "text": "a week of drinking water",
+      "font": {
+        "size": 46,
+        "weight": 700,
+        "color": "muted"
+      },
+      "at": 2.2,
+      "until": 4.6
+    },
+    {
+      "id": "m2",
+      "type": "text",
+      "box": {
+        "y": 940
+      },
+      "text": "a month of showers",
+      "font": {
+        "size": 52,
+        "weight": 700,
+        "color": "muted"
+      },
+      "at": 4.7,
+      "until": 7.1
+    },
+    {
+      "id": "m3",
+      "type": "text",
+      "box": {
+        "y": 940
+      },
+      "text": "ten years of your tap",
+      "font": {
+        "size": 60,
+        "weight": 800,
+        "color": "accent"
+      },
+      "at": 7.2
+    },
+    {
+      "id": "bar",
+      "type": "bar",
+      "box": {
+        "y": 1120,
+        "x": 160,
+        "w": 760
+      },
+      "from": 0,
+      "to": 1,
+      "startSec": 0.4,
+      "endSec": 9.4,
+      "height": 16,
+      "fill": "accent",
+      "ticks": [
+        0.24,
+        0.52
+      ],
+      "at": 0.4
+    },
+    {
+      "id": "closer",
+      "type": "text",
+      "box": {
+        "y": 1300
+      },
+      "text": "One pair.",
+      "font": {
+        "size": 72,
+        "weight": 800,
+        "color": "fg"
+      },
+      "at": 9.6
+    }
+  ]
+}

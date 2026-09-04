@@ -1,0 +1,112 @@
+{
+  "id": "countdown-clock",
+  "version": "1.0.0",
+  "canvas": {
+    "w": 1080,
+    "h": 1920,
+    "fps": 30,
+    "durationSec": 12
+  },
+  "theme": {
+    "accent": "#ef4444",
+    "glow": 0.16,
+    "glowY": 780
+  },
+  "data": {
+    "promise": "In 10 seconds you will know",
+    "subject": "why your phone battery dies at 40%",
+    "payoff": "It is not the battery. It is the calibration."
+  },
+  "scene": [
+    {
+      "id": "promise",
+      "type": "text",
+      "box": {
+        "y": 400
+      },
+      "text": "{{promise}}",
+      "font": {
+        "size": 54,
+        "weight": 600,
+        "color": "muted"
+      }
+    },
+    {
+      "id": "subject",
+      "type": "text",
+      "box": {
+        "y": 520
+      },
+      "text": "{{subject}}",
+      "font": {
+        "size": 78,
+        "weight": 800,
+        "color": "fg",
+        "lineHeight": 1.1
+      }
+    },
+    {
+      "id": "clock",
+      "type": "counter",
+      "box": {
+        "y": 830
+      },
+      "from": 10,
+      "to": 0,
+      "clock": true,
+      "startSec": 0.5,
+      "endSec": 10.5,
+      "ease": "linear",
+      "font": {
+        "size": 300,
+        "weight": 800,
+        "tracking": -0.03
+      },
+      "until": 10.8
+    },
+    {
+      "id": "bar",
+      "type": "bar",
+      "box": {
+        "y": 1210,
+        "x": 140,
+        "w": 800
+      },
+      "from": 1,
+      "to": 0,
+      "startSec": 0.5,
+      "endSec": 10.5,
+      "height": 22,
+      "fill": "accent",
+      "ticks": [
+        0.25,
+        0.5,
+        0.75
+      ],
+      "until": 10.8
+    },
+    {
+      "id": "payoff",
+      "type": "text",
+      "box": {
+        "y": 900
+      },
+      "text": "{{payoff}}",
+      "font": {
+        "size": 84,
+        "weight": 800,
+        "color": "fg"
+      },
+      "at": 10.6,
+      "in": {
+        "at": 10.6,
+        "dur": 0.35,
+        "move": [
+          0,
+          30
+        ],
+        "scale": 0.9
+      }
+    }
+  ]
+}

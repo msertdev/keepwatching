@@ -1,0 +1,372 @@
+/**
+ * keepwatching CLI.
+ *
+ *   kw setup                     install fonts + a headless Chromium
+ *   kw list                      every format, with its sample size
+ *   kw check                     validate every format.json
+ *   kw render <slug|--all>       render to out/<slug>/
+ *   kw preview <slug>            scrub a format in a browser
+ *   kw new <slug> [--from <s>]   scaffold a new format
+ *   kw variant <slug>            print the variant id for the current spec
+ *   kw site build|serve          build the gallery
+ *   kw measure [ingest|report|apply]
+ */
+import fs from "node:fs";
+import http from "node:http";
+import path from "node:path";
+import { execFileSync } from "node:child_process";
+
+import { FORMATS_DIR, OUT_DIR, ROOT, SITE_DIR, rel } from "./paths.js";
+import { installFonts, missingFonts } from "./fonts.js";
+import { ensureBundle } from "./bundle.js";
+import {
+  listFormatSlugs,
+  loadAllFormats,
+  loadFormat,
+  validateSpec,
+  type LoadedFormat,
+} from "./format.js";
+import { renderFormat } from "./render.js";
+import { startPreview } from "./preview.js";
+import { buildSite } from "./site.js";
+
+const argv = process.argv.slice(2);
+const cmd = argv[0] ?? "help";
+const positional = argv.slice(1).filter((a) => !a.startsWith("--"));
+const has = (flag: string) => argv.includes(`--${flag}`);
+const opt = (name: string): string | undefined => {
+  const hit = argv.find((a) => a.startsWith(`--${name}=`));
+  return hit ? hit.slice(name.length + 3) : undefined;
+};
+
+const HELP = `
+keepwatching — a measured retention database for short-form formats, that renders.
+
+  kw setup                        install Inter + a headless Chromium (run once)
+  kw list                         list every format with its sample size
+  kw check                        validate every format.json
+  kw render <slug>                render one format to out/<slug>/
+  kw render --all                 render every format
+      --stills                    poster + contact sheet only, no encode
+      --check-determinism         re-seek frames out of order and compare hashes
+      --keep-frames               leave the PNG sequence on disk
+      --no-previews               skip the gallery-sized webm/mp4
+  kw preview <slug> [--port=5173] scrub a format in a browser
+  kw new <slug> [--from=<slug>]   scaffold a new format directory
+  kw variant <slug>               print the variant id for the current spec
+  kw site build                   regenerate site/gallery.json + preview media
+  kw site serve [--port=8080]     serve site/ locally
+  kw measure                      ingest CSVs, then report
+  kw measure ingest|report|apply
+`;
+
+/* ------------------------------------------------------------------ utils */
+
+function need(name: string): string {
+  const v = positional[0];
+  if (!v) {
+    console.error(`Missing <${name}>.\n${HELP}`);
+    process.exit(1);
+  }
+  return v;
+}
+
+function fail(err: unknown): never {
+  console.error(`\n[31m✗ ${(err as Error).message}[0m\n`);
+  process.exit(1);
+}
+
+const pct = (v: number | null | undefined) =>
+  v === null || v === undefined ? "—" : `${(v * 100).toFixed(1)}%`;
+
+/* --------------------------------------------------------------- commands */
+
+async function cmdSetup(): Promise<void> {
+  console.log("\n▸ setup");
+  await installFonts();
+
+  console.log("  installing Chromium for Playwright …");
+  try {
+    execFileSync(process.execPath, [
+      path.join(ROOT, "node_modules", "playwright", "cli.js"),
+      "install",
+      "chromium",
+    ], { stdio: "inherit" });
+  } catch {
+    console.warn("  ! Chromium install failed — run `npx playwright install chromium` yourself");
+  }
+
+  ensureBundle(true);
+  console.log("  composition bundle built");
+  console.log(`\n✓ ready. Try:  npm run render -- ${listFormatSlugs()[0] ?? "<slug>"}\n`);
+}
+
+function cmdList(): void {
+  const formats = loadAllFormats();
+  if (formats.length === 0) {
+    console.log("\nNo formats found in formats/.\n");
+    return;
+  }
+  const width = Math.max(...formats.map((f) => f.slug.length));
+  console.log(`\n${formats.length} formats\n`);
+  console.log(
+    `  ${"slug".padEnd(width)}  ${"family".padEnd(12)}  ${"n".padStart(3)}  ` +
+      `${"avg viewed".padStart(10)}  ${"hook@3s".padStart(8)}  status`
+  );
+  console.log(`  ${"-".repeat(width)}  ${"-".repeat(12)}  ---  ----------  --------  ------`);
+  for (const f of formats) {
+    console.log(
+      `  ${f.slug.padEnd(width)}  ${String(f.meta.family).padEnd(12)}  ` +
+        `${String(f.data.n).padStart(3)}  ${pct(f.data.avgViewedPct).padStart(10)}  ` +
+        `${pct(f.data.hook3s).padStart(8)}  ${f.data.status}`
+    );
+  }
+  const measured = formats.filter((f) => f.data.status === "measured").length;
+  console.log(
+    `\n  ${measured} measured, ${formats.length - measured} untested, ` +
+      `${formats.reduce((s, f) => s + f.data.n, 0)} samples total\n`
+  );
+}
+
+function cmdCheck(): void {
+  const slugs = listFormatSlugs();
+  let bad = 0;
+  const warnings: string[] = [];
+
+  for (const slug of slugs) {
+    try {
+      const f = loadFormat(slug);
+      validateSpec(f.spec, slug);
+      if (!f.meta.hypothesis) warnings.push(`${slug}: meta.yml has no hypothesis`);
+      if (!f.meta.useWhen) warnings.push(`${slug}: meta.yml has no useWhen`);
+      if (!fs.existsSync(path.join(f.dir, "data.yml"))) {
+        warnings.push(`${slug}: no data.yml (treated as untested)`);
+      }
+    } catch (err) {
+      console.error(`  ✗ ${(err as Error).message}`);
+      bad++;
+    }
+  }
+
+  console.log(`\n▸ check`);
+  console.log(`  ${slugs.length} formats, ${bad} invalid`);
+  for (const w of warnings) console.log(`  ! ${w}`);
+  if (missingFonts().length) console.log(`  ! fonts missing — run \`npm run setup\``);
+  console.log("");
+  if (bad > 0) process.exit(1);
+}
+
+async function cmdRender(): Promise<void> {
+  const opts = {
+    stillsOnly: has("stills"),
+    keepFrames: has("keep-frames"),
+    noPreviews: has("no-previews"),
+    checkDeterminism: has("check-determinism"),
+  };
+
+  let targets: LoadedFormat[];
+  if (has("all")) targets = loadAllFormats();
+  else targets = [loadFormat(need("slug"))];
+
+  const t0 = Date.now();
+  const done: string[] = [];
+  const failed: Array<[string, string]> = [];
+
+  for (const fmt of targets) {
+    try {
+      await renderFormat(fmt, opts);
+      done.push(fmt.slug);
+    } catch (err) {
+      if (targets.length === 1) throw err;
+      console.error(`  [31m✗ ${fmt.slug}: ${(err as Error).message}[0m\n`);
+      failed.push([fmt.slug, (err as Error).message]);
+    }
+  }
+
+  if (targets.length > 1) {
+    console.log(
+      `\n▸ rendered ${done.length}/${targets.length} in ${((Date.now() - t0) / 1000).toFixed(1)}s`
+    );
+    for (const [slug, msg] of failed) console.log(`  ✗ ${slug}: ${msg}`);
+    console.log("");
+    if (failed.length) process.exit(1);
+  }
+}
+
+function cmdPreview(): void {
+  const fmt = loadFormat(need("slug"));
+  startPreview(fmt, Number(opt("port") ?? 5173));
+}
+
+function cmdVariant(): void {
+  const fmt = loadFormat(need("slug"));
+  console.log(fmt.variantId);
+}
+
+function cmdNew(): void {
+  const slug = need("slug");
+  if (!/^[a-z0-9][a-z0-9-]*$/.test(slug)) fail(new Error("slug must be lowercase-kebab-case"));
+  const dir = path.join(FORMATS_DIR, slug);
+  if (fs.existsSync(dir)) fail(new Error(`formats/${slug} already exists`));
+
+  const from = opt("from");
+  fs.mkdirSync(dir, { recursive: true });
+
+  if (from) {
+    const src = loadFormat(from);
+    const spec = { ...src.spec, id: slug, version: "0.1.0" };
+    fs.writeFileSync(path.join(dir, "format.json"), JSON.stringify(spec, null, 2) + "\n", "utf8");
+    fs.copyFileSync(path.join(src.dir, "meta.yml"), path.join(dir, "meta.yml"));
+  } else {
+    fs.writeFileSync(
+      path.join(dir, "format.json"),
+      JSON.stringify(
+        {
+          id: slug,
+          version: "0.1.0",
+          canvas: { w: 1080, h: 1920, fps: 30, durationSec: 10 },
+          theme: { bg: "#0b0f14", fg: "#ffffff", accent: "#22c55e", glow: 0.14, glowY: 820 },
+          data: { headline: "Your headline here", detail: "Your supporting line" },
+          scene: [
+            {
+              id: "headline",
+              type: "text",
+              box: { y: 700 },
+              text: "{{headline}}",
+              font: { size: 104, weight: 800 },
+              at: 0,
+            },
+            {
+              id: "detail",
+              type: "text",
+              box: { y: 960 },
+              text: "{{detail}}",
+              font: { size: 54, weight: 600, color: "muted" },
+              at: 0.6,
+            },
+          ],
+        },
+        null,
+        2
+      ) + "\n",
+      "utf8"
+    );
+    fs.writeFileSync(
+      path.join(dir, "meta.yml"),
+      `name: ${slug}\nfamily: cold-open\nhypothesis: >-\n  State what this format is supposed to do, and by when. One sentence, testable.\nuseWhen: >-\n  Describe the situation a creator should reach for this in.\navoidWhen: >-\n  Describe when it is the wrong tool.\ntags: []\ninputs:\n  - key: headline\n    description: The first thing the viewer reads.\n`,
+      "utf8"
+    );
+  }
+
+  fs.writeFileSync(
+    path.join(dir, "data.yml"),
+    "# No measurements yet. This is an honest state — do not fill it in by hand.\n" +
+      "n: 0\nstatus: untested\nhook3s: null\navgViewedPct: null\nviewsPerHour: null\n" +
+      "vsBaselinePct: null\nretention: []\n",
+    "utf8"
+  );
+
+  console.log(`\n✓ created ${rel(dir)}`);
+  console.log(`  edit format.json, then:  npm run preview -- ${slug}\n`);
+}
+
+function cmdSite(): void {
+  const sub = positional[0] ?? "build";
+  if (sub === "build") {
+    buildSite();
+    return;
+  }
+  if (sub === "serve") {
+    const port = Number(opt("port") ?? 8080);
+    const MIME: Record<string, string> = {
+      ".html": "text/html; charset=utf-8",
+      ".css": "text/css; charset=utf-8",
+      ".js": "text/javascript; charset=utf-8",
+      ".json": "application/json; charset=utf-8",
+      ".mp4": "video/mp4",
+      ".webm": "video/webm",
+      ".jpg": "image/jpeg",
+      ".png": "image/png",
+      ".svg": "image/svg+xml",
+    };
+    http
+      .createServer((req, res) => {
+        let p = decodeURIComponent(new URL(req.url ?? "/", "http://x").pathname);
+        if (p === "/") p = "/index.html";
+        const file = path.join(SITE_DIR, p);
+        if (!file.startsWith(SITE_DIR) || !fs.existsSync(file) || !fs.statSync(file).isFile()) {
+          res.writeHead(404).end("not found");
+          return;
+        }
+        res.writeHead(200, { "content-type": MIME[path.extname(file)] ?? "application/octet-stream" });
+        fs.createReadStream(file).pipe(res);
+      })
+      .listen(port, () => console.log(`\n▸ gallery  http://localhost:${port}\n`));
+    return;
+  }
+  fail(new Error(`unknown: kw site ${sub}`));
+}
+
+async function cmdMeasure(): Promise<void> {
+  const sub = positional[0] ?? "all";
+  const { ingest } = await import("../../measure/src/ingest.js");
+  const { buildReport, applyReport } = await import("../../measure/src/report.js");
+
+  if (sub === "ingest") {
+    ingest();
+    return;
+  }
+  if (sub === "report") {
+    buildReport();
+    return;
+  }
+  if (sub === "apply") {
+    applyReport();
+    return;
+  }
+  if (sub === "all") {
+    ingest();
+    buildReport();
+    console.log("  review measure/report.md, then run `kw measure apply` to write data.yml\n");
+    return;
+  }
+  fail(new Error(`unknown: kw measure ${sub}`));
+}
+
+/* ------------------------------------------------------------------ main */
+
+async function main(): Promise<void> {
+  switch (cmd) {
+    case "setup":
+      return cmdSetup();
+    case "list":
+      return cmdList();
+    case "check":
+      return cmdCheck();
+    case "render":
+      return cmdRender();
+    case "preview":
+      return cmdPreview();
+    case "new":
+      return cmdNew();
+    case "variant":
+      return cmdVariant();
+    case "site":
+      return cmdSite();
+    case "measure":
+      return cmdMeasure();
+    case "help":
+    case "--help":
+    case "-h":
+      console.log(HELP);
+      return;
+    default:
+      console.error(`Unknown command: ${cmd}\n${HELP}`);
+      process.exit(1);
+  }
+}
+
+main().catch(fail);
+
+/* Referenced so the unused-import check stays honest about what the CLI touches. */
+void OUT_DIR;

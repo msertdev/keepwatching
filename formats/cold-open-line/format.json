@@ -1,0 +1,60 @@
+{
+  "id": "cold-open-line",
+  "version": "1.0.0",
+  "canvas": {
+    "w": 1080,
+    "h": 1920,
+    "fps": 30,
+    "durationSec": 9
+  },
+  "theme": {
+    "accent": "#ffffff",
+    "glow": 0,
+    "glowY": 800
+  },
+  "data": {
+    "line": "Your fridge costs more than your car.",
+    "turn": "Per mile, over ten years, it is not close."
+  },
+  "scene": [
+    {
+      "id": "line",
+      "type": "text",
+      "box": {
+        "y": 700
+      },
+      "text": "{{line}}",
+      "font": {
+        "size": 100,
+        "weight": 800,
+        "color": "fg",
+        "lineHeight": 1.08
+      },
+      "wrapAt": 3,
+      "stagger": 0.42
+    },
+    {
+      "id": "turn",
+      "type": "text",
+      "box": {
+        "y": 1180
+      },
+      "text": "{{turn}}",
+      "font": {
+        "size": 58,
+        "weight": 600,
+        "color": "muted",
+        "lineHeight": 1.2
+      },
+      "at": 4.2,
+      "in": {
+        "at": 4.2,
+        "dur": 0.4,
+        "move": [
+          0,
+          28
+        ]
+      }
+    }
+  ]
+}

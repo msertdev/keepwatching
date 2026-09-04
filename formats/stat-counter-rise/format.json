@@ -1,0 +1,107 @@
+{
+  "id": "stat-counter-rise",
+  "version": "1.0.0",
+  "canvas": {
+    "w": 1080,
+    "h": 1920,
+    "fps": 30,
+    "durationSec": 10
+  },
+  "theme": {
+    "accent": "#22c55e",
+    "glow": 0.15,
+    "glowY": 820
+  },
+  "data": {
+    "label": "Plastic bottles bought worldwide",
+    "unit": "bottles, in the last minute",
+    "context": "Enough to circle the Earth four times.",
+    "value": 1020000
+  },
+  "scene": [
+    {
+      "id": "label",
+      "type": "text",
+      "box": {
+        "y": 470
+      },
+      "text": "{{label}}",
+      "font": {
+        "size": 58,
+        "weight": 600,
+        "color": "muted"
+      },
+      "at": 0
+    },
+    {
+      "id": "value",
+      "type": "counter",
+      "box": {
+        "y": 640
+      },
+      "from": 0,
+      "to": 1020000,
+      "startSec": 0.15,
+      "endSec": 6.4,
+      "ease": "out",
+      "font": {
+        "size": 230,
+        "weight": 800,
+        "tracking": -0.03
+      },
+      "at": 0
+    },
+    {
+      "id": "unit",
+      "type": "text",
+      "box": {
+        "y": 940
+      },
+      "text": "{{unit}}",
+      "font": {
+        "size": 52,
+        "weight": 600,
+        "color": "accent"
+      },
+      "at": 0.4
+    },
+    {
+      "id": "bar",
+      "type": "bar",
+      "box": {
+        "y": 1090,
+        "x": 180,
+        "w": 720
+      },
+      "from": 0,
+      "to": 1,
+      "startSec": 0.15,
+      "endSec": 6.4,
+      "height": 18,
+      "fill": "accent",
+      "at": 0.2
+    },
+    {
+      "id": "context",
+      "type": "text",
+      "box": {
+        "y": 1260
+      },
+      "text": "{{context}}",
+      "font": {
+        "size": 66,
+        "weight": 800,
+        "color": "fg"
+      },
+      "at": 6.5,
+      "in": {
+        "at": 6.5,
+        "dur": 0.4,
+        "move": [
+          0,
+          34
+        ]
+      }
+    }
+  ]
+}

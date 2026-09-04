@@ -1,0 +1,95 @@
+{
+  "id": "ranking-suspense",
+  "version": "1.0.0",
+  "canvas": {
+    "w": 1080,
+    "h": 1920,
+    "fps": 30,
+    "durationSec": 13
+  },
+  "theme": {
+    "accent": "#f97316",
+    "glow": 0.13,
+    "glowY": 620
+  },
+  "data": {
+    "title": "The 5 most expensive keys on your keyboard"
+  },
+  "scene": [
+    {
+      "id": "title",
+      "type": "text",
+      "box": {
+        "y": 320
+      },
+      "text": "{{title}}",
+      "font": {
+        "size": 64,
+        "weight": 800,
+        "color": "fg",
+        "lineHeight": 1.1
+      }
+    },
+    {
+      "id": "rows",
+      "type": "list",
+      "box": {
+        "y": 560
+      },
+      "at": 0.8,
+      "stagger": 2,
+      "reverse": true,
+      "rank": true,
+      "bars": true,
+      "rowHeight": 132,
+      "gap": 20,
+      "highlight": 0,
+      "highlightAt": 9.6,
+      "font": {
+        "size": 48,
+        "weight": 700
+      },
+      "rows": [
+        {
+          "label": "Spacebar",
+          "value": "$41",
+          "weight": 1
+        },
+        {
+          "label": "Enter",
+          "value": "$26",
+          "weight": 0.63
+        },
+        {
+          "label": "Backspace",
+          "value": "$19",
+          "weight": 0.46
+        },
+        {
+          "label": "Shift",
+          "value": "$12",
+          "weight": 0.29
+        },
+        {
+          "label": "Escape",
+          "value": "$7",
+          "weight": 0.17
+        }
+      ]
+    },
+    {
+      "id": "closer",
+      "type": "text",
+      "box": {
+        "y": 1420
+      },
+      "text": "Number one, last.",
+      "font": {
+        "size": 58,
+        "weight": 800,
+        "color": "accent"
+      },
+      "at": 9.7
+    }
+  ]
+}

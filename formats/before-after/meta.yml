@@ -1,0 +1,17 @@
+name: "Before / after wipe"
+family: reveal
+hypothesis: >-
+  A wipe that moves across the frame is a change the eye must track, and tracking a moving edge is harder to abandon mid-motion than reading a static slide.
+useWhen: >-
+  You can show the same subject in two states.
+avoidWhen: >-
+  The two states look similar — the wipe will read as a glitch.
+tags:
+  - "transition"
+  - "visual"
+  - "change"
+inputs:
+  - key: before
+    description: "The starting state."
+  - key: after
+    description: "The ending state."

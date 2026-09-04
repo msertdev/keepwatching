@@ -1,0 +1,17 @@
+name: "Redacted reveal"
+family: reveal
+hypothesis: >-
+  A visibly hidden word is a question the viewer cannot look away from, and the hiding costs nothing to read, so the drop-off that usually happens at second three is deferred to the uncover.
+useWhen: >-
+  One word or number is the entire payload.
+avoidWhen: >-
+  The hidden thing is guessable in under a second — the format will feel like a trick.
+tags:
+  - "curiosity"
+  - "withhold"
+  - "single-word"
+inputs:
+  - key: setup
+    description: "The sentence with the hole in it."
+  - key: answer
+    description: "The word revealed."

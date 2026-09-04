@@ -1,0 +1,15 @@
+name: "Progress bar"
+family: progress
+hypothesis: >-
+  A bar with labelled milestones tells the viewer both how far they are and what they have not seen yet, so the decision to leave is made against a visible cost.
+useWhen: >-
+  The clip has genuine stages and the last stage is worth reaching.
+avoidWhen: >-
+  There are no real stages — a fake progress bar is the fastest way to lose trust.
+tags:
+  - "structure"
+  - "milestones"
+  - "completion"
+inputs:
+  - key: title
+    description: "What is progressing."

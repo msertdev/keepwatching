@@ -1,0 +1,174 @@
+{
+  "id": "before-after",
+  "version": "1.0.0",
+  "canvas": {
+    "w": 1080,
+    "h": 1920,
+    "fps": 30,
+    "durationSec": 10
+  },
+  "theme": {
+    "accent": "#22c55e",
+    "glow": 0.1,
+    "glowY": 820
+  },
+  "data": {
+    "title": "Same room. 40 minutes apart.",
+    "before": "BEFORE",
+    "after": "AFTER"
+  },
+  "scene": [
+    {
+      "id": "title",
+      "type": "text",
+      "box": {
+        "y": 380
+      },
+      "text": "{{title}}",
+      "font": {
+        "size": 66,
+        "weight": 800,
+        "color": "fg"
+      }
+    },
+    {
+      "id": "panelBefore",
+      "type": "card",
+      "box": {
+        "y": 620,
+        "x": 60,
+        "w": 960
+      },
+      "h": 640,
+      "fill": "rgba(255,255,255,0.06)",
+      "stroke": "rgba(255,255,255,0.14)",
+      "radius": 36,
+      "z": 0,
+      "at": 0.3,
+      "tracks": [
+        {
+          "prop": "clip",
+          "keys": [
+            [
+              3.0,
+              0
+            ],
+            [
+              5.4,
+              1
+            ]
+          ],
+          "ease": "smooth"
+        }
+      ]
+    },
+    {
+      "id": "beforeLabel",
+      "type": "text",
+      "box": {
+        "y": 900
+      },
+      "text": "{{before}}",
+      "font": {
+        "size": 92,
+        "weight": 800,
+        "color": "muted",
+        "tracking": 0.1
+      },
+      "at": 0.5,
+      "tracks": [
+        {
+          "prop": "clip",
+          "keys": [
+            [
+              3.0,
+              0
+            ],
+            [
+              5.4,
+              1
+            ]
+          ],
+          "ease": "smooth"
+        }
+      ]
+    },
+    {
+      "id": "panelAfter",
+      "type": "card",
+      "box": {
+        "y": 620,
+        "x": 60,
+        "w": 960
+      },
+      "h": 640,
+      "fill": "rgba(34,197,94,0.14)",
+      "stroke": "accent",
+      "radius": 36,
+      "z": 1,
+      "at": 0.3,
+      "tracks": [
+        {
+          "prop": "reveal",
+          "keys": [
+            [
+              3,
+              0
+            ],
+            [
+              5.4,
+              1
+            ]
+          ],
+          "ease": "smooth"
+        }
+      ]
+    },
+    {
+      "id": "afterLabel",
+      "type": "text",
+      "box": {
+        "y": 900
+      },
+      "text": "{{after}}",
+      "font": {
+        "size": 92,
+        "weight": 800,
+        "color": "accent",
+        "tracking": 0.1
+      },
+      "z": 2,
+      "at": 0.3,
+      "tracks": [
+        {
+          "prop": "reveal",
+          "keys": [
+            [
+              3,
+              0
+            ],
+            [
+              5.4,
+              1
+            ]
+          ],
+          "ease": "smooth"
+        }
+      ]
+    },
+    {
+      "id": "closer",
+      "type": "text",
+      "box": {
+        "y": 1400
+      },
+      "text": "Nothing was bought.",
+      "font": {
+        "size": 58,
+        "weight": 700,
+        "color": "muted"
+      },
+      "at": 5.8
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+name: "Cold open — question"
+family: cold-open
+hypothesis: >-
+  A question the viewer cannot immediately answer opens a loop, and the two-second silence before the partial answer is long enough to feel like a pause rather than a delay.
+useWhen: >-
+  The question has a specific, checkable answer.
+avoidWhen: >-
+  The question is rhetorical — an unanswerable question closes the loop instantly.
+tags:
+  - "hook"
+  - "question"
+  - "open-loop"
+inputs:
+  - key: question
+    description: "The question. Specific, not rhetorical."
+  - key: partial
+    description: "A partial answer that raises a second question."

@@ -1,0 +1,22 @@
+name: "Stat counter — rise"
+family: stat-counter
+hypothesis: >-
+  A number that is visibly still moving reads as unfinished, so the first three seconds cost the viewer nothing to stay for; the bar underneath tells them how long that costs.
+useWhen: >-
+  You have one number that is large, surprising, and easy to say out loud.
+avoidWhen: >-
+  The number needs a paragraph of setup before it means anything.
+tags:
+  - "number"
+  - "hook"
+  - "single-fact"
+inputs:
+  - key: label
+    description: "What the number counts, above the number."
+    example: "Plastic bottles bought worldwide"
+  - key: unit
+    description: "Unit line under the number."
+    example: "bottles, in the last minute"
+  - key: context
+    description: "The comparison that lands after the count."
+    example: "Enough to circle the Earth four times."
