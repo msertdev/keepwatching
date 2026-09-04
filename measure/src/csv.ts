@@ -233,35 +233,85 @@ export function duration(v: string | undefined): number | undefined {
 }
 
 /**
- * Dates arrive as "2026-09-03", "03.09.2026", "3 Eyl 2026" and similar.
- * Returns an ISO date (YYYY-MM-DD) or undefined — never a guessed date.
+ * Dates arrive as "2026-09-03", "03.09.2026", "Sep 3, 2026" and "3 Eylül".
+ *
+ * Every branch builds the ISO string from parsed components. Nothing goes
+ * through `new Date(...).toISOString()`, because that reads the string as local
+ * midnight and re-expresses it in UTC — east of Greenwich this silently shifts
+ * every date back a day, which would then propagate into the age windows.
+ *
+ * A date with no year cannot be resolved without help, so it returns
+ * `yearInferred: true` only when a context year is supplied, and the caller is
+ * expected to record that the year was not in the data.
  */
+const EN_MONTHS: Record<string, number> = {
+  jan: 1, feb: 2, mar: 3, apr: 4, may: 5, jun: 6,
+  jul: 7, aug: 8, sep: 9, oct: 10, nov: 11, dec: 12,
+};
+
 const TR_MONTHS: Record<string, number> = {
   oca: 1, sub: 2, mar: 3, nis: 4, may: 5, haz: 6,
   tem: 7, agu: 8, eyl: 9, eki: 10, kas: 11, ara: 12,
 };
 
-export function isoDate(v: string | undefined): string | undefined {
+export interface DateParse {
+  iso: string;
+  /** The source had no year; `contextYear` supplied it. */
+  yearInferred?: boolean;
+}
+
+const iso = (y: number | string, m: number, d: number | string): string =>
+  `${y}-${String(m).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+
+/** Turkish month names collide with English on "mar" and "may" only, and both
+ *  agree there, so a single lookup over both tables is safe. */
+function monthFromName(name: string): number | undefined {
+  const key = norm(name).slice(0, 3);
+  return EN_MONTHS[key] ?? TR_MONTHS[key];
+}
+
+export function parseDate(v: string | undefined, contextYear?: number): DateParse | undefined {
   if (!v) return undefined;
   const s = v.trim();
   if (!s) return undefined;
 
-  let m = /^(\d{4})-(\d{2})-(\d{2})/.exec(s);
-  if (m) return `${m[1]}-${m[2]}-${m[3]}`;
+  let m = /^(\d{4})-(\d{1,2})-(\d{1,2})/.exec(s);
+  if (m) return { iso: iso(m[1], Number(m[2]), m[3]) };
 
   m = /^(\d{1,2})[./](\d{1,2})[./](\d{4})/.exec(s);
-  if (m) return `${m[3]}-${m[2].padStart(2, "0")}-${m[1].padStart(2, "0")}`;
+  if (m) return { iso: iso(m[3], Number(m[2]), m[1]) };
 
-  m = /^(\d{1,2})\s+([A-Za-zÇĞİÖŞÜçğıöşü]+)\s+(\d{4})/.exec(s);
+  /* "Sep 3, 2026" and "September 3 2026" */
+  m = /^([A-Za-z]+)\s+(\d{1,2})(?:\s*,)?\s+(\d{4})/.exec(s);
   if (m) {
-    const key = norm(m[2]).slice(0, 3);
-    const month = TR_MONTHS[key];
-    if (month) return `${m[3]}-${String(month).padStart(2, "0")}-${m[1].padStart(2, "0")}`;
+    const month = monthFromName(m[1]);
+    if (month) return { iso: iso(m[3], month, m[2]) };
   }
 
-  const d = new Date(s);
-  if (!Number.isNaN(d.getTime()) && /\d{4}/.test(s)) return d.toISOString().slice(0, 10);
+  /* "3 Eylül 2026" */
+  m = /^(\d{1,2})\s+([A-Za-zÇĞİÖŞÜçğıöşü]+)\s+(\d{4})/.exec(s);
+  if (m) {
+    const month = monthFromName(m[2]);
+    if (month) return { iso: iso(m[3], month, m[1]) };
+  }
+
+  /* "3 Eylül" / "Sep 3" — no year in the data. */
+  m = /^(\d{1,2})\s+([A-Za-zÇĞİÖŞÜçğıöşü]+)$/.exec(s);
+  if (m && contextYear) {
+    const month = monthFromName(m[2]);
+    if (month) return { iso: iso(contextYear, month, m[1]), yearInferred: true };
+  }
+  m = /^([A-Za-z]+)\s+(\d{1,2})$/.exec(s);
+  if (m && contextYear) {
+    const month = monthFromName(m[1]);
+    if (month) return { iso: iso(contextYear, month, m[2]), yearInferred: true };
+  }
+
   return undefined;
+}
+
+export function isoDate(v: string | undefined, contextYear?: number): string | undefined {
+  return parseDate(v, contextYear)?.iso;
 }
 
 export const median = (xs: number[]): number | null => {
