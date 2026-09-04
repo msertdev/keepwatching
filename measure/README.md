@@ -13,11 +13,35 @@ src/                ingest, report, apply
 
 ## Run it
 
+Two paths, depending on where the numbers come from.
+
+**Seed / raw platform exports** — drop the untouched exports into
+`data/seed/raw/` (see the README there) and run:
+
+```bash
+npx kw measure seed     # -> data/content-axis-results.yml + report.md
+npx kw site build
+```
+
+Delimiter and decimal separator are sniffed per file, so a semicolon-delimited
+Turkish export with comma decimals reads correctly with no configuration. A
+number that is genuinely ambiguous (`1,234` — 1234 or 1.234?) is left null
+rather than guessed.
+
+**Contributor format measurements** — for videos published with a format from
+this library:
+
 ```bash
 npx kw measure          # ingest CSVs, then build the report
 npx kw measure apply    # write results into formats/*/data.yml
 npx kw site build       # reorder the gallery
 ```
+
+Hand-entered readings go in `measure/manual.yml` and are written with
+`source: manual`, rendered distinctly from exported numbers everywhere they
+appear. They sit alongside the export rather than replacing it: where the two
+disagree, both are kept with their own `measuredAt` and the disagreement is
+recorded as a conflict.
 
 ## The one file you maintain by hand
 
