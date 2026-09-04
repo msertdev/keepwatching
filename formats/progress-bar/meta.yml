@@ -6,6 +6,10 @@ useWhen: >-
   The clip has genuine stages and the last stage is worth reaching.
 avoidWhen: >-
   There are no real stages — a fake progress bar is the fastest way to lose trust.
+sampleContent: placeholder
+# The example copy in format.json is deliberate filler. Replace the `data`
+# block with your own content — and if it contains a real number, add a
+# sources: list and switch sampleContent to "sourced".
 tags:
   - "structure"
   - "milestones"

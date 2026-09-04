@@ -13,9 +13,9 @@
     "glowY": 760
   },
   "data": {
-    "setup": "The most-stolen item in supermarkets is",
-    "answer": "cheese",
-    "closer": "Four times more than alcohol."
+    "setup": "The placeholder answer is",
+    "answer": "hidden",
+    "closer": "Replace this with your supporting line."
   },
   "scene": [
     {

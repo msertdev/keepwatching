@@ -6,6 +6,10 @@ useWhen: >-
   The answer is strange enough to be its own hook.
 avoidWhen: >-
   The answer needs context to even parse — leading with it will read as noise.
+sampleContent: placeholder
+# The example copy in format.json is deliberate filler. Replace the `data`
+# block with your own content — and if it contains a real number, add a
+# sources: list and switch sampleContent to "sourced".
 tags:
   - "inversion"
   - "hook"

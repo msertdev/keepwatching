@@ -6,6 +6,11 @@ useWhen: >-
   You have one number that is large, surprising, and easy to say out loud.
 avoidWhen: >-
   The number needs a paragraph of setup before it means anything.
+sampleContent: sourced
+sources:
+  - title: "BIPM — The International System of Units (SI), 9th edition, 2019"
+    url: https://www.bipm.org/en/publications/si-brochure
+    claim: "The speed of light in vacuum is exactly 299,792,458 m/s; the metre is defined from it."
 tags:
   - "number"
   - "hook"

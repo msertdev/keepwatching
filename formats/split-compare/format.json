@@ -14,8 +14,8 @@
     "glowY": 640
   },
   "data": {
-    "question": "Which uses more water?",
-    "verdict": "One almond costs a gallon. One almond."
+    "question": "Which is the tallest mountain?",
+    "verdict": "Everest is the highest. Mauna Kea is the tallest."
   },
   "scene": [
     {
@@ -46,15 +46,15 @@
         "size": 44
       },
       "left": {
-        "title": "1 cup of coffee",
-        "value": "34 L",
-        "body": "beans, roasting, brewing",
+        "title": "Everest",
+        "value": "8,849 m",
+        "body": "above sea level",
         "color": "#38bdf8"
       },
       "right": {
-        "title": "1 almond",
-        "value": "12 L",
-        "body": "irrigation only",
+        "title": "Mauna Kea",
+        "value": "10,210 m",
+        "body": "from its base on the seafloor",
         "color": "#f472b6"
       }
     },

@@ -13,7 +13,7 @@
     "glowY": 700
   },
   "data": {
-    "title": "What happens 20 minutes after you stop smoking"
+    "title": "Placeholder process, in four stages"
   },
   "scene": [
     {
@@ -70,20 +70,20 @@
       },
       "rows": [
         {
-          "label": "20 minutes",
-          "value": "pulse normal"
+          "label": "Stage 1",
+          "value": "placeholder"
         },
         {
-          "label": "12 hours",
-          "value": "CO cleared"
+          "label": "Stage 2",
+          "value": "placeholder"
         },
         {
-          "label": "2 weeks",
-          "value": "lung function +30%"
+          "label": "Stage 3",
+          "value": "placeholder"
         },
         {
-          "label": "1 year",
-          "value": "heart risk halved"
+          "label": "Stage 4",
+          "value": "placeholder"
         }
       ]
     },
@@ -93,7 +93,7 @@
       "box": {
         "y": 1400
       },
-      "text": "Most people quit before the second row.",
+      "text": "Most people leave before stage two.",
       "font": {
         "size": 52,
         "weight": 700,

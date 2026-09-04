@@ -6,6 +6,10 @@ useWhen: >-
   One word or number is the entire payload.
 avoidWhen: >-
   The hidden thing is guessable in under a second — the format will feel like a trick.
+sampleContent: placeholder
+# The example copy in format.json is deliberate filler. Replace the `data`
+# block with your own content — and if it contains a real number, add a
+# sources: list and switch sampleContent to "sourced".
 tags:
   - "curiosity"
   - "withhold"

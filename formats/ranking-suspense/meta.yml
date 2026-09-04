@@ -6,6 +6,14 @@ useWhen: >-
   Completion and replays matter more than immediate shares.
 avoidWhen: >-
   The audience already knows the likely #1 — the withholding will read as padding.
+sampleContent: sourced
+sources:
+  - title: "Survey Department of Nepal — joint Nepal/China announcement, 8 December 2020"
+    url: https://www.dos.gov.np/
+    claim: "Mount Everest's height is 8,848.86 m above sea level (shown rounded to 8,849 m)."
+  - title: "USGS — Highest mountains of the world"
+    url: https://www.usgs.gov/
+    claim: "K2 8,611 m, Kangchenjunga 8,586 m, Lhotse 8,516 m and Makalu 8,485 m rank 2–5."
 tags:
   - "list"
   - "ranking"

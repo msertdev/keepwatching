@@ -6,6 +6,14 @@ useWhen: >-
   Two options differ on one number the audience will find unintuitive.
 avoidWhen: >-
   The two things differ on many dimensions — a split will oversimplify them.
+sampleContent: sourced
+sources:
+  - title: "Survey Department of Nepal — joint Nepal/China announcement, 8 December 2020"
+    url: https://www.dos.gov.np/
+    claim: "Mount Everest reaches 8,848.86 m above sea level (shown rounded to 8,849 m) — the highest point on land."
+  - title: "USGS — Mauna Kea"
+    url: https://www.usgs.gov/volcanoes/mauna-kea
+    claim: "Mauna Kea rises about 10,210 m from its base on the ocean floor, making it the tallest mountain measured base to summit."
 tags:
   - "versus"
   - "choice"

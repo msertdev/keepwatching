@@ -13,8 +13,8 @@
     "glowY": 760
   },
   "data": {
-    "answer": "Eleven minutes.",
-    "question": "That is how long it takes to fall asleep after you put the phone down — if you put it down.",
+    "answer": "Twelve.",
+    "question": "That is the placeholder answer. Replace both lines with yours.",
     "tag": "the answer"
   },
   "scene": [
@@ -84,7 +84,7 @@
       },
       "text": "{{question}}",
       "font": {
-        "size": 62,
+        "size": 68,
         "weight": 700,
         "color": "fg",
         "lineHeight": 1.2

@@ -13,9 +13,9 @@
     "glowY": 780
   },
   "data": {
-    "question": "How far can you drive on the fuel your car burns idling?",
-    "partial": "About 40 km a year. For most people, more.",
-    "closer": "Idling is the cheapest thing you can stop doing."
+    "question": "A specific, answerable question goes here?",
+    "partial": "A partial answer, about 12,400 units.",
+    "closer": "Replace all three lines with your own."
   },
   "scene": [
     {

@@ -6,6 +6,10 @@ useWhen: >-
   The number counts discrete things a viewer can picture one at a time.
 avoidWhen: >-
   The quantity is continuous (money, time, mass) — the icons will read as decoration.
+sampleContent: placeholder
+# The example copy in format.json is deliberate filler. Replace the `data`
+# block with your own content — and if it contains a real number, add a
+# sources: list and switch sampleContent to "sourced".
 tags:
   - "number"
   - "icons"

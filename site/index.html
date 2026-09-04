@@ -35,16 +35,35 @@
           marked as untested — because hiding them would make the ranking a lie.
         </p>
 
-        <dl class="stats" id="stats">
-          <div><dt>formats</dt><dd data-stat="formats">—</dd></div>
-          <div><dt>measured</dt><dd data-stat="measured">—</dd></div>
-          <div><dt>untested</dt><dd data-stat="untested">—</dd></div>
-          <div><dt>samples (n)</dt><dd data-stat="samples">—</dd></div>
-        </dl>
+        <!-- Two boards, two colours, never one number. The visual separation on
+             this page mirrors the separation in data.yml and in the report. -->
+        <div class="boards">
+          <section class="board board-format">
+            <h2>Format measurement</h2>
+            <p>How a scene structure performs. This board orders the library.</p>
+            <dl class="stats">
+              <div><dt>formats</dt><dd data-stat="formats">—</dd></div>
+              <div><dt>measured</dt><dd data-stat="measured">—</dd></div>
+              <div><dt>untested</dt><dd data-stat="untested">—</dd></div>
+              <div><dt>samples (n)</dt><dd data-stat="samples">—</dd></div>
+            </dl>
+          </section>
+
+          <section class="board board-axis">
+            <h2>Content-axis measurement</h2>
+            <p>How a subject performs. Never averaged into the numbers on the left.</p>
+            <dl class="stats">
+              <div><dt>axes declared</dt><dd data-stat="axesDeclared">—</dd></div>
+              <div><dt>axes measured</dt><dd data-stat="axesMeasured">—</dd></div>
+              <div><dt>samples (n)</dt><dd data-stat="axesSamples">—</dd></div>
+            </dl>
+            <div class="axis-rows" id="axisRows"></div>
+          </section>
+        </div>
 
         <div class="cta">
           <code>npm install &amp;&amp; npm run setup &amp;&amp; npm run render -- stat-counter-rise</code>
-          <a class="btn" href="https://github.com/keepwatching/keepwatching">Repository</a>
+          <a class="btn" href="https://github.com/msertdev/keepwatching">Repository</a>
         </div>
         <p class="honest">
           Sample sizes are printed on every card. Anything under n=5 is a direction, not a result.
@@ -78,7 +97,7 @@
         <p>
           MIT licensed. Seed data is one creator's; the numbers are only worth what the sample
           sizes say they are.
-          <a href="https://github.com/keepwatching/keepwatching/blob/main/CONTRIBUTING.md"
+          <a href="https://github.com/msertdev/keepwatching/blob/main/CONTRIBUTING.md"
             >Send your own measurements →</a
           >
         </p>

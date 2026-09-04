@@ -14,8 +14,8 @@
     "glowY": 700
   },
   "data": {
-    "title": "Where an hour of your day goes",
-    "closer": "Same hour. Different decade."
+    "title": "Placeholder comparison, two lanes",
+    "closer": "Same lane. Different value."
   },
   "scene": [
     {
@@ -39,7 +39,7 @@
         "x": 60,
         "w": 400
       },
-      "text": "2014",
+      "text": "Lane A",
       "font": {
         "size": 46,
         "weight": 700,
@@ -73,7 +73,7 @@
         "x": 84,
         "w": 400
       },
-      "text": "18 min",
+      "text": "12,400",
       "font": {
         "size": 46,
         "weight": 800,
@@ -90,7 +90,7 @@
         "x": 60,
         "w": 400
       },
-      "text": "2024",
+      "text": "Lane B",
       "font": {
         "size": 46,
         "weight": 700,
@@ -124,7 +124,7 @@
         "x": 84,
         "w": 400
       },
-      "text": "53 min",
+      "text": "36,500",
       "font": {
         "size": 46,
         "weight": 800,
