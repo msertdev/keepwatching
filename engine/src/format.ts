@@ -25,7 +25,7 @@ import path from "node:path";
 import crypto from "node:crypto";
 import YAML from "yaml";
 
-import { FORMATS_DIR, ROOT } from "./paths.js";
+import { FORMATS_DIR, ROOT, rel } from "./paths.js";
 import {
   DEFAULT_CANVAS,
   DEFAULT_SAFE,
@@ -752,4 +752,84 @@ export function writeEvidence(dir: string, evidence: Evidence): void {
 
   const body = YAML.stringify({ format, content_axis: contentAxis });
   fs.writeFileSync(path.join(dir, "data.yml"), HEADER + body, "utf8");
+}
+
+/**
+ * The skill file makes factual claims about the library it drives, and prose
+ * does not recompute itself.
+ *
+ * `SKILL.md` told agents "every library format is 10-14 seconds" for a day
+ * after three formats were retimed to 30 and six others moved outside that
+ * range. Nothing failed, because nothing was checking. An agent reading it
+ * would have scaled its timings off a range that no longer existed, and the
+ * repo would have been doing exactly what it exists to stop: publishing a
+ * number with no link back to the thing it describes.
+ *
+ * So the sentence is written in a shape that can be parsed, and this reads it
+ * back against the specs. If it drifts again, `kw check` goes red and says what
+ * the sentence should say instead.
+ */
+export function validateDocs(formats: LoadedFormat[]): string[] {
+  const file = path.join(ROOT, "skills", "keepwatching", "SKILL.md");
+  if (!fs.existsSync(file)) return [`${rel(file)} is missing`];
+
+  const durations = formats.map((f) => f.spec.canvas.durationSec).sort((a, b) => a - b);
+  if (durations.length === 0) return [];
+
+  const min = durations[0];
+  const max = durations[durations.length - 1];
+  const text = fs.readFileSync(file, "utf8");
+  const problems: string[] = [];
+
+  /* "Library formats run **8-30 seconds** (21 of 24 between 8 and 14)." */
+  const claim =
+    /Library formats run \*\*(\d+)[–-](\d+) seconds\*\* \((\d+) of (\d+) between (\d+) and (\d+)\)/.exec(
+      text
+    );
+  if (!claim) {
+    return [
+      "SKILL.md no longer states the library's duration range in a checkable form. " +
+        `Expected a sentence like: Library formats run **${min}–${max} seconds** ` +
+        `(N of ${formats.length} between L and H)`,
+    ];
+  }
+
+  const [, lo, hi, inBand, total, bandLo, bandHi] = claim.map(Number);
+  const actualInBand = durations.filter((d) => d >= bandLo && d <= bandHi).length;
+
+  if (lo !== min || hi !== max) {
+    problems.push(
+      `SKILL.md says formats run ${lo}–${hi}s; they run ${min}–${max}s`
+    );
+  }
+  if (total !== formats.length) {
+    problems.push(`SKILL.md says the library has ${total} formats; it has ${formats.length}`);
+  }
+  if (inBand !== actualInBand) {
+    problems.push(
+      `SKILL.md says ${inBand} formats sit between ${bandLo} and ${bandHi}s; ${actualInBand} do`
+    );
+  }
+
+  /* The same paragraph names the outliers. A format that joins or leaves the
+     longest group has to be named, or the sentence quietly stops being true. */
+  const longest = formats
+    .filter((f) => f.spec.canvas.durationSec === max)
+    .map((f) => f.slug)
+    .sort();
+  /* The list wraps across lines in the file, so every gap around the dashes
+     has to be \s and not a literal space — written as a space, this matched
+     nothing and the check silently passed its own negative test. */
+  const named = (/The three\s+\d+-second ones\s*—\s*([^—]+?)\s*—/.exec(text)?.[1] ?? "")
+    .split(",")
+    .map((s) => s.trim().replace(/`/g, ""))
+    .filter(Boolean)
+    .sort();
+  if (named.length && named.join(",") !== longest.join(",")) {
+    problems.push(
+      `SKILL.md names ${named.join(", ")} as the ${max}s formats; they are ${longest.join(", ")}`
+    );
+  }
+
+  return problems;
 }

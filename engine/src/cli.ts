@@ -28,6 +28,7 @@ import {
   loadFormat,
   validateAxes,
   validateClaims,
+  validateDocs,
   validateMeta,
   validateSpec,
   type LoadedFormat,
@@ -188,6 +189,10 @@ function cmdCheck(): void {
       bad++;
     }
   }
+
+  /* The skill file states the library's duration range as fact. Check it
+     against the specs, or an agent scales its timings off a stale sentence. */
+  errors.push(...validateDocs(loadAllFormats()));
 
   console.log(`\n▸ check`);
   console.log(`  ${slugs.length} formats, ${axes.length} declared content axes`);

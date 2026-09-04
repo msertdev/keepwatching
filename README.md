@@ -230,7 +230,7 @@ bytes are not, and the repo does not pretend otherwise.
 | Guard | What it catches |
 |---|---|
 | `npm test` | 50 unit tests over the CSV/date reader and the age-window rule, run under four timezones — the layer where the bug in "Why this exists" lived |
-| `kw check` | invalid specs, unsourced demo numbers, undeclared content axes, a sourced counter asserting certainty before it lands |
+| `kw check` | invalid specs, unsourced demo numbers, undeclared content axes, a sourced counter asserting certainty before it lands, and a claim in `SKILL.md` that the library no longer satisfies |
 | `kw frame0` | a blank or thin first frame, a poster frame that would sit on a card looking empty, and a stretch of dead air — more than 5s where nothing on screen moves — DOM and pixels, independently, across all 24 |
 | `kw previews check` | a committed preview whose spec has changed since it was rendered |
 | `kw layout` | a control or card row that is off screen or unclickable at 390 / 768 / 1440px |
