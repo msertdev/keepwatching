@@ -226,6 +226,7 @@ bytes are not, and the repo does not pretend otherwise.
 | `kw frame0` | a blank or thin first frame, and a poster frame that would sit on a card looking empty — DOM and pixels, independently, across all 24 |
 | `kw previews check` | a committed preview whose spec has changed since it was rendered |
 | `kw layout` | a control or card row that is off screen or unclickable at 390 / 768 / 1440px |
+| `kw social check` | a social preview card that no longer matches the formats or the layout it was rendered from |
 | `--check-determinism` | frames that depend on seek history rather than on time |
 
 Every one was negative-tested: broken on purpose, watched to fail, then fixed. A
@@ -254,7 +255,8 @@ kw list                      every format, with its sample size
 kw check                     validate every format
 kw frame0 [<slug>]           first-frame and poster-frame checks
 kw previews check            committed previews match their specs
-kw layout                    gallery is reachable at 3 widths
+kw layout [--url=<live>]     gallery is reachable at 3 widths
+kw social [check]            render the social preview card, or verify it is current
 kw render <slug> | --all     render to out/<slug>/
     --check-determinism      re-seek frames out of order and compare hashes
 kw preview <slug>            scrub a format in a browser

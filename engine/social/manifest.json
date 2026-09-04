@@ -1,0 +1,23 @@
+{
+  "generatedAt": "2026-09-04",
+  "note": "Which formats the social card shows and which variant produced each thumbnail. `kw social check` fails when one of them no longer hashes to the variant recorded here, because the shared link would then advertise a clip the repo no longer renders.",
+  "cardSpecHash": "788e7f6db804",
+  "featured": [
+    {
+      "slug": "stat-counter-rise",
+      "variantId": "stat-counter-rise@1.0.0+d69f2377a91d"
+    },
+    {
+      "slug": "ranking-suspense",
+      "variantId": "ranking-suspense@1.0.0+ae5b90a70912"
+    },
+    {
+      "slug": "redacted-reveal",
+      "variantId": "redacted-reveal@1.0.0+60426efe5e63"
+    },
+    {
+      "slug": "countdown-clock",
+      "variantId": "countdown-clock@1.0.0+a36a5c8b26c6"
+    }
+  ]
+}
