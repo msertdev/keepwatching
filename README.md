@@ -204,6 +204,8 @@ npx kw render ranking-suspense --check-determinism
 
 Formats are **data, not code**. Eight element types — `text`, `counter`, `bar`,
 `iconGrid`, `list`, `split`, `card`, `image` — plus keyframe tracks and wipes.
+No format in the library uses `image`; the social card does, which is the only
+thing keeping it exercised.
 
 ### What the hashes do, and what they do not
 

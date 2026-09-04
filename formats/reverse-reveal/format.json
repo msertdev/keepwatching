@@ -1,11 +1,11 @@
 {
   "id": "reverse-reveal",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "canvas": {
     "w": 1080,
     "h": 1920,
     "fps": 30,
-    "durationSec": 11
+    "durationSec": 9
   },
   "theme": {
     "accent": "#a855f7",

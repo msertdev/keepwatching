@@ -30,7 +30,7 @@ Avoid when: The sentence needs a subject line to make sense.
 **`cold-open-question`** — Cold open — question  
 Use when: The question has a specific, checkable answer.  
 Avoid when: The question is rhetorical — an unanswerable question closes the loop instantly.  
-30s · 30fps · `cold-open-question@1.0.0+08bdded218ae`
+30s · 30fps · `cold-open-question@1.1.0+67543bafe51d`
 
 **`pattern-interrupt`** — Pattern interrupt  
 Use when: The common assumption is confidently wrong and you can prove it.  
@@ -72,7 +72,7 @@ Avoid when: The honest answer is 'it depends' — a forced verdict will cost you
 **`countdown-clock`** — Countdown — clock  
 Use when: You have a payoff worth waiting for and the clip is under 15 seconds.  
 Avoid when: There is no payoff at zero — the format writes a cheque the ending must cash.  
-30s · 30fps · `countdown-clock@1.0.0+95ff65c264af`
+30s · 30fps · `countdown-clock@1.1.0+f8fff2bda487`
 
 **`countdown-list`** — Countdown — 5 to 1  
 Use when: You have between three and six discrete items and the last one is the best.  
@@ -107,7 +107,7 @@ Avoid when: The escalation flattens out — the format promises a peak it must d
 Use when: The myth is genuinely widespread and the correction is well-sourced.  
 Avoid when: You cannot source the correction. This format converts confidence into belief.  
 Source: [NASA Earth Observatory — China's Wall Less Great in View from Space](https://earthobservatory.nasa.gov/images/6845/chinas-wall-less-great-in-view-from-space) — The Great Wall of China is generally not visible to the unaided eye from low Earth orbit.  
-9s · 30fps · `myth-vs-fact@1.0.0+4bf4da1aeb35`
+9s · 30fps · `myth-vs-fact@1.1.0+d1d27323d0e3`
 
 **`three-myths`** — Three myths  
 Use when: You have three unrelated corrections in the same subject area.  
@@ -143,7 +143,7 @@ Avoid when: There are no real stages — a fake progress bar is the fastest way 
 Use when: The headline is the ranking itself and you want shares over watch-through.  
 Avoid when: You are optimising for completion — this format gives away its own ending.  
 Source: [NASA — Planetary Fact Sheet](https://nssdc.gsfc.nasa.gov/planetary/factsheet/) — Equatorial diameters: Jupiter 139,820 km, Saturn 116,460 km, Uranus 50,724 km, Neptune 49,244 km, Earth 12,742 km.  
-9s · 30fps · `ranking-reveal@1.0.0+ae4dbc442feb`
+9s · 30fps · `ranking-reveal@1.1.0+9b3fb3432d72`
 
 **`ranking-suspense`** — Ranking — bottom up  
 Use when: Completion and replays matter more than immediate shares.  
@@ -178,7 +178,7 @@ Avoid when: The hidden thing is guessable in under a second — the format will 
 **`reverse-reveal`** — Reverse reveal  
 Use when: The answer is strange enough to be its own hook.  
 Avoid when: The answer needs context to even parse — leading with it will read as noise.  
-11s · 30fps · `reverse-reveal@1.0.0+e70300261244`
+9s · 30fps · `reverse-reveal@1.1.0+3d4013c508f9`
 
 ## reverse
 
@@ -202,13 +202,13 @@ Avoid when: The clip has a real ending — hiding it will frustrate rather than 
 **`stat-counter-context`** — Stat counter — context flip  
 Use when: The number is meaningless without a comparison, and the comparison is the actual payload.  
 Avoid when: The number already carries its own meaning — the pause will feel like stalling.  
-8s · 30fps · `stat-counter-context@1.0.0+a8078c9c86bd`
+8s · 30fps · `stat-counter-context@1.1.0+8a70792a7743`
 
 **`stat-counter-rise`** — Stat counter — rise  
 Use when: You have one number that is large, surprising, and easy to say out loud.  
 Avoid when: The number needs a paragraph of setup before it means anything.  
 Source: [BIPM — The International System of Units (SI), 9th edition, 2019](https://www.bipm.org/en/publications/si-brochure) — The speed of light in vacuum is exactly 299,792,458 m/s; the metre is defined from it.  
-30s · 30fps · `stat-counter-rise@1.0.0+2b1a816359e9`
+30s · 30fps · `stat-counter-rise@1.1.0+a8edda3fe2c1`
 
 **`stat-counter-stack`** — Stat counter — stacking proof  
 Use when: The number counts discrete things a viewer can picture one at a time.  
