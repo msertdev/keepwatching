@@ -35,14 +35,17 @@ ffprobe -show_entries format_tags=comment out/my-clip/master.mp4
 `measure/mapping.csv` — the join table, and the only file you maintain by hand:
 
 ```csv
-platform,external_id,variant_id,published_at
-youtube,dQw4w9WgXcQ,stat-counter-rise@1.0.0+c91af1b2e218,2026-03-02T09:00:00Z
-tiktok,7341234567890123456,cold-open-line@1.0.0+385dab9ddcbe,2026-03-02T09:05:00Z
+platform,external_id,variant_id,published_at,content_axis
+youtube,dQw4w9WgXcQ,stat-counter-rise@1.0.0+c91af1b2e218,2026-03-02T09:00:00Z,personal-body
+tiktok,7341234567890123456,cold-open-line@1.0.0+385dab9ddcbe,2026-03-02T09:05:00Z,corporate-money
 ```
 
 - `external_id` — the YouTube video id, or the numeric id from a TikTok URL.
 - `published_at` — ISO 8601. Used for the views-per-hour figure; leave it blank
   and that column stays empty rather than guessing.
+- `content_axis` — optional. Names an axis from `data/content-axes.yml`. This is
+  what feeds the second leaderboard; an id that is not declared there is listed
+  as unknown and ignored, never silently pooled into another axis.
 
 Write the row at upload time. Reconstructing it a month later from titles is how
 measurement loops die.
@@ -100,7 +103,38 @@ rests on that distinction.
 | `hook3s` | Fraction still watching at 3 seconds. From the retention curve. |
 | `avgViewedPct` | Mean fraction of the clip watched. From the platform, or the area under the retention curve. |
 | `viewsPerHour` | Median views per hour over the first 24h. A velocity proxy, heavily confounded by follower count and posting time. |
-| `vsBaselinePct` | Percentage points against the mean of all measured formats in this repo. |
+| `vsBaselinePct` | Percentage points against the mean of all measured **formats** in this repo. |
+
+And, in the separate `content_axis` block:
+
+| Field | Definition |
+|---|---|
+| `content_axis.n` | Published videos with this format that carried an axis label. |
+| `axes[].n` | Videos on that specific axis, with this format. |
+| `axes[].vsAxisBaselinePct` | Percentage points against the mean of all measured **axes**. Never against formats. |
+
+## The two leaderboards
+
+`kw measure report` produces two tables, and they are not interchangeable:
+
+1. **Which format won** — a claim about scene structure. This is the board that
+   orders the library.
+2. **Which content axis won** — a claim about subject matter. Compared only
+   against other axes, with its own baseline.
+
+The same published video contributes a row to both. That is why they are never
+merged: a blended figure would answer neither question. The types in
+`engine/src/format.ts` keep them in separate structures precisely so no code
+path can average them by accident.
+
+Read the **carried by** column in table 2. An axis carried by only one format is
+the same set of videos as that format's result, wearing a second label — report
+it as one finding with two possible explanations, not as two findings.
+
+To actually isolate one from the other:
+
+- **Isolate a format:** hold the subject constant, change only the format.
+- **Isolate an axis:** hold the format constant, change only the subject.
 
 ## What these numbers cannot tell you
 
@@ -108,7 +142,8 @@ Be blunt about this when reporting results:
 
 - **Topic and format are confounded.** A format that only ever ran on good topics
   will look like a good format. Run the same content through two formats to
-  separate them.
+  separate them — and label the axis so the confound is visible rather than
+  invisible.
 - **Posting time, follower count and platform push dominate `viewsPerHour`.**
   Treat retention as the signal and velocity as a hint.
 - **Small n is small n.** Under 5 samples is a direction. Under 3 is an anecdote.

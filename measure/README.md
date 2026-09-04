@@ -24,10 +24,16 @@ npx kw site build       # reorder the gallery
 `mapping.csv` — write the row at upload time, not a month later:
 
 ```csv
-platform,external_id,variant_id,published_at
-youtube,dQw4w9WgXcQ,stat-counter-rise@1.0.0+c91af1b2e218,2026-03-02T09:00:00Z
-tiktok,7341234567890123456,cold-open-line@1.0.0+385dab9ddcbe,2026-03-02T09:05:00Z
+platform,external_id,variant_id,published_at,content_axis
+youtube,dQw4w9WgXcQ,stat-counter-rise@1.0.0+c91af1b2e218,2026-03-02T09:00:00Z,personal-body
+tiktok,7341234567890123456,cold-open-line@1.0.0+385dab9ddcbe,2026-03-02T09:05:00Z,corporate-money
 ```
+
+`content_axis` is optional and names an axis declared in
+[`../data/content-axes.yml`](../data/content-axes.yml). It produces a **second,
+separate** leaderboard — how the subject performed, as opposed to how the scene
+structure performed. The two are never averaged; see section 2 of `report.md`.
+An unrecognised axis id is listed as unknown and ignored, never silently pooled.
 
 Get the variant id from `out/<slug>/variant.json`, or from the MP4 itself:
 

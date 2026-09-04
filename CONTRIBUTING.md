@@ -20,7 +20,7 @@ npx kw variant ranking-suspense
 # ranking-suspense@1.0.0+7101b32c10da
 
 # 2. One line in measure/mapping.csv, written at upload time
-#    platform,external_id,variant_id,published_at
+#    platform,external_id,variant_id,published_at,content_axis
 
 # 3. Wait 72 hours. Early numbers are platform push, not format quality.
 
@@ -38,6 +38,11 @@ git commit -m "measure: 6 samples across ranking-*"
 
 - **The `data.yml` diffs**, written by `kw measure apply` — not by hand.
 - **The `mapping.csv` rows**, so the join is auditable.
+- **Which board the result belongs to.** A `format` result is a claim about scene
+  structure; a `content_axis` result is a claim about subject matter. They live in
+  separate blocks and are never averaged. If your videos carried a `content_axis`
+  label, say whether each axis ran across more than one format — an axis carried
+  by a single format is that format's result wearing a second label.
 - **A note in the PR describing the confound**: your follower count band, the
   platform, roughly when you posted, and whether the topics differed between
   variants. Every number here is confounded by something; saying which one is
@@ -54,6 +59,9 @@ git commit -m "measure: 6 samples across ranking-*"
 - **Samples under 3** submitted as a result. Send them anyway — they will be
   merged and shown as `n: 2`, which is honest — just do not describe them as
   a finding.
+- **A blended format/axis number.** "My personal-body countdowns hit 68%" is one
+  number for two claims. Report the two separately, or report it as a single
+  confounded observation and say so.
 
 Small n is welcome. Overclaiming is not.
 
@@ -80,6 +88,12 @@ npx kw preview my-format
 npx kw render my-format --check-determinism
 npx kw check
 ```
+
+Your `meta.yml` must declare `sampleContent: placeholder` (obvious filler — the
+default and usually the right call) or `sampleContent: sourced` with a `sources:`
+list giving a URL and the exact claim each source backs. `kw check` fails without
+it, and CI runs `kw check`. A library about honest measurement does not ship
+unattributed numbers in its own demo copy.
 
 Full guidance: [`references/authoring.md`](skills/keepwatching/references/authoring.md).
 
