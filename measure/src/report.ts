@@ -1,19 +1,30 @@
 /**
- * Report: normalised samples + variant mapping -> "which format won".
+ * Report: normalised samples + variant mapping -> "which format won", and,
+ * separately, "which content axis won".
  *
  * The join is the whole point. A published video means nothing on its own; it
  * means something once it is attached to the exact variant id that produced it.
  * Videos with no mapping row are reported as unmatched, never quietly averaged in.
+ *
+ * The two leaderboards are computed independently and compared against their own
+ * baselines. A format number is never mixed with an axis number, because one
+ * video contributes a row to both and averaging them would answer neither
+ * question. See engine/src/format.ts for the same separation at the type level.
  */
 import fs from "node:fs";
 import path from "node:path";
 
-import { MEASURE_DIR, ROOT, rel } from "../../engine/src/paths.js";
+import { MEASURE_DIR, rel } from "../../engine/src/paths.js";
 import {
   loadAllFormats,
+  loadContentAxes,
   parseVariantId,
-  writeMeasurement,
-  type Measurement,
+  readEvidence,
+  writeEvidence,
+  type AxisResult,
+  type ContentAxis,
+  type FormatMeasurement,
+  type SampleRef,
 } from "../../engine/src/format.js";
 import { parseCsv, pick, mean, median } from "./csv.js";
 import { SAMPLES_FILE, type Sample } from "./ingest.js";
@@ -27,6 +38,13 @@ export interface MappingRow {
   externalId: string;
   variantId: string;
   publishedAt?: string;
+  /** Optional. Must match an id in data/content-axes.yml when present. */
+  contentAxis?: string;
+}
+
+interface Joined {
+  sample: Sample;
+  mapping: MappingRow;
 }
 
 export interface FormatResult {
@@ -38,15 +56,37 @@ export interface FormatResult {
   avgViewedPct: number | null;
   viewsPerHour: number | null;
   retention: Array<{ t: number; p: number }>;
-  samples: Array<{ platform: string; externalId: string; variantId: string; publishedAt?: string }>;
+  samples: SampleRef[];
+}
+
+export interface AxisReportRow {
+  axis: string;
+  name: string;
+  n: number;
+  hook3s: number | null;
+  avgViewedPct: number | null;
+  viewsPerHour: number | null;
+  retention: Array<{ t: number; p: number }>;
+  /** Which formats carried this axis, so a reader can see the confound. */
+  formats: string[];
+  samples: SampleRef[];
 }
 
 export interface Report {
   generatedAt: string;
-  baseline: { avgViewedPct: number | null; source: string };
-  results: FormatResult[];
+  formats: {
+    baseline: { avgViewedPct: number | null; source: string };
+    results: FormatResult[];
+  };
+  contentAxes: {
+    baseline: { avgViewedPct: number | null; source: string };
+    results: AxisReportRow[];
+    /** Per format, per axis — what `kw measure apply` writes into data.yml. */
+    byFormat: Record<string, AxisResult[]>;
+  };
   unmatched: Array<{ platform: string; externalId: string; title?: string }>;
   unmappedVariants: string[];
+  unknownAxes: string[];
 }
 
 export function readMapping(): MappingRow[] {
@@ -57,9 +97,12 @@ export function readMapping(): MappingRow[] {
       externalId: pick(row, "external_id", "externalid", "video id", "id") ?? "",
       variantId: pick(row, "variant_id", "variantid", "variant") ?? "",
       publishedAt: pick(row, "published_at", "publishedat", "date"),
+      contentAxis: pick(row, "content_axis", "contentaxis", "axis"),
     }))
     .filter((r) => r.externalId && r.variantId);
 }
+
+/* ------------------------------------------------------------- statistics */
 
 /** Resample a set of curves onto a shared 0.5 s grid and average them. */
 function averageCurves(curves: Array<Array<{ t: number; p: number }>>, durationSec: number) {
@@ -93,24 +136,62 @@ function hoursSince(iso: string | undefined): number | null {
   return h > 0 ? h : null;
 }
 
+const round = (v: number | null, places = 4): number | null =>
+  v === null ? null : Number(v.toFixed(places));
+
+/** Everything a leaderboard row needs, computed the same way for both boards. */
+function aggregate(rows: Joined[], durationSec: number) {
+  return {
+    n: rows.length,
+    hook3s: round(mean(rows.map((r) => r.sample.hook3s ?? NaN).filter(Number.isFinite))),
+    avgViewedPct: round(mean(rows.map((r) => r.sample.avgViewedPct ?? NaN).filter(Number.isFinite))),
+    viewsPerHour: round(
+      median(
+        rows
+          .map((r) => {
+            const h = hoursSince(r.mapping.publishedAt ?? r.sample.publishedAt);
+            return h && r.sample.views ? r.sample.views / Math.min(h, 24) : NaN;
+          })
+          .filter(Number.isFinite)
+      ),
+      1
+    ),
+    retention: averageCurves(
+      rows.map((r) => r.sample.retention ?? []),
+      durationSec
+    ),
+    samples: rows.map((r) => ({
+      platform: r.sample.platform,
+      externalId: r.sample.externalId,
+      variantId: r.mapping.variantId,
+      publishedAt: r.mapping.publishedAt ?? r.sample.publishedAt,
+    })),
+  };
+}
+
+/* ------------------------------------------------------------------ build */
+
 export function buildReport(): Report {
   const samples: Sample[] = fs.existsSync(SAMPLES_FILE)
     ? JSON.parse(fs.readFileSync(SAMPLES_FILE, "utf8"))
     : [];
   const mapping = readMapping();
   const formats = loadAllFormats();
+  const axes = loadContentAxes();
+  const axisById = new Map(axes.map((a) => [a.id, a]));
 
-  const byExternal = new Map(mapping.map((m) => [`${m.externalId}`, m]));
-  const bySlug = new Map<string, { fmt: (typeof formats)[number]; rows: Array<{ s: Sample; m: MappingRow }> }>();
+  const byExternal = new Map(mapping.map((m) => [m.externalId, m]));
+  const bySlug = new Map<string, { fmt: (typeof formats)[number]; rows: Joined[] }>();
   for (const f of formats) bySlug.set(f.slug, { fmt: f, rows: [] });
 
   const unmatched: Report["unmatched"] = [];
   const unmappedVariants = new Set<string>();
+  const unknownAxes = new Set<string>();
 
-  for (const s of samples) {
-    const m = byExternal.get(s.externalId);
+  for (const sample of samples) {
+    const m = byExternal.get(sample.externalId);
     if (!m) {
-      unmatched.push({ platform: s.platform, externalId: s.externalId, title: s.title });
+      unmatched.push({ platform: sample.platform, externalId: sample.externalId, title: sample.title });
       continue;
     }
     const parsed = parseVariantId(m.variantId);
@@ -118,115 +199,228 @@ export function buildReport(): Report {
       unmappedVariants.add(m.variantId);
       continue;
     }
-    bySlug.get(parsed.slug)!.rows.push({ s, m });
+    if (m.contentAxis && !axisById.has(m.contentAxis)) unknownAxes.add(m.contentAxis);
+    bySlug.get(parsed.slug)!.rows.push({ sample, mapping: m });
   }
 
-  const results: FormatResult[] = [];
+  /* --- leaderboard 1: formats --- */
+  const formatResults: FormatResult[] = [];
   for (const [slug, { fmt, rows }] of bySlug) {
     if (rows.length === 0) continue;
-    const avg = mean(rows.map((r) => r.s.avgViewedPct ?? NaN).filter(Number.isFinite));
-    const hook = mean(rows.map((r) => r.s.hook3s ?? NaN).filter(Number.isFinite));
-    const vph = median(
-      rows
-        .map((r) => {
-          const h = hoursSince(r.m.publishedAt ?? r.s.publishedAt);
-          return h && r.s.views ? r.s.views / Math.min(h, 24) : NaN;
-        })
-        .filter(Number.isFinite)
-    );
-    results.push({
+    const agg = aggregate(rows, fmt.spec.canvas.durationSec);
+    formatResults.push({
       slug,
       name: fmt.meta.name || slug,
-      n: rows.length,
-      platforms: [...new Set(rows.map((r) => r.s.platform))].sort(),
-      hook3s: hook === null ? null : Number(hook.toFixed(4)),
-      avgViewedPct: avg === null ? null : Number(avg.toFixed(4)),
-      viewsPerHour: vph === null ? null : Number(vph.toFixed(1)),
-      retention: averageCurves(
-        rows.map((r) => r.s.retention ?? []),
-        fmt.spec.canvas.durationSec
-      ),
-      samples: rows.map((r) => ({
-        platform: r.s.platform,
-        externalId: r.s.externalId,
-        variantId: r.m.variantId,
-        publishedAt: r.m.publishedAt ?? r.s.publishedAt,
-      })),
+      platforms: [...new Set(rows.map((r) => r.sample.platform))].sort(),
+      ...agg,
     });
   }
+  formatResults.sort((a, b) => (b.avgViewedPct ?? -1) - (a.avgViewedPct ?? -1));
 
-  results.sort((a, b) => (b.avgViewedPct ?? -1) - (a.avgViewedPct ?? -1));
+  /* --- leaderboard 2: content axes, computed from the same joined rows but
+         never mixed with the numbers above --- */
+  const axisRows = new Map<string, Joined[]>();
+  const axisFormats = new Map<string, Set<string>>();
+  const byFormatAxis = new Map<string, Map<string, Joined[]>>();
 
-  /* Baseline: the mean across every measured format, weighted by nothing at all.
-     A single format cannot be its own baseline, so with one format measured the
-     comparison column stays empty rather than reading 0.0. */
-  const baselineValue =
-    results.length > 1 ? mean(results.map((r) => r.avgViewedPct ?? NaN).filter(Number.isFinite)) : null;
+  for (const [slug, { rows }] of bySlug) {
+    for (const row of rows) {
+      const axis = row.mapping.contentAxis;
+      if (!axis || !axisById.has(axis)) continue;
+      if (!axisRows.has(axis)) axisRows.set(axis, []);
+      axisRows.get(axis)!.push(row);
+      if (!axisFormats.has(axis)) axisFormats.set(axis, new Set());
+      axisFormats.get(axis)!.add(slug);
+      if (!byFormatAxis.has(slug)) byFormatAxis.set(slug, new Map());
+      const inner = byFormatAxis.get(slug)!;
+      if (!inner.has(axis)) inner.set(axis, []);
+      inner.get(axis)!.push(row);
+    }
+  }
+
+  const axisResults: AxisReportRow[] = [];
+  for (const [axis, rows] of axisRows) {
+    /* Axis curves span formats of different lengths; resample against the
+       longest so a short clip does not truncate the average. */
+    const longest = Math.max(
+      ...rows.map((r) => {
+        const p = parseVariantId(r.mapping.variantId);
+        return p ? bySlug.get(p.slug)?.fmt.spec.canvas.durationSec ?? 0 : 0;
+      }),
+      1
+    );
+    axisResults.push({
+      axis,
+      name: axisById.get(axis)?.name ?? axis,
+      formats: [...(axisFormats.get(axis) ?? [])].sort(),
+      ...aggregate(rows, longest),
+    });
+  }
+  axisResults.sort((a, b) => (b.avgViewedPct ?? -1) - (a.avgViewedPct ?? -1));
+
+  /* Each board gets its own baseline. Crossing them would be the exact mistake
+     this whole separation exists to prevent. */
+  const formatBaseline =
+    formatResults.length > 1
+      ? round(mean(formatResults.map((r) => r.avgViewedPct ?? NaN).filter(Number.isFinite)))
+      : null;
+  const axisBaseline =
+    axisResults.length > 1
+      ? round(mean(axisResults.map((r) => r.avgViewedPct ?? NaN).filter(Number.isFinite)))
+      : null;
+
+  const byFormat: Record<string, AxisResult[]> = {};
+  for (const [slug, inner] of byFormatAxis) {
+    byFormat[slug] = [...inner]
+      .map(([axis, rows]) => {
+        const durationSec = bySlug.get(slug)!.fmt.spec.canvas.durationSec;
+        const agg = aggregate(rows, durationSec);
+        return {
+          axis,
+          n: agg.n,
+          hook3s: agg.hook3s,
+          avgViewedPct: agg.avgViewedPct,
+          viewsPerHour: agg.viewsPerHour,
+          vsAxisBaselinePct:
+            axisBaseline !== null && agg.avgViewedPct !== null
+              ? Number(((agg.avgViewedPct - axisBaseline) * 100).toFixed(2))
+              : null,
+          retention: agg.retention,
+          samples: agg.samples,
+        };
+      })
+      .sort((a, b) => (b.avgViewedPct ?? -1) - (a.avgViewedPct ?? -1));
+  }
 
   const report: Report = {
     generatedAt: new Date().toISOString(),
-    baseline: {
-      avgViewedPct: baselineValue === null ? null : Number(baselineValue.toFixed(4)),
-      source: results.length > 1 ? `mean of ${results.length} measured formats` : "not enough data",
+    formats: {
+      baseline: {
+        avgViewedPct: formatBaseline,
+        source:
+          formatResults.length > 1
+            ? `mean of ${formatResults.length} measured formats`
+            : "not enough data",
+      },
+      results: formatResults,
     },
-    results,
+    contentAxes: {
+      baseline: {
+        avgViewedPct: axisBaseline,
+        source:
+          axisResults.length > 1 ? `mean of ${axisResults.length} measured axes` : "not enough data",
+      },
+      results: axisResults,
+      byFormat,
+    },
     unmatched,
     unmappedVariants: [...unmappedVariants].sort(),
+    unknownAxes: [...unknownAxes].sort(),
   };
 
   fs.mkdirSync(MEASURE_DIR, { recursive: true });
   fs.writeFileSync(REPORT_JSON, JSON.stringify(report, null, 2) + "\n", "utf8");
-  fs.writeFileSync(REPORT_MD, renderMarkdown(report), "utf8");
+  fs.writeFileSync(REPORT_MD, renderMarkdown(report, axes), "utf8");
 
   console.log(`\n▸ report`);
   console.log(`  ${samples.length} samples, ${mapping.length} mapping rows`);
-  console.log(`  ${results.length} formats with at least one measurement`);
+  console.log(`  formats:      ${formatResults.length} with at least one measurement`);
+  console.log(`  content axes: ${axisResults.length} with at least one measurement`);
   if (unmatched.length) console.log(`  ${unmatched.length} published videos have no mapping row`);
   if (report.unmappedVariants.length) {
-    console.log(`  ${report.unmappedVariants.length} mapped variant id(s) match no format in this repo`);
+    console.log(`  ${report.unmappedVariants.length} mapped variant id(s) match no format here`);
+  }
+  if (report.unknownAxes.length) {
+    console.log(`  ${report.unknownAxes.length} unknown content axis id(s) — add to data/content-axes.yml`);
   }
   console.log(`  -> ${rel(REPORT_MD)}\n`);
 
   return report;
 }
 
+/* --------------------------------------------------------------- markdown */
+
 const pct = (v: number | null | undefined): string =>
   v === null || v === undefined ? "—" : `${(v * 100).toFixed(1)}%`;
 
-function renderMarkdown(r: Report): string {
-  const lines: string[] = [];
-  lines.push("# Which format won\n");
-  lines.push(`Generated ${r.generatedAt}. Regenerate with \`kw measure report\`.\n`);
+const delta = (v: number | null, baseline: number | null): string =>
+  baseline === null || v === null ? "—" : `${((v - baseline) * 100).toFixed(1)} pp`;
 
-  if (r.results.length === 0) {
+function renderMarkdown(r: Report, axes: ContentAxis[]): string {
+  const lines: string[] = [];
+  lines.push("# Measurement report\n");
+  lines.push(`Generated ${r.generatedAt}. Regenerate with \`kw measure report\`.\n`);
+  lines.push(
+    "Two independent leaderboards. **A format number and an axis number are never " +
+      "averaged together** — one published video contributes a row to both, so combining " +
+      "them would produce a figure that answers neither question.\n"
+  );
+
+  /* --- formats --- */
+  lines.push("## 1. Which format won\n");
+  lines.push("_A claim about scene structure. This is the board that orders the library._\n");
+
+  if (r.formats.results.length === 0) {
     lines.push("No format has a measurement yet.\n");
     lines.push("1. Render a format and note its `variantId` from `out/<slug>/variant.json`.");
     lines.push("2. Publish it, then add a row to `measure/mapping.csv`.");
     lines.push("3. Export analytics CSVs into `measure/inbox/` and run `kw measure`.\n");
   } else {
-    lines.push(`Baseline: ${pct(r.baseline.avgViewedPct)} (${r.baseline.source}).\n`);
-    lines.push("| # | Format | n | Avg % viewed | vs baseline | Hook @3s | Views/hr |");
-    lines.push("|---|--------|---|--------------|-------------|----------|----------|");
-    r.results.forEach((res, i) => {
-      const delta =
-        r.baseline.avgViewedPct !== null && res.avgViewedPct !== null
-          ? `${((res.avgViewedPct - r.baseline.avgViewedPct) * 100).toFixed(1)} pp`
-          : "—";
+    lines.push(`Baseline: ${pct(r.formats.baseline.avgViewedPct)} (${r.formats.baseline.source}).\n`);
+    lines.push("| # | Format | n | Avg % viewed | vs format baseline | Hook @3s | Views/hr |");
+    lines.push("|---|--------|---|--------------|--------------------|----------|----------|");
+    r.formats.results.forEach((res, i) => {
       lines.push(
-        `| ${i + 1} | \`${res.slug}\` | ${res.n} | ${pct(res.avgViewedPct)} | ${delta} | ` +
+        `| ${i + 1} | \`${res.slug}\` | ${res.n} | ${pct(res.avgViewedPct)} | ` +
+          `${delta(res.avgViewedPct, r.formats.baseline.avgViewedPct)} | ` +
           `${pct(res.hook3s)} | ${res.viewsPerHour ?? "—"} |`
       );
     });
     lines.push("");
+  }
+
+  /* --- content axes --- */
+  lines.push("## 2. Which content axis won\n");
+  lines.push(
+    "_A claim about subject matter, not about scene structure. Compared only against " +
+      "other axes._\n"
+  );
+
+  if (r.contentAxes.results.length === 0) {
+    lines.push("No content axis has a measurement yet.\n");
     lines.push(
-      "Small n is small n. Two videos is an anecdote; treat anything under n=5 as a direction, not a result.\n"
+      "Add a `content_axis` column to `measure/mapping.csv` naming an axis from " +
+        "`data/content-axes.yml`, then re-run `kw measure`.\n"
+    );
+  } else {
+    lines.push(
+      `Baseline: ${pct(r.contentAxes.baseline.avgViewedPct)} (${r.contentAxes.baseline.source}).\n`
+    );
+    lines.push("| # | Content axis | n | Avg % viewed | vs axis baseline | Hook @3s | Carried by |");
+    lines.push("|---|--------------|---|--------------|------------------|----------|------------|");
+    r.contentAxes.results.forEach((res, i) => {
+      lines.push(
+        `| ${i + 1} | ${res.name} (\`${res.axis}\`) | ${res.n} | ${pct(res.avgViewedPct)} | ` +
+          `${delta(res.avgViewedPct, r.contentAxes.baseline.avgViewedPct)} | ` +
+          `${pct(res.hook3s)} | ${res.formats.map((f) => `\`${f}\``).join(", ") || "—"} |`
+      );
+    });
+    lines.push("");
+    lines.push(
+      "**Read the last column.** If an axis was only ever carried by one format, that axis " +
+        "result and that format result are the same videos wearing two labels, and neither " +
+        "is isolated. To separate them, run the same subject through two formats, or the " +
+        "same format across two subjects.\n"
     );
   }
 
+  lines.push("Small n is small n. Two videos is an anecdote; treat anything under n=5 as a direction.\n");
+
+  /* --- hygiene --- */
   if (r.unmatched.length) {
     lines.push("## Published but unmapped\n");
-    lines.push("These videos were in the analytics export but have no row in `measure/mapping.csv`,");
-    lines.push("so they were excluded from every number above.\n");
+    lines.push("In the analytics export, but with no row in `measure/mapping.csv`, so excluded");
+    lines.push("from every number above.\n");
     for (const u of r.unmatched.slice(0, 40)) {
       lines.push(`- \`${u.platform}:${u.externalId}\`${u.title ? ` — ${u.title}` : ""}`);
     }
@@ -240,6 +434,13 @@ function renderMarkdown(r: Report): string {
     lines.push("");
   }
 
+  if (r.unknownAxes.length) {
+    lines.push("## Unknown content axes\n");
+    lines.push("Named in `mapping.csv` but not declared in `data/content-axes.yml`, so ignored:\n");
+    for (const a of r.unknownAxes) lines.push(`- \`${a}\``);
+    lines.push(`\nDeclared axes: ${axes.map((a) => `\`${a.id}\``).join(", ") || "none"}\n`);
+  }
+
   lines.push("---\n");
   lines.push("Write these results into the format library with `kw measure apply`.\n");
   return lines.join("\n");
@@ -251,32 +452,58 @@ export function applyReport(report?: Report): void {
   const r = report ?? (JSON.parse(fs.readFileSync(REPORT_JSON, "utf8")) as Report);
   const formats = new Map(loadAllFormats().map((f) => [f.slug, f]));
   const today = new Date().toISOString().slice(0, 10);
-  let written = 0;
 
-  for (const res of r.results) {
-    const fmt = formats.get(res.slug);
+  /* Every format that gained a measurement on either board is rewritten once,
+     with both blocks, so the two can never drift out of step. */
+  const touched = new Set([
+    ...r.formats.results.map((x) => x.slug),
+    ...Object.keys(r.contentAxes.byFormat),
+  ]);
+
+  let written = 0;
+  for (const slug of touched) {
+    const fmt = formats.get(slug);
     if (!fmt) continue;
-    const measurement: Measurement = {
-      n: res.n,
-      status: "measured",
-      platforms: res.platforms,
-      hook3s: res.hook3s,
-      avgViewedPct: res.avgViewedPct,
-      viewsPerHour: res.viewsPerHour,
-      vsBaselinePct:
-        r.baseline.avgViewedPct !== null && res.avgViewedPct !== null
-          ? Number(((res.avgViewedPct - r.baseline.avgViewedPct) * 100).toFixed(2))
-          : null,
-      retention: res.retention,
-      notes: fmt.data.notes,
-      updated: today,
-      samples: res.samples,
-    };
-    writeMeasurement(fmt.dir, measurement);
+
+    const existing = readEvidence(fmt.dir);
+    const res = r.formats.results.find((x) => x.slug === slug);
+
+    const formatBlock: FormatMeasurement = res
+      ? {
+          n: res.n,
+          status: "measured",
+          platforms: res.platforms,
+          hook3s: res.hook3s,
+          avgViewedPct: res.avgViewedPct,
+          viewsPerHour: res.viewsPerHour,
+          vsBaselinePct:
+            r.formats.baseline.avgViewedPct !== null && res.avgViewedPct !== null
+              ? Number(((res.avgViewedPct - r.formats.baseline.avgViewedPct) * 100).toFixed(2))
+              : null,
+          retention: res.retention,
+          notes: existing.format.notes,
+          updated: today,
+          samples: res.samples,
+        }
+      : existing.format;
+
+    const axisRows = r.contentAxes.byFormat[slug] ?? existing.contentAxis.axes;
+
+    writeEvidence(fmt.dir, {
+      format: formatBlock,
+      contentAxis: {
+        n: axisRows.reduce((s, a) => s + a.n, 0),
+        status: axisRows.length ? "measured" : "untested",
+        axes: axisRows,
+        notes: existing.contentAxis.notes,
+        updated: axisRows.length ? today : existing.contentAxis.updated,
+      },
+    });
     written++;
   }
 
   console.log(`\n▸ apply`);
   console.log(`  ${written} data.yml file(s) updated from ${rel(REPORT_JSON)}`);
+  console.log(`  format and content_axis blocks written separately`);
   console.log(`  run \`kw site build\` to reorder the gallery\n`);
 }

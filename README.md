@@ -4,7 +4,7 @@
 
 ### A measured retention database for short-form video formats. That renders.
 
-**[Browse the gallery →](https://keepwatching.github.io/keepwatching/)**
+**[Browse the gallery →](https://msertdev.github.io/keepwatching/)**
 
 </div>
 
@@ -26,7 +26,7 @@ column empty, because the alternative is publishing numbers nobody can check.
 Every format is marked `n: 0 · untested` until a CSV says otherwise.
 
 ```bash
-git clone https://github.com/keepwatching/keepwatching && cd keepwatching
+git clone https://github.com/msertdev/keepwatching && cd keepwatching
 npm install && npm run setup
 npm run render -- stat-counter-rise      # -> out/stat-counter-rise/master.mp4
 ```

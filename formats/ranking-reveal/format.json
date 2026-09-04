@@ -13,7 +13,7 @@
     "glowY": 560
   },
   "data": {
-    "title": "Most-used apps, by hours per week"
+    "title": "Placeholder ranking, by units per week"
   },
   "scene": [
     {
@@ -48,28 +48,28 @@
       },
       "rows": [
         {
-          "label": "Short video",
-          "value": "14.2h",
+          "label": "Item A",
+          "value": "14,200",
           "weight": 1
         },
         {
-          "label": "Messaging",
-          "value": "9.7h",
+          "label": "Item B",
+          "value": "9,700",
           "weight": 0.68
         },
         {
-          "label": "Browser",
-          "value": "6.1h",
+          "label": "Item C",
+          "value": "6,100",
           "weight": 0.43
         },
         {
-          "label": "Music",
-          "value": "4.8h",
+          "label": "Item D",
+          "value": "4,800",
           "weight": 0.34
         },
         {
-          "label": "Email",
-          "value": "2.3h",
+          "label": "Item E",
+          "value": "2,300",
           "weight": 0.16
         }
       ]

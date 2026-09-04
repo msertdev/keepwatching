@@ -13,7 +13,7 @@
     "glowY": 600
   },
   "data": {
-    "title": "Password habits, tiered"
+    "title": "Placeholder options, tiered"
   },
   "scene": [
     {
@@ -47,35 +47,35 @@
       },
       "rows": [
         {
-          "label": "Passkeys everywhere",
+          "label": "Option A",
           "badge": "S",
           "value": "",
           "weight": 1,
           "color": "#22c55e"
         },
         {
-          "label": "Manager + 2FA app",
+          "label": "Option B",
           "badge": "A",
           "value": "",
           "weight": 0.82,
           "color": "#84cc16"
         },
         {
-          "label": "Manager, SMS 2FA",
+          "label": "Option C",
           "badge": "B",
           "value": "",
           "weight": 0.6,
           "color": "#eab308"
         },
         {
-          "label": "Same password, +1",
+          "label": "Option D",
           "badge": "D",
           "value": "",
           "weight": 0.3,
           "color": "#f97316"
         },
         {
-          "label": "Sticky note on the monitor",
+          "label": "Option E",
           "badge": "F",
           "value": "",
           "weight": 0.12,

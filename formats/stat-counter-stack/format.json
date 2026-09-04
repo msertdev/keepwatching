@@ -13,9 +13,8 @@
     "glowY": 700
   },
   "data": {
-    "label": "Phones sold while you watch this",
-    "closer": "One every 0.15 seconds.",
-    "value": 60
+    "label": "Placeholder items counted",
+    "closer": "One every 0.15 seconds."
   },
   "scene": [
     {

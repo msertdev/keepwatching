@@ -13,8 +13,8 @@
     "glowY": 800
   },
   "data": {
-    "line": "Your fridge costs more than your car.",
-    "turn": "Per mile, over ten years, it is not close."
+    "line": "One placeholder sentence goes here.",
+    "turn": "And the line that changes its meaning goes here."
   },
   "scene": [
     {

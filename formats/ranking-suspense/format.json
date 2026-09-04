@@ -13,7 +13,7 @@
     "glowY": 620
   },
   "data": {
-    "title": "The 5 most expensive keys on your keyboard"
+    "title": "The five highest mountains on Earth"
   },
   "scene": [
     {
@@ -51,29 +51,29 @@
       },
       "rows": [
         {
-          "label": "Spacebar",
-          "value": "$41",
+          "label": "Everest",
+          "value": "8,849 m",
           "weight": 1
         },
         {
-          "label": "Enter",
-          "value": "$26",
-          "weight": 0.63
+          "label": "K2",
+          "value": "8,611 m",
+          "weight": 0.973
         },
         {
-          "label": "Backspace",
-          "value": "$19",
-          "weight": 0.46
+          "label": "Kangchenjunga",
+          "value": "8,586 m",
+          "weight": 0.97
         },
         {
-          "label": "Shift",
-          "value": "$12",
-          "weight": 0.29
+          "label": "Lhotse",
+          "value": "8,516 m",
+          "weight": 0.962
         },
         {
-          "label": "Escape",
-          "value": "$7",
-          "weight": 0.17
+          "label": "Makalu",
+          "value": "8,485 m",
+          "weight": 0.959
         }
       ]
     },
