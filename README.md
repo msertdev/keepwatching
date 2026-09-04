@@ -27,16 +27,29 @@ Those two zeroes are the point. This repo ships with its evidence columns empty,
 because the alternative is publishing numbers nobody can check. Every format is
 marked `n: 0 · untested` until a CSV says otherwise.
 
+**To see the gallery — 5 seconds from a clean clone, measured:**
+
 ```bash
 git clone https://github.com/msertdev/keepwatching && cd keepwatching
-npm install && npm run setup   # seconds if cached, ~2-3 min cold
-npx kw gallery                 # renders all 24, builds and serves the gallery
+npm install     # 3s
+npx kw gallery  # 2s -> http://localhost:8080
 ```
 
-`npx kw gallery` is the one command. It renders any preview that is missing
-(~25s each, printing `7/24 rendered` as it goes), builds `gallery.json`, and
-serves the page at `http://localhost:8080`. To render a single clip instead:
-`npx kw render stat-counter-rise` → `out/stat-counter-rise/master.mp4`.
+No font download, no browser download, no rendering. The 24 previews are
+committed, so `kw gallery` copies and builds rather than rendering, and
+`npm run setup` is not needed at all to look at the page.
+
+**To render video**, which is when you need the fonts and a headless Chromium:
+
+```bash
+npm run setup                     # seconds if cached, ~2-3 min cold
+npx kw render stat-counter-rise   # -> out/stat-counter-rise/master.mp4
+```
+
+`kw gallery` re-renders only what is missing or **stale** — a preview whose
+format spec has changed since it was rendered — printing `7/24 rendered` with an
+ETA when it has work to do. `npx kw gallery --force` re-renders everything
+(~10 min for all 24).
 
 ---
 
@@ -142,6 +155,23 @@ npx kw render ranking-suspense --check-determinism
   variant ranking-suspense@1.0.0+7101b32c10da
   determinism ok (4 frames re-seeked out of order)
   verified  1080x1920 · 390 frames · 30fps
+```
+
+**The previews are committed, and checked against their specs.** All 24 live in
+`site/previews/` because the gallery is the product and Pages publishes from the
+repo — re-rendering them on every deploy cost ten minutes to reproduce bytes
+that had not changed. The risk that creates is a preview drifting out of step
+with its spec and shipping quietly, so `site/previews/manifest.json` records the
+**variant id** that produced each one, and `kw previews check` recomputes it from
+the tree and fails when they disagree. It runs in CI on both workflows.
+
+```bash
+npx kw previews check
+```
+```
+✗ stale   tier-list
+          spec now hashes to tier-list@1.0.0+ddc93d4703ec, but the committed
+          preview was rendered from tier-list@1.0.0+a49fcf451285
 ```
 
 **The first frame is tested, in every format.** It is the hook and it is the
@@ -287,7 +317,10 @@ kw render <slug> | --all     render to out/<slug>/
 kw preview <slug>            scrub a format in a browser
 kw new <slug> --from=<slug>  scaffold a new format
 kw variant <slug>            print the variant id for the current spec
-kw gallery                   render what is missing, build and serve the gallery
+kw gallery                   refresh stale previews, build and serve the gallery
+    --force                  re-render every preview, not just stale ones
+    --no-serve               build only, do not start the server
+kw previews check            verify committed previews match their specs
 kw site build --allow-missing  rebuild gallery.json without every preview
 kw measure [ingest|report|apply]
 ```
