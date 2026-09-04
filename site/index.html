@@ -62,7 +62,7 @@
         </div>
 
         <div class="cta">
-          <code>npm install &amp;&amp; npm run setup &amp;&amp; npm run render -- stat-counter-rise</code>
+          <code>npm install &amp;&amp; npm run setup &amp;&amp; npx kw gallery</code>
           <a class="btn" href="https://github.com/msertdev/keepwatching">Repository</a>
         </div>
         <p class="honest">
@@ -105,6 +105,10 @@
       </div>
     </footer>
 
+    <!-- gallery.js sets window.__GALLERY__ and is what makes the page work when
+         it is opened straight off disk: fetch is blocked on the file: scheme,
+         a <script> tag is not. app.js falls back to fetch when it is absent. -->
+    <script src="gallery.js"></script>
     <script src="app.js"></script>
   </body>
 </html>

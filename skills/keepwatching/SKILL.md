@@ -191,7 +191,7 @@ also written into the MP4's metadata comment if you lose your notes.
 # export CSVs from YouTube Studio / TikTok analytics into measure/inbox/
 npx kw measure                  # ingest + report -> measure/report.md
 npx kw measure apply            # write results into formats/*/data.yml
-npx kw site build               # reorder the gallery
+npx kw gallery                  # re-render + rebuild the gallery
 ```
 
 No API, no OAuth. See `references/measuring.md` for the exact export steps and

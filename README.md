@@ -29,9 +29,14 @@ marked `n: 0 · untested` until a CSV says otherwise.
 
 ```bash
 git clone https://github.com/msertdev/keepwatching && cd keepwatching
-npm install && npm run setup             # seconds if cached, ~2-3 min cold
-npm run render -- stat-counter-rise      # -> out/stat-counter-rise/master.mp4
+npm install && npm run setup   # seconds if cached, ~2-3 min cold
+npx kw gallery                 # renders all 24, builds and serves the gallery
 ```
+
+`npx kw gallery` is the one command. It renders any preview that is missing
+(~25s each, printing `7/24 rendered` as it goes), builds `gallery.json`, and
+serves the page at `http://localhost:8080`. To render a single clip instead:
+`npx kw render stat-counter-rise` → `out/stat-counter-rise/master.mp4`.
 
 ---
 
@@ -184,7 +189,7 @@ render  ──>  publish  ──>  export CSV  ──>  ingest  ──>  report 
 ```bash
 npx kw measure           # -> measure/report.md, "which format won"
 npx kw measure apply     # writes formats/*/data.yml
-npx kw site build        # reorders the gallery
+npx kw gallery           # re-render + rebuild the gallery
 ```
 
 `data.yml` is machine-written and **never edited by hand**. A number typed from
@@ -282,7 +287,8 @@ kw render <slug> | --all     render to out/<slug>/
 kw preview <slug>            scrub a format in a browser
 kw new <slug> --from=<slug>  scaffold a new format
 kw variant <slug>            print the variant id for the current spec
-kw site build | serve        rebuild the gallery
+kw gallery                   render what is missing, build and serve the gallery
+kw site build --allow-missing  rebuild gallery.json without every preview
 kw measure [ingest|report|apply]
 ```
 
