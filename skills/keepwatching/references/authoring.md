@@ -57,6 +57,28 @@ inputs:
 - **`family`** is one of: `stat-counter`, `countdown`, `ranking`, `comparison`,
   `reveal`, `myth-fact`, `cold-open`, `progress`, `escalation`, `reverse`.
 
+## Declaring where the example copy came from
+
+Every `meta.yml` must carry one of these, and `kw check` fails without it:
+
+```yaml
+sampleContent: placeholder    # the data block is obvious filler
+```
+
+```yaml
+sampleContent: sourced
+sources:
+  - title: "BIPM — The International System of Units (SI), 9th edition, 2019"
+    url: https://www.bipm.org/en/publications/si-brochure
+    claim: "The speed of light in vacuum is exactly 299,792,458 m/s."
+```
+
+Prefer `placeholder` for a new format. Filler like "Option A" and "12,400 units"
+costs nothing and can never be mistaken for a finding. Reach for `sourced` only
+when the real number genuinely demonstrates the format better than filler would,
+and then cite a primary source and state the exact claim it backs — including any
+rounding you did for the screen.
+
 ## Layout rules
 
 The stage is 1080x1920. The safe zone is `y` 130–1600.
@@ -98,9 +120,18 @@ It re-seeks frames out of order and fails if any pixel moved.
 A new format ships as:
 
 ```yaml
-n: 0
-status: untested
+format:
+  n: 0
+  status: untested
+content_axis:
+  n: 0
+  status: untested
+  axes: []
 ```
+
+Both blocks start empty and they stay separate: `format` is how the scene
+structure performed, `content_axis` is how the subject matter performed. They are
+never averaged together, so never move a number from one into the other.
 
 That is the correct, honest state, and the gallery shows it as such rather than
 hiding it. Filling it in by hand — even with numbers you believe — makes every
