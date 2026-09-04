@@ -16,12 +16,16 @@ import path from "node:path";
 
 import { MEASURE_DIR, rel } from "../../engine/src/paths.js";
 import {
+  NOT_IN_LIBRARY,
+  isNotInLibrary,
   loadAllFormats,
   loadContentAxes,
   parseVariantId,
   readEvidence,
+  writeAxisResults,
   writeEvidence,
   type AxisResult,
+  type AxisRollup,
   type ContentAxis,
   type FormatMeasurement,
   type SampleRef,
@@ -74,6 +78,8 @@ export interface AxisReportRow {
 
 export interface Report {
   generatedAt: string;
+  /** Samples whose format is deliberately outside this library. Axis-only. */
+  notInLibrary: { n: number; axes: string[] };
   formats: {
     baseline: { avgViewedPct: number | null; source: string };
     results: FormatResult[];
@@ -187,6 +193,10 @@ export function buildReport(): Report {
   const unmatched: Report["unmatched"] = [];
   const unmappedVariants = new Set<string>();
   const unknownAxes = new Set<string>();
+  /* Videos whose format is deliberately outside this library. They are real
+     content-axis samples and are not format samples at all, so they are held
+     apart from `bySlug` and never reach the format board. */
+  const outsideRows: Joined[] = [];
 
   for (const sample of samples) {
     const m = byExternal.get(sample.externalId);
@@ -194,12 +204,18 @@ export function buildReport(): Report {
       unmatched.push({ platform: sample.platform, externalId: sample.externalId, title: sample.title });
       continue;
     }
+    if (m.contentAxis && !axisById.has(m.contentAxis)) unknownAxes.add(m.contentAxis);
+
+    if (isNotInLibrary(m.variantId)) {
+      outsideRows.push({ sample, mapping: m });
+      continue;
+    }
+
     const parsed = parseVariantId(m.variantId);
     if (!parsed || !bySlug.has(parsed.slug)) {
       unmappedVariants.add(m.variantId);
       continue;
     }
-    if (m.contentAxis && !axisById.has(m.contentAxis)) unknownAxes.add(m.contentAxis);
     bySlug.get(parsed.slug)!.rows.push({ sample, mapping: m });
   }
 
@@ -238,12 +254,28 @@ export function buildReport(): Report {
     }
   }
 
+  /* Out-of-library rows join the axis board here and nowhere else. They are
+     tagged into `axisFormats` under the sentinel so the "carried by" column
+     shows plainly that part of the axis came from outside the library. */
+  const outsideAxes = new Set<string>();
+  for (const row of outsideRows) {
+    const axis = row.mapping.contentAxis;
+    if (!axis || !axisById.has(axis)) continue;
+    if (!axisRows.has(axis)) axisRows.set(axis, []);
+    axisRows.get(axis)!.push(row);
+    if (!axisFormats.has(axis)) axisFormats.set(axis, new Set());
+    axisFormats.get(axis)!.add(NOT_IN_LIBRARY);
+    outsideAxes.add(axis);
+  }
+
   const axisResults: AxisReportRow[] = [];
   for (const [axis, rows] of axisRows) {
-    /* Axis curves span formats of different lengths; resample against the
-       longest so a short clip does not truncate the average. */
+    /* Axis curves span clips of different lengths; resample against the longest
+       so a short clip does not truncate the average. An out-of-library row has
+       no spec here, so its own reported duration is used when it has one. */
     const longest = Math.max(
       ...rows.map((r) => {
+        if (isNotInLibrary(r.mapping.variantId)) return r.sample.videoDurationSec ?? 0;
         const p = parseVariantId(r.mapping.variantId);
         return p ? bySlug.get(p.slug)?.fmt.spec.canvas.durationSec ?? 0 : 0;
       }),
@@ -294,6 +326,7 @@ export function buildReport(): Report {
 
   const report: Report = {
     generatedAt: new Date().toISOString(),
+    notInLibrary: { n: outsideRows.length, axes: [...outsideAxes].sort() },
     formats: {
       baseline: {
         avgViewedPct: formatBaseline,
@@ -326,6 +359,12 @@ export function buildReport(): Report {
   console.log(`  ${samples.length} samples, ${mapping.length} mapping rows`);
   console.log(`  formats:      ${formatResults.length} with at least one measurement`);
   console.log(`  content axes: ${axisResults.length} with at least one measurement`);
+  if (outsideRows.length) {
+    console.log(
+      `  ${outsideRows.length} sample(s) tagged ${NOT_IN_LIBRARY} — content axis only, ` +
+        `excluded from the format board`
+    );
+  }
   if (unmatched.length) console.log(`  ${unmatched.length} published videos have no mapping row`);
   if (report.unmappedVariants.length) {
     console.log(`  ${report.unmappedVariants.length} mapped variant id(s) match no format here`);
@@ -399,13 +438,26 @@ function renderMarkdown(r: Report, axes: ContentAxis[]): string {
     lines.push("| # | Content axis | n | Avg % viewed | vs axis baseline | Hook @3s | Carried by |");
     lines.push("|---|--------------|---|--------------|------------------|----------|------------|");
     r.contentAxes.results.forEach((res, i) => {
+      const carriedBy =
+        res.formats
+          .map((f) => (f === NOT_IN_LIBRARY ? `**\`${f}\`**` : `\`${f}\``))
+          .join(", ") || "—";
       lines.push(
         `| ${i + 1} | ${res.name} (\`${res.axis}\`) | ${res.n} | ${pct(res.avgViewedPct)} | ` +
           `${delta(res.avgViewedPct, r.contentAxes.baseline.avgViewedPct)} | ` +
-          `${pct(res.hook3s)} | ${res.formats.map((f) => `\`${f}\``).join(", ") || "—"} |`
+          `${pct(res.hook3s)} | ${carriedBy} |`
       );
     });
     lines.push("");
+    if (r.notInLibrary.n > 0) {
+      lines.push(
+        `**\`${NOT_IN_LIBRARY}\`** in the carried-by column means those samples came from a ` +
+          `format that is not part of this library. ${r.notInLibrary.n} sample(s) here. They ` +
+          `count toward the axis result above and appear nowhere on the format board, because ` +
+          `there is no spec in this repo to attribute them to.`
+      );
+      lines.push("");
+    }
     lines.push(
       "**Read the last column.** If an axis was only ever carried by one format, that axis " +
         "result and that format result are the same videos wearing two labels, and neither " +
@@ -502,8 +554,38 @@ export function applyReport(report?: Report): void {
     written++;
   }
 
+  /* The repo-level axis roll-up. This file, not the format library, is the
+     authoritative axis board: an axis can be carried entirely by out-of-library
+     videos, and pooling from formats/ would silently drop exactly those. */
+  const rollups: AxisRollup[] = r.contentAxes.results.map((res) => ({
+    axis: res.axis,
+    name: res.name,
+    n: res.n,
+    hook3s: res.hook3s,
+    avgViewedPct: res.avgViewedPct,
+    viewsPerHour: res.viewsPerHour,
+    vsAxisBaselinePct:
+      r.contentAxes.baseline.avgViewedPct !== null && res.avgViewedPct !== null
+        ? Number(((res.avgViewedPct - r.contentAxes.baseline.avgViewedPct) * 100).toFixed(2))
+        : null,
+    retention: res.retention,
+    carriedBy: res.formats,
+  }));
+
+  writeAxisResults({
+    updated: rollups.length ? today : undefined,
+    baseline: r.contentAxes.baseline,
+    axes: rollups,
+  });
+
   console.log(`\n▸ apply`);
   console.log(`  ${written} data.yml file(s) updated from ${rel(REPORT_JSON)}`);
   console.log(`  format and content_axis blocks written separately`);
+  console.log(`  ${rollups.length} axis roll-up(s) -> data/content-axis-results.yml`);
+  if (r.notInLibrary.n > 0) {
+    console.log(
+      `  ${r.notInLibrary.n} ${NOT_IN_LIBRARY} sample(s) counted toward axes only`
+    );
+  }
   console.log(`  run \`kw site build\` to reorder the gallery\n`);
 }

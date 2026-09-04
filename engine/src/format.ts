@@ -174,6 +174,82 @@ export function loadContentAxes(): ContentAxis[] {
   return parsed?.axes ?? [];
 }
 
+/**
+ * Sentinel `variant_id` for a published video whose format is not in this
+ * library and is not going to be.
+ *
+ * Such a row is a valid content-axis sample and an invalid format sample: there
+ * is no spec here to attribute it to, so it can never appear on the format
+ * board, in a format's `data.yml`, or in the gallery ranking. It counts only
+ * toward content-axis results, where the `carried by` column names it
+ * explicitly so a reader can see that part of an axis came from outside the
+ * library.
+ *
+ * The label carries no information about the format itself, by design.
+ */
+export const NOT_IN_LIBRARY = "not-in-library";
+
+export const isNotInLibrary = (variantId: string): boolean =>
+  variantId.trim() === NOT_IN_LIBRARY;
+
+/* --------------------------------------- repo-level content-axis results */
+
+export interface AxisRollup {
+  axis: string;
+  name?: string;
+  n: number;
+  hook3s?: number | null;
+  avgViewedPct?: number | null;
+  viewsPerHour?: number | null;
+  vsAxisBaselinePct?: number | null;
+  retention?: RetentionPoint[];
+  /** Format slugs, plus the literal `not-in-library` when applicable. */
+  carriedBy: string[];
+}
+
+export interface ContentAxisResults {
+  updated?: string;
+  baseline: { avgViewedPct: number | null; source: string };
+  axes: AxisRollup[];
+}
+
+export const AXIS_RESULTS_FILE = path.join(ROOT, "data", "content-axis-results.yml");
+
+export const EMPTY_AXIS_RESULTS: ContentAxisResults = {
+  baseline: { avgViewedPct: null, source: "not enough data" },
+  axes: [],
+};
+
+/**
+ * Repo-level axis results. Kept in its own file rather than pooled from the
+ * format library, because an axis can legitimately be carried entirely by
+ * videos whose format is not in the library — pooling from `formats/` would
+ * silently drop exactly those samples.
+ */
+export function loadAxisResults(): ContentAxisResults {
+  if (!fs.existsSync(AXIS_RESULTS_FILE)) return { ...EMPTY_AXIS_RESULTS, axes: [] };
+  const parsed = YAML.parse(fs.readFileSync(AXIS_RESULTS_FILE, "utf8")) as ContentAxisResults;
+  return {
+    updated: parsed?.updated,
+    baseline: parsed?.baseline ?? { avgViewedPct: null, source: "not enough data" },
+    axes: Array.isArray(parsed?.axes) ? parsed.axes : [],
+  };
+}
+
+export function writeAxisResults(results: ContentAxisResults): void {
+  const header =
+    "# Repo-level content-axis results. Written by `kw measure apply` — never by hand.\n" +
+    "#\n" +
+    "# These are claims about SUBJECT MATTER, not about scene structure. They have\n" +
+    "# their own baseline and are never averaged with any number in formats/*/data.yml.\n" +
+    "#\n" +
+    "# `carriedBy` lists which formats produced each axis result. An axis carried by a\n" +
+    "# single entry is not isolated from that entry — it is the same videos under a\n" +
+    "# second label. The entry `not-in-library` means those samples came from a format\n" +
+    "# that is not part of this library; they count here and nowhere else.\n";
+  fs.writeFileSync(AXIS_RESULTS_FILE, header + YAML.stringify(results), "utf8");
+}
+
 /* --------------------------------------------------------------- identity */
 
 /** Content hash of the spec, ignoring key order and formatting. */
@@ -328,6 +404,9 @@ export function validateSpec(spec: FormatSpec, slug?: string): void {
   };
 
   if (!spec.id) fail("missing id");
+  if (spec.id === NOT_IN_LIBRARY) {
+    fail(`"${NOT_IN_LIBRARY}" is a reserved label and cannot be a format id`);
+  }
   if (slug && spec.id !== slug) fail(`id "${spec.id}" does not match directory "${slug}"`);
   if (!spec.version) fail("missing version");
   if (!spec.canvas) fail("missing canvas");
@@ -424,9 +503,32 @@ export function validateMeta(meta: FormatMeta, slug: string): string[] {
 /** Cross-check that every axis referenced by a measurement is a declared axis. */
 export function validateAxes(fmt: LoadedFormat, axes: ContentAxis[]): string[] {
   const known = new Set(axes.map((a) => a.id));
-  return fmt.data.contentAxis.axes
+  const problems = fmt.data.contentAxis.axes
     .filter((a) => !known.has(a.axis))
     .map((a) => `${fmt.slug}: content_axis references unknown axis "${a.axis}"`);
+
+  /* The sentinel marks samples with no spec in this repo. If one reached a
+     format's data.yml, an out-of-library video would be contributing to a
+     format result — the exact leak the label exists to prevent. */
+  for (const a of fmt.data.contentAxis.axes) {
+    for (const sample of a.samples ?? []) {
+      if (isNotInLibrary(sample.variantId)) {
+        problems.push(
+          `${fmt.slug}: a "${NOT_IN_LIBRARY}" sample is recorded against a format — ` +
+            `it must count toward content axes only`
+        );
+      }
+    }
+  }
+  for (const sample of fmt.data.format.samples ?? []) {
+    if (isNotInLibrary(sample.variantId)) {
+      problems.push(
+        `${fmt.slug}: a "${NOT_IN_LIBRARY}" sample is in the format block — ` +
+          `it must never reach the format board`
+      );
+    }
+  }
+  return problems;
 }
 
 /* -------------------------------------------------------------- data.yml */

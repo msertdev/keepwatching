@@ -54,6 +54,14 @@ jobs:
       - name: Validate the format library
         run: npx kw check
 
+      # The first frame is the hook AND the cover image TikTok/Instagram show
+      # before playback. It has broken twice for unrelated reasons, both times
+      # because the contract was only eyeballed on one format. This asserts, for
+      # ALL formats, that frame 0 paints its promised elements and contains real
+      # ink — DOM state and pixels checked independently.
+      - name: Frame 0 is never blank, in every format
+        run: npx kw frame0
+
       # One real render with the determinism probe: frames are re-seeked out of
       # order and compared by hash. This is the test that protects every
       # measurement in the repo.
@@ -105,6 +113,15 @@ jobs:
                 fail(`${slug}: content_axis must not carry a top-level format metric`);
               }
 
+              // `not-in-library` marks a published video whose format is
+              // deliberately outside this repo. It is a content-axis sample and
+              // never a format sample, so it must not appear anywhere in a
+              // format directory.
+              const text = fs.readFileSync(f, "utf8");
+              if (text.includes("not-in-library")) {
+                fail(`${slug}: a not-in-library sample reached a format data.yml`);
+              }
+
               const fm = d.format;
               const claims = fm.avgViewedPct != null || fm.hook3s != null;
               if (claims && !(fm.n > 0)) fail(`${slug}: format has numbers but n is ${fm.n}`);
@@ -120,6 +137,21 @@ jobs:
                 if (a.avgViewedPct != null && !(a.n > 0)) fail(`${slug}: axis ${a.axis} has numbers but n is ${a.n}`);
               }
             }
+            // The repo-level axis roll-up must not smuggle format results in.
+            if (fs.existsSync("data/content-axis-results.yml")) {
+              const ar = YAML.parse(fs.readFileSync("data/content-axis-results.yml", "utf8")) || {};
+              const declared = axes;
+              for (const a of ar.axes || []) {
+                if (!declared.has(a.axis)) fail(`axis results: unknown axis "${a.axis}"`);
+                if (!Array.isArray(a.carriedBy) || a.carriedBy.length === 0) {
+                  fail(`axis results: "${a.axis}" has no carriedBy — the confound must be visible`);
+                }
+                if (a.avgViewedPct != null && !(a.n > 0)) {
+                  fail(`axis results: "${a.axis}" has numbers but n is ${a.n}`);
+                }
+              }
+            }
+
             if (bad) process.exit(1);
             console.log("evidence hygiene ok");
           '
