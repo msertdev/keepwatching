@@ -229,6 +229,7 @@ bytes are not, and the repo does not pretend otherwise.
 
 | Guard | What it catches |
 |---|---|
+| `npm test` | 50 unit tests over the CSV/date reader and the age-window rule, run under four timezones — the layer where the bug in "Why this exists" lived |
 | `kw check` | invalid specs, unsourced demo numbers, undeclared content axes, a sourced counter asserting certainty before it lands |
 | `kw frame0` | a blank or thin first frame, a poster frame that would sit on a card looking empty, and a stretch of dead air — more than 5s where nothing on screen moves — DOM and pixels, independently, across all 24 |
 | `kw previews check` | a committed preview whose spec has changed since it was rendered |
@@ -238,6 +239,12 @@ bytes are not, and the repo does not pretend otherwise.
 
 Every one was negative-tested: broken on purpose, watched to fail, then fixed. A
 guard nobody has tried to defeat is a guard nobody knows works.
+
+The timezone matrix is there for the same reason. Putting the date bug back
+leaves the suite **35/35 green under `TZ=UTC`** and failing under the other
+three zones, so a UTC-only CI would have shipped it with a full green tick.
+That is not a hypothetical: it is what happened, and UTC is what GitHub
+runners use.
 
 ## Honesty rules
 
@@ -254,6 +261,7 @@ Not style preferences. The repo is worthless if they slip.
 ## Commands
 
 ```
+npm test                     unit tests for the measurement reader
 kw setup                     install Inter + a headless Chromium (render only)
 kw gallery                   refresh stale previews, build and serve the gallery
     --force                  re-render every preview

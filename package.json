@@ -28,7 +28,8 @@
     "preview": "node engine/bin/kw.mjs preview",
     "render:all": "node engine/bin/kw.mjs render --all",
     "measure": "node engine/bin/kw.mjs measure",
-    "check": "node engine/bin/kw.mjs check && tsc --noEmit",
+    "test": "node --import tsx --test measure/test/csv.test.ts measure/test/seed.test.ts",
+    "check": "node engine/bin/kw.mjs check && tsc --noEmit && npm test",
     "gallery": "node engine/bin/kw.mjs gallery"
   },
   "dependencies": {

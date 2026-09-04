@@ -97,6 +97,35 @@ jobs:
       - name: The generated format index is committed and current
         run: git diff --exit-code skills/keepwatching/references/formats.md
 
+  # The reader that turns an analytics export into numbers, tested under four
+  # timezones.
+  #
+  # This is not thoroughness for its own sake. The one bug that has actually
+  # shipped from this repo was a date read through `new Date(...).toISOString()`,
+  # which lands on the right day in UTC and a day early almost everywhere else.
+  # A suite that only ever runs in UTC is a suite that would have gone green on
+  # it — verified by putting the bug back: 35/35 passing under TZ=UTC, three
+  # failures under Europe/Istanbul. UTC alone proves nothing about dates.
+  parsing:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+
+      # One checkout, four runs: the suite takes under a second, so a matrix of
+      # four jobs would spend all its time on npm ci.
+      - name: Unit tests, in every timezone the numbers might be read in
+        run: |
+          for tz in UTC Europe/Istanbul Pacific/Kiritimati America/Los_Angeles; do
+            echo "::group::TZ=$tz"
+            TZ=$tz npm test || { echo "::error::unit tests failed under TZ=$tz"; exit 1; }
+            echo "::endgroup::"
+          done
+
   measurement-hygiene:
     runs-on: ubuntu-latest
     steps:

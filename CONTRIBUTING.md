@@ -163,7 +163,19 @@ Before opening a PR:
 npx kw check                                    # every format validates
 npx kw render stat-counter-rise --check-determinism
 npx tsc --noEmit
+npm test                                        # the measurement reader
 ```
+
+If you touched anything under `measure/src/` that reads a date or a number,
+run the tests under a non-UTC timezone too:
+
+```bash
+TZ=Europe/Istanbul npm test
+```
+
+CI does this across four zones. It is not ceremony: the one bug this project
+has actually shipped was a date that came out right in UTC and a day early
+everywhere else, and a UTC-only test run went green on it.
 
 If you add an element type, it needs: a type in `engine/shared/spec.ts`, a
 `build()` branch and a `paint()` branch in `comp.ts`, validation in
