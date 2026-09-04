@@ -75,38 +75,38 @@
       }
     },
     "cold-open-question": {
-      "variantId": "cold-open-question@1.0.0+08bdded218ae",
+      "variantId": "cold-open-question@1.1.0+67543bafe51d",
       "renderedAt": "2026-09-04",
       "files": {
         "cold-open-question.mp4": {
-          "bytes": 48520,
-          "sha256": "0397c58073056e91a4d33d87909de96bb818f67054bb45f2b94a0c5d2b0d45db"
+          "bytes": 117998,
+          "sha256": "6665e4b7a786e55160a80ed83b2fb4676c50e83c91b877fd49f22eec5376f354"
         },
         "cold-open-question.webm": {
-          "bytes": 64858,
-          "sha256": "0b1080eae1a25f02ad09b58f361cb2953a91b479c80105af23cbaff58f3f68b4"
+          "bytes": 187612,
+          "sha256": "b8569fba366edd3ff196e22d23bec12ec983c8f63b3a0a08ba47fd9982d77030"
         },
         "cold-open-question.jpg": {
-          "bytes": 134829,
-          "sha256": "96525a6255f249749e98f10288f043eab2d4ceeaa41a9ad238ad8117fc036732"
+          "bytes": 111939,
+          "sha256": "91d60833d4058b9b8457263228edfc2280d008e3fdef6335fde7c1814cb2a9dd"
         }
       }
     },
     "countdown-clock": {
-      "variantId": "countdown-clock@1.0.0+95ff65c264af",
+      "variantId": "countdown-clock@1.1.0+f8fff2bda487",
       "renderedAt": "2026-09-04",
       "files": {
         "countdown-clock.mp4": {
-          "bytes": 58224,
-          "sha256": "a02abdb112f11d0cd2b5def4eb25f52ebd0a87fdb6661d0aedc05f2d29a5a859"
+          "bytes": 111307,
+          "sha256": "76e9dbabf5e9844763fed25d8649edf651b2fae14c05ddad516f2692765cf4e4"
         },
         "countdown-clock.webm": {
-          "bytes": 86771,
-          "sha256": "56062cd4f4c181b053bb40c139321039a6da5384bf60b110a9fe8e94d4f159a1"
+          "bytes": 185715,
+          "sha256": "e856198d7e978d18f26a49b1352197491c0a85c6e1b4796fcc15e6745c650600"
         },
         "countdown-clock.jpg": {
-          "bytes": 79800,
-          "sha256": "1cd96bc5ff22b436f7d2f3f77eb4d0b2765a56c1454f5765e8c673d0d00694d6"
+          "bytes": 79803,
+          "sha256": "d1b4ab26c4ee6472d8c8b0bd2894ecfbe6579132a278b7ae486f08f53cef6dda"
         }
       }
     },
@@ -183,16 +183,16 @@
       }
     },
     "myth-vs-fact": {
-      "variantId": "myth-vs-fact@1.0.0+4bf4da1aeb35",
+      "variantId": "myth-vs-fact@1.1.0+d1d27323d0e3",
       "renderedAt": "2026-09-04",
       "files": {
         "myth-vs-fact.mp4": {
           "bytes": 52227,
-          "sha256": "198c60973cc005295f36676ae973f8698a949d4aba749062080835e550ba3265"
+          "sha256": "8ceb5b5b4ed241dad6cf7d20f4bd1f983fb61f883df9dcac6fb24e331af20f0a"
         },
         "myth-vs-fact.webm": {
           "bytes": 68791,
-          "sha256": "054247bc0c24f907b34ea1abe369fcb2ae102398c279875666039e8ea7e6f79a"
+          "sha256": "005793c81dc4899d6c3eaebf56383fed2f97b3b8a4db3fe01d47f3c9f27df171"
         },
         "myth-vs-fact.jpg": {
           "bytes": 117690,
@@ -237,16 +237,16 @@
       }
     },
     "ranking-reveal": {
-      "variantId": "ranking-reveal@1.0.0+ae4dbc442feb",
+      "variantId": "ranking-reveal@1.1.0+9b3fb3432d72",
       "renderedAt": "2026-09-04",
       "files": {
         "ranking-reveal.mp4": {
           "bytes": 65775,
-          "sha256": "06e0e2e6e4c0b049fb5f9cfd48461164fcf829ee84b3de8009c1e322c14ba6fd"
+          "sha256": "d580f2ea56239c3e2e6bc1af05041bee81027844058baf84e4c1145e938f1609"
         },
         "ranking-reveal.webm": {
           "bytes": 80592,
-          "sha256": "c292f4517f3ddced137848999d8d9410ebde4dc431b9d77123c357e545d40efb"
+          "sha256": "c402e91b7e3c0dff74c1daab5f6d5d3020f2844af05998a8fd26345db1fd7e39"
         },
         "ranking-reveal.jpg": {
           "bytes": 116802,
@@ -291,16 +291,16 @@
       }
     },
     "reverse-reveal": {
-      "variantId": "reverse-reveal@1.0.0+e70300261244",
+      "variantId": "reverse-reveal@1.1.0+3d4013c508f9",
       "renderedAt": "2026-09-04",
       "files": {
         "reverse-reveal.mp4": {
-          "bytes": 51272,
-          "sha256": "40f34585c1c5b59aa96e104e703812d144c570f14f9e025e4f162cca5121e7b2"
+          "bytes": 47832,
+          "sha256": "0cda275c17739df0bc7b8885fed5e87d108eb4bc467e4c5bf1bcf3c2d0f926f0"
         },
         "reverse-reveal.webm": {
-          "bytes": 64949,
-          "sha256": "bcf190ea58baa842646ac4c4549e0d7ef52673e347e37bc6131955bf29d5b01c"
+          "bytes": 62770,
+          "sha256": "8e0a15419681bc8f0d871575424524ab94326165f8fa03393c17a213f22a87cd"
         },
         "reverse-reveal.jpg": {
           "bytes": 93268,
@@ -345,16 +345,16 @@
       }
     },
     "stat-counter-context": {
-      "variantId": "stat-counter-context@1.0.0+a8078c9c86bd",
+      "variantId": "stat-counter-context@1.1.0+8a70792a7743",
       "renderedAt": "2026-09-04",
       "files": {
         "stat-counter-context.mp4": {
           "bytes": 48356,
-          "sha256": "4f2c27d38ff0ea0e7b9c4b0ca5e67f5e7eed11ba935612c73ee3ab4fb8191d0d"
+          "sha256": "ca255925ab57264dfbfccdc34eecd8637c1e719cca76290844a63bbe8c577c81"
         },
         "stat-counter-context.webm": {
           "bytes": 81289,
-          "sha256": "d1b4d9c4119647b6121bfe7a559a68a9566526a9166dd1c7373b133b1385b097"
+          "sha256": "67f66d7f09050ddf3b89c81279a5e2c6b24f99ebc404b65d75caffc096875ab3"
         },
         "stat-counter-context.jpg": {
           "bytes": 96651,
@@ -363,16 +363,16 @@
       }
     },
     "stat-counter-rise": {
-      "variantId": "stat-counter-rise@1.0.0+2b1a816359e9",
+      "variantId": "stat-counter-rise@1.1.0+a8edda3fe2c1",
       "renderedAt": "2026-09-04",
       "files": {
         "stat-counter-rise.mp4": {
           "bytes": 371357,
-          "sha256": "e58c13af7acbcae28ea48da849c35edd901f7cf0f599d3554bf18adc0e119298"
+          "sha256": "7827f5a1e48684a59f378aba263a4acd7dafdebf3ef49e4b51ef841bcf6993d6"
         },
         "stat-counter-rise.webm": {
           "bytes": 845928,
-          "sha256": "d768e0ab05e21024ff02e15e783167094480b67652de3de6d09532d76daff42a"
+          "sha256": "013d30046c29f6af0969b3e2cb79c45491dae8e2e8017aa7fff6772f72a4048e"
         },
         "stat-counter-rise.jpg": {
           "bytes": 120881,

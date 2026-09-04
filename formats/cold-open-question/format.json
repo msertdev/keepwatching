@@ -1,6 +1,6 @@
 {
   "id": "cold-open-question",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "canvas": {
     "w": 1080,
     "h": 1920,
@@ -15,9 +15,10 @@
   "data": {
     "question": "How long did you look before deciding?",
     "partial": "Long enough to finish this line.",
-    "closer": "The question is the format. The answer is you.",
+    "closer": "The question is the format.",
     "turn": "Which is longer than you would have guessed,",
-    "detail": "and shorter than it takes to decide anything."
+    "detail": "and shorter than it takes to decide anything.",
+    "answer": "The answer is you."
   },
   "scene": [
     {
@@ -87,7 +88,11 @@
         "color": "muted",
         "lineHeight": 1.2
       },
-      "at": 13
+      "at": 11,
+      "out": {
+        "at": 19,
+        "dur": 0.35
+      }
     },
     {
       "id": "detail",
@@ -102,23 +107,50 @@
         "color": "muted",
         "lineHeight": 1.2
       },
-      "at": 18.5
+      "at": 15,
+      "out": {
+        "at": 19.5,
+        "dur": 0.35
+      }
     },
     {
       "id": "closer",
       "type": "text",
       "box": {
-        "y": 1560
+        "y": 1260
       },
       "text": "{{closer}}",
       "font": {
-        "size": 48,
+        "size": 56,
         "weight": 700,
         "color": "fg",
         "lineHeight": 1.2
       },
-      "at": 24
+      "at": 23
+    },
+    {
+      "id": "answer",
+      "type": "text",
+      "box": {
+        "y": 1400
+      },
+      "text": "{{answer}}",
+      "font": {
+        "size": 56,
+        "weight": 800,
+        "color": "accent",
+        "lineHeight": 1.2
+      },
+      "at": 27,
+      "in": {
+        "at": 27,
+        "dur": 0.35,
+        "move": [
+          0,
+          20
+        ]
+      }
     }
   ],
-  "posterSec": 26.5
+  "posterSec": 28.5
 }
