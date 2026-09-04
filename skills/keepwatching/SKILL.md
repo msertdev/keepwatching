@@ -125,27 +125,40 @@ measurements no longer transfer. If you do change the scene, bump `version` in
 
 **Changing the length — read this, it is the most common request.**
 
-Every library format is 10–14 seconds. Any other length *requires* editing the
-scene, so "only edit `data`" does not apply. Use this rule:
+Library formats run **8–30 seconds** (21 of 24 between 8 and 14). The three
+30-second ones — `cold-open-question`, `countdown-clock`, `stat-counter-rise`
+— are the levels of a running experiment, not the house length. Any length a
+format does not already have *requires* editing the scene, so "only edit `data`"
+does not apply. Use this rule:
 
 > Multiply `canvas.durationSec` **and every timing in the scene** by
-> `newDuration / oldDuration`. Then shorten the final hold to ~2–3 seconds by
-> pushing the last beat later.
+> `newDuration / oldDuration`. Then look at the tail: scaling stretches the
+> final hold by the same factor, so the bigger the factor the worse the ending
+> gets.
 
-Worked example — `stat-counter-rise` (10s) to 15s, so the factor is 1.5:
+Worked example — `stat-counter-rise` from 10s to 30s, factor 3.0. These are the
+numbers that actually shipped, not an illustration:
 
-| field | 10s | ×1.5 | final |
+| field | 10s | ×3 | shipped |
 |---|---|---|---|
-| `canvas.durationSec` | 10 | 15 | **15** |
-| counter `endSec` | 6.4 | 9.6 | **11.0** |
-| bar `endSec` | 6.4 | 9.6 | **11.0** |
-| context `at` / `in.at` | 6.5 | 9.75 | **11.2** |
+| `canvas.durationSec` | 10 | 30 | **30** |
+| counter `endSec` | 6.4 | 19.2 | **21.0** |
+| bar `endSec` | 6.4 | 19.2 | **21.0** |
+| `unit` `at` | 6.4 | 19.2 | **21.0** |
+| `context` `at` / `in.at` | 6.5 | 19.5 | **21.6** |
+| `source` `at` | — | — | **25.5** — a beat that did not exist |
+| `posterSec` | 8.4 | 25.2 | **27.5** |
 
-Naive scaling alone leaves 5.3 seconds of a frozen final card. Nudging the last
-beat from 9.75 to 11.2 gives a 3.8-second hold, which is the upper end of
-acceptable. **A final card held longer than about 3 seconds is dead air**, and
-dead air at the end is what kills a completion rate. `kw frame0` fails outright
-at 5 seconds of a motionless screen: 3 is the craft advice, 5 is the hard floor.
+Scaling alone left the last beat at 19.5s in a 30-second clip: **10.5 seconds of
+a frozen card.** Pushing it to 21.6 was not enough either. Past a factor of
+about two, arithmetic stops being the answer — the clip needs a beat it did not
+have. Here that is a citation line at 25.5s, which the format had been claiming
+in its `sources` all along and had never put on screen. Final hold: 4 seconds.
+
+**A final card held longer than about 3 seconds is dead air**, and dead air at
+the end is what kills a completion rate. `kw frame0` fails outright at 5 seconds
+of a motionless screen: 3 is the craft advice, 5 is the hard floor. It found
+three formats that had already shipped with a 6-second frozen ending.
 
 Constraints and checks:
 
@@ -154,10 +167,11 @@ Constraints and checks:
   counts. A fresh scaffold at `0.1.0` that you then retime becomes `0.2.0`. The
   variant id derives from `version` plus a hash of the spec, so this keeps a
   future measurement attributable.
-- `npx kw check` catches timings past the end of the clip. It cannot tell you a
-  clip is mostly empty — for that, open `out/<slug>/contact.png` after
-  rendering. It samples six frames evenly across the clip, so repeated identical
-  tiles at the end *are* the dead air, visible at a glance.
+- `npx kw check` catches timings past the end of the clip, and `npx kw frame0`
+  catches a first frame that paints nothing plus any motionless run over 5
+  seconds. Neither can tell you a clip is *dull* — for that, open
+  `out/<slug>/contact.png` after rendering. It samples six frames evenly across
+  the clip, so near-identical tiles are visible at a glance.
 
 **Sourcing.** `kw new --from=<slug>` deliberately resets the scaffold to
 `sampleContent: placeholder` and drops the parent's `sources` — the parent's
