@@ -13,6 +13,8 @@
   --dim: #5d6a78;
   --accent: #22c55e;
   --warn: #f59e0b;
+  /* Content-axis violet. Deliberately not the format green. */
+  --axis: #a78bfa;
   --radius: 16px;
   --wrap: 1240px;
   color-scheme: dark;
@@ -118,20 +120,106 @@ h1 {
   color: var(--muted);
 }
 
+/* Two measurement boards, visually separated so the eye never merges them.
+   Format numbers are accent-green; axis numbers are violet and never appear in
+   the same card, the same table, or the same colour as a format number. */
+.boards {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: 16px;
+  margin-top: 34px;
+  align-items: start;
+}
+
+.board {
+  padding: 20px 22px 22px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01));
+}
+
+.board h2 {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.board > p {
+  margin-top: 6px;
+  font-size: 13.5px;
+  color: var(--dim);
+  max-width: 42ch;
+}
+
+.board-format {
+  border-left: 3px solid var(--accent);
+}
+.board-format h2 {
+  color: var(--accent);
+}
+
+.board-axis {
+  border-left: 3px solid var(--axis);
+}
+.board-axis h2 {
+  color: var(--axis);
+}
+.board-axis .stats dd {
+  color: var(--axis);
+}
+
+.axis-rows {
+  margin-top: 14px;
+  display: grid;
+  gap: 6px;
+}
+
+.axis-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  font-size: 13.5px;
+}
+
+.axis-row .an {
+  font-variant-numeric: tabular-nums;
+  color: var(--dim);
+  font-size: 12.5px;
+}
+
+.axis-row .av {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--axis);
+}
+
+.axis-empty {
+  margin-top: 14px;
+  padding: 12px;
+  border: 1px dashed var(--line-strong);
+  border-radius: 10px;
+  font-size: 13px;
+  color: var(--dim);
+}
+
 /* The numbers have to be readable in a screenshot of the first viewport. */
 .stats {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 12px;
-  margin: 34px 0 0;
-  max-width: 760px;
+  grid-template-columns: repeat(auto-fit, minmax(94px, 1fr));
+  gap: 10px;
+  margin: 16px 0 0;
 }
 
 .stats > div {
-  padding: 16px 18px;
+  padding: 12px 14px;
   border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.012));
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .stats dt {
@@ -142,8 +230,8 @@ h1 {
 }
 
 .stats dd {
-  margin-top: 6px;
-  font-size: clamp(28px, 5.4vw, 42px);
+  margin-top: 4px;
+  font-size: clamp(24px, 4.4vw, 36px);
   font-weight: 800;
   letter-spacing: -0.03em;
   font-variant-numeric: tabular-nums;
@@ -411,6 +499,85 @@ main {
   height: 44px;
 }
 
+/* Content-axis strip. Separated from the format metrics by a rule and a colour
+   so no reader can mistake one board's number for the other's. */
+.axis-strip {
+  border: 1px solid rgba(167, 139, 250, 0.32);
+  border-radius: 12px;
+  background: rgba(167, 139, 250, 0.07);
+  padding: 9px 12px;
+  display: grid;
+  gap: 6px;
+}
+
+.axis-strip .head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 10.5px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--axis);
+  font-weight: 700;
+}
+
+.axis-strip .head .n {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--dim);
+  font-weight: 600;
+}
+
+.axis-strip .r {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 13px;
+}
+
+.axis-strip .r span:first-child {
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.axis-strip .r span:last-child {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--axis);
+  white-space: nowrap;
+}
+
+.axis-strip.none .r {
+  color: var(--dim);
+}
+
+/* Provenance of the example copy, so a viewer knows whether the numbers on
+   screen are real. */
+.prov {
+  font-size: 11.5px;
+  color: var(--dim);
+}
+
+.prov b {
+  font-weight: 700;
+}
+
+.prov.sourced b {
+  color: #b7f3cd;
+}
+
+.prov.placeholder b {
+  color: #f4d29a;
+}
+
+.prov a {
+  color: var(--muted);
+}
+
 .hyp {
   font-size: 13.5px;
   line-height: 1.5;
@@ -497,12 +664,15 @@ footer a {
 
 /* --------------------------------------------------------- responsive */
 
+@media (max-width: 860px) {
+  .boards {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 760px) {
   .hero {
     padding: 44px 0 32px;
-  }
-  .stats {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .grid {
     grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));

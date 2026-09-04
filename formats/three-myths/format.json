@@ -13,7 +13,7 @@
     "glowY": 600
   },
   "data": {
-    "topic": "Three things you believe about sleep"
+    "topic": "Three placeholder beliefs"
   },
   "scene": [
     {
@@ -47,17 +47,17 @@
       },
       "rows": [
         {
-          "label": "8 hours is the target",
+          "label": "Belief A",
           "badge": "false",
           "color": "#ef4444"
         },
         {
-          "label": "Naps ruin your night",
+          "label": "Belief B",
           "badge": "false",
           "color": "#ef4444"
         },
         {
-          "label": "You can catch up at weekends",
+          "label": "Belief C",
           "badge": "false",
           "color": "#ef4444"
         }
@@ -69,7 +69,7 @@
       "box": {
         "y": 1220
       },
-      "text": "One of these is costing you an hour a night.",
+      "text": "Replace these with sourced corrections.",
       "font": {
         "size": 56,
         "weight": 800,

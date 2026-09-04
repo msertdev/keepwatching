@@ -14,8 +14,8 @@
     "glowY": 660
   },
   "data": {
-    "question": "Cold shower or hot?",
-    "verdict": "Hot wins for sleep. Cold wins for nothing you were promised."
+    "question": "Option A or Option B?",
+    "verdict": "Replace this with the verdict your evidence supports."
   },
   "scene": [
     {
@@ -45,15 +45,15 @@
         "size": 44
       },
       "left": {
-        "title": "Cold",
-        "value": "-0.4h",
-        "body": "sleep onset, measured",
+        "title": "Option A",
+        "value": "12,400",
+        "body": "units, placeholder",
         "color": "#38bdf8"
       },
       "right": {
-        "title": "Hot",
-        "value": "+0.6h",
-        "body": "sleep onset, measured",
+        "title": "Option B",
+        "value": "18,900",
+        "body": "units, placeholder",
         "color": "#f97316"
       }
     },

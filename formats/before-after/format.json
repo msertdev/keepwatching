@@ -13,7 +13,7 @@
     "glowY": 820
   },
   "data": {
-    "title": "Same room. 40 minutes apart.",
+    "title": "Placeholder — the same subject, twice.",
     "before": "BEFORE",
     "after": "AFTER"
   },
@@ -50,7 +50,7 @@
           "prop": "clip",
           "keys": [
             [
-              3.0,
+              3,
               0
             ],
             [
@@ -81,7 +81,7 @@
           "prop": "clip",
           "keys": [
             [
-              3.0,
+              3,
               0
             ],
             [
@@ -162,7 +162,7 @@
       "box": {
         "y": 1400
       },
-      "text": "Nothing was bought.",
+      "text": "Replace this with what changed.",
       "font": {
         "size": 58,
         "weight": 700,

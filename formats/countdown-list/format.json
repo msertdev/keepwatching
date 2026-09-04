@@ -13,7 +13,7 @@
     "glowY": 620
   },
   "data": {
-    "title": "5 things that quietly drain your battery"
+    "title": "Five placeholder items, counted down"
   },
   "scene": [
     {
@@ -68,23 +68,23 @@
       },
       "rows": [
         {
-          "label": "Always-on display",
+          "label": "Item A",
           "value": "8%"
         },
         {
-          "label": "Background location",
+          "label": "Item B",
           "value": "11%"
         },
         {
-          "label": "Auto-brightness off",
+          "label": "Item C",
           "value": "14%"
         },
         {
-          "label": "5G in a weak-signal area",
+          "label": "Item D",
           "value": "22%"
         },
         {
-          "label": "Push email on 1-minute fetch",
+          "label": "Item E",
           "value": "27%"
         }
       ]

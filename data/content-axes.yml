@@ -1,0 +1,48 @@
+# Content axes.
+#
+# A content axis is a property of the SUBJECT MATTER, not of the scene structure.
+# "Is this video about the viewer's own body, or about a corporation's money?" is
+# an axis question. "Does the counter rise or fall?" is a format question.
+#
+# The two are measured separately and are never averaged into the same number.
+# A format's retention is a claim about a scene structure; an axis's retention is
+# a claim about what audiences want to watch. Mixing them produces a figure that
+# answers neither question — and it is the easiest mistake to make, because the
+# same published video carries both labels.
+#
+# `kw measure` reads this file to validate the `content_axis` column in
+# measure/mapping.csv. Add your own axes here; they are yours, not the library's.
+
+axes:
+  - id: personal-body
+    name: Personal / body
+    description: >-
+      The subject is the viewer's own body, health, sleep, habits or senses.
+      The number describes something happening inside the person watching.
+    pole: personal
+
+  - id: corporate-money
+    name: Corporate / money
+    description: >-
+      The subject is a company, a market, revenue, prices or wealth. The number
+      describes something happening to an institution the viewer does not own.
+    pole: institutional
+
+  - id: physical-world
+    name: Physical world
+    description: >-
+      The subject is nature, geography, physics or scale — neither personal nor
+      institutional. Useful as a neutral third point rather than a pole.
+    pole: neutral
+
+# Notes for anyone reading a content-axis result:
+#
+# 1. An axis is confounded with everything else about the video. Two axes tested
+#    on different weeks, at different lengths, or in different formats are not a
+#    comparison — they are two anecdotes with labels on.
+# 2. To isolate an axis, hold the format constant and change only the subject.
+#    To isolate a format, hold the subject constant and change only the format.
+#    A single video can contribute to both, but only one of them at a time is a
+#    controlled comparison.
+# 3. An axis result is about your audience. It transfers between channels far
+#    less well than a format result does.

@@ -13,10 +13,9 @@
     "glowY": 820
   },
   "data": {
-    "label": "Plastic bottles bought worldwide",
-    "unit": "bottles, in the last minute",
-    "context": "Enough to circle the Earth four times.",
-    "value": 1020000
+    "label": "Light travels, every second",
+    "unit": "metres per second — exactly",
+    "context": "Not measured. Defined. The metre is derived from this number."
   },
   "scene": [
     {
@@ -40,7 +39,7 @@
         "y": 640
       },
       "from": 0,
-      "to": 1020000,
+      "to": 299792458,
       "startSec": 0.15,
       "endSec": 6.4,
       "ease": "out",

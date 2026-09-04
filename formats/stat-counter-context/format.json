@@ -13,10 +13,9 @@
     "glowY": 760
   },
   "data": {
-    "label": "A single search costs",
-    "unit": "grams of CO2",
-    "context": "You will run 8 of them before this clip ends.",
-    "value": 4.5
+    "label": "Placeholder metric",
+    "unit": "units per item",
+    "context": "Replace this line with the comparison that reframes the number."
   },
   "scene": [
     {
@@ -39,7 +38,7 @@
         "y": 660
       },
       "from": 0,
-      "to": 4.5,
+      "to": 12.4,
       "decimals": 1,
       "startSec": 0.2,
       "endSec": 2.6,

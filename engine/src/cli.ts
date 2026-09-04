@@ -22,7 +22,10 @@ import { ensureBundle } from "./bundle.js";
 import {
   listFormatSlugs,
   loadAllFormats,
+  loadContentAxes,
   loadFormat,
+  validateAxes,
+  validateMeta,
   validateSpec,
   type LoadedFormat,
 } from "./format.js";
@@ -109,51 +112,67 @@ function cmdList(): void {
   }
   const width = Math.max(...formats.map((f) => f.slug.length));
   console.log(`\n${formats.length} formats\n`);
+  console.log("  format measurement (ranks the library)   |   content axis (separate)");
   console.log(
     `  ${"slug".padEnd(width)}  ${"family".padEnd(12)}  ${"n".padStart(3)}  ` +
-      `${"avg viewed".padStart(10)}  ${"hook@3s".padStart(8)}  status`
+      `${"avg viewed".padStart(10)}  ${"hook@3s".padStart(8)}  ${"n".padStart(3)}  axes`
   );
-  console.log(`  ${"-".repeat(width)}  ${"-".repeat(12)}  ---  ----------  --------  ------`);
+  console.log(
+    `  ${"-".repeat(width)}  ${"-".repeat(12)}  ---  ----------  --------  ---  ----`
+  );
   for (const f of formats) {
+    const axes = f.data.contentAxis.axes.map((a) => a.axis).join(",") || "—";
     console.log(
       `  ${f.slug.padEnd(width)}  ${String(f.meta.family).padEnd(12)}  ` +
-        `${String(f.data.n).padStart(3)}  ${pct(f.data.avgViewedPct).padStart(10)}  ` +
-        `${pct(f.data.hook3s).padStart(8)}  ${f.data.status}`
+        `${String(f.data.format.n).padStart(3)}  ${pct(f.data.format.avgViewedPct).padStart(10)}  ` +
+        `${pct(f.data.format.hook3s).padStart(8)}  ` +
+        `${String(f.data.contentAxis.n).padStart(3)}  ${axes}`
     );
   }
-  const measured = formats.filter((f) => f.data.status === "measured").length;
+  const measured = formats.filter((f) => f.data.format.status === "measured").length;
+  const axisSamples = formats.reduce((s, f) => s + f.data.contentAxis.n, 0);
   console.log(
-    `\n  ${measured} measured, ${formats.length - measured} untested, ` +
-      `${formats.reduce((s, f) => s + f.data.n, 0)} samples total\n`
+    `\n  formats:      ${measured} measured, ${formats.length - measured} untested, ` +
+      `${formats.reduce((s, f) => s + f.data.format.n, 0)} samples`
   );
+  console.log(`  content axes: ${axisSamples} samples — never averaged into the numbers above\n`);
 }
 
 function cmdCheck(): void {
   const slugs = listFormatSlugs();
+  const axes = loadContentAxes();
   let bad = 0;
+  const errors: string[] = [];
   const warnings: string[] = [];
 
   for (const slug of slugs) {
     try {
       const f = loadFormat(slug);
       validateSpec(f.spec, slug);
+
+      /* Sourcing is an error, not a warning. A library about honest measurement
+         cannot ship unattributed numbers in its own demo copy. */
+      errors.push(...validateMeta(f.meta, slug));
+      errors.push(...validateAxes(f, axes));
+
       if (!f.meta.hypothesis) warnings.push(`${slug}: meta.yml has no hypothesis`);
       if (!f.meta.useWhen) warnings.push(`${slug}: meta.yml has no useWhen`);
       if (!fs.existsSync(path.join(f.dir, "data.yml"))) {
         warnings.push(`${slug}: no data.yml (treated as untested)`);
       }
     } catch (err) {
-      console.error(`  ✗ ${(err as Error).message}`);
+      errors.push((err as Error).message);
       bad++;
     }
   }
 
   console.log(`\n▸ check`);
-  console.log(`  ${slugs.length} formats, ${bad} invalid`);
+  console.log(`  ${slugs.length} formats, ${axes.length} declared content axes`);
+  for (const e of errors) console.log(`  \x1b[31m✗\x1b[0m ${e}`);
   for (const w of warnings) console.log(`  ! ${w}`);
   if (missingFonts().length) console.log(`  ! fonts missing — run \`npm run setup\``);
-  console.log("");
-  if (bad > 0) process.exit(1);
+  console.log(errors.length ? `\n  ${errors.length} problem(s)\n` : `  no problems\n`);
+  if (errors.length || bad > 0) process.exit(1);
 }
 
 async function cmdRender(): Promise<void> {

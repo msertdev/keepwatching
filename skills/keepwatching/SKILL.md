@@ -25,7 +25,7 @@ one of those carries an `n`. If `n: 0`, the honest answer is "untested" — say 
 ## Setup
 
 ```bash
-git clone https://github.com/keepwatching/keepwatching
+git clone https://github.com/msertdev/keepwatching
 cd keepwatching
 npm install && npm run setup    # Inter + a headless Chromium, ~2 min
 ```

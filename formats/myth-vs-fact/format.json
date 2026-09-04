@@ -14,9 +14,9 @@
     "glowY": 700
   },
   "data": {
-    "myth": "You lose most heat through your head",
-    "fact": "Head loss is ~10% — proportional to exposed skin",
-    "source": "US Army trials, 1970s; re-tested 2008"
+    "myth": "A widely held belief goes here",
+    "fact": "The correction goes here, with a source",
+    "source": "Source: replace this with a real citation before publishing"
   },
   "scene": [
     {

@@ -4,7 +4,18 @@
  * A format directory holds three files with three different jobs:
  *   format.json — the render spec (machine-owned, deterministic)
  *   meta.yml    — the claim: name, family, explicit hypothesis, when to use it
- *   data.yml    — the evidence: sample size and measured retention, or `untested`
+ *   data.yml    — the evidence, in TWO separate blocks that never merge
+ *
+ * The two blocks in data.yml answer different questions:
+ *
+ *   format:       how does this SCENE STRUCTURE perform?
+ *   content_axis: how does this SUBJECT MATTER perform, when carried by this
+ *                 format?
+ *
+ * They are kept apart at the type level, in the report, in data.yml, and in the
+ * gallery, because a single published video carries both labels and averaging
+ * them produces a number that answers neither question. Only the `format` block
+ * ever orders the library.
  *
  * Nothing here fabricates evidence. A format with no measurements loads with
  * status "untested" and n = 0, and stays visible everywhere it is listed.
@@ -14,7 +25,7 @@ import path from "node:path";
 import crypto from "node:crypto";
 import YAML from "yaml";
 
-import { FORMATS_DIR } from "./paths.js";
+import { FORMATS_DIR, ROOT } from "./paths.js";
 import {
   DEFAULT_CANVAS,
   DEFAULT_SAFE,
@@ -34,6 +45,16 @@ export type FormatFamily =
   | "escalation"
   | "reverse";
 
+/** Where the example copy in `format.json`'s `data` block came from. */
+export type SampleContent = "sourced" | "placeholder";
+
+export interface Source {
+  title: string;
+  url: string;
+  /** The specific claim this source backs. */
+  claim: string;
+}
+
 export interface FormatMeta {
   name: string;
   family: FormatFamily | string;
@@ -44,6 +65,14 @@ export interface FormatMeta {
   /** When it is the wrong tool. */
   avoidWhen?: string;
   tags?: string[];
+  /**
+   * Every format must declare this. `sourced` means the example numbers are
+   * real and `sources` lists where each came from; `placeholder` means the
+   * example copy is obvious filler that nobody could mistake for a fact.
+   * There is no third option — see validateMeta().
+   */
+  sampleContent?: SampleContent;
+  sources?: Source[];
   /** Fields a user is expected to fill in `format.json`'s `data` block. */
   inputs?: Array<{ key: string; description: string; example?: string }>;
   authors?: string[];
@@ -56,7 +85,15 @@ export interface RetentionPoint {
   p: number;
 }
 
-export interface Measurement {
+export interface SampleRef {
+  platform: string;
+  externalId: string;
+  variantId: string;
+  publishedAt?: string;
+}
+
+/** How a scene structure performed. This block, and only this block, ranks the library. */
+export interface FormatMeasurement {
   /** Number of published videos this format's numbers are based on. */
   n: number;
   status: "untested" | "measured" | "deprecated";
@@ -67,18 +104,46 @@ export interface Measurement {
   avgViewedPct?: number | null;
   /** Views per hour in the first 24 h, median across samples. */
   viewsPerHour?: number | null;
-  /** Percentage-point difference in avgViewedPct against the repo baseline. */
+  /** Percentage points against the mean of all measured FORMATS. */
   vsBaselinePct?: number | null;
   retention?: RetentionPoint[];
   /** Free-text caveats. Read before believing any of the above. */
   notes?: string;
   updated?: string;
-  samples?: Array<{
-    platform: string;
-    externalId: string;
-    variantId: string;
-    publishedAt?: string;
-  }>;
+  samples?: SampleRef[];
+}
+
+/** How one content axis performed, among videos published with this format. */
+export interface AxisResult {
+  /** Must match an `id` in data/content-axes.yml. */
+  axis: string;
+  n: number;
+  hook3s?: number | null;
+  avgViewedPct?: number | null;
+  viewsPerHour?: number | null;
+  /** Percentage points against the mean of all measured AXES. Never against formats. */
+  vsAxisBaselinePct?: number | null;
+  retention?: RetentionPoint[];
+  samples?: SampleRef[];
+}
+
+/**
+ * How the subject matter performed. Deliberately a sibling of FormatMeasurement
+ * rather than a field inside it: there is no code path that can add an axis
+ * number into a format average, because they are different types in different
+ * places.
+ */
+export interface ContentAxisMeasurement {
+  n: number;
+  status: "untested" | "measured";
+  axes: AxisResult[];
+  notes?: string;
+  updated?: string;
+}
+
+export interface Evidence {
+  format: FormatMeasurement;
+  contentAxis: ContentAxisMeasurement;
 }
 
 export interface LoadedFormat {
@@ -86,10 +151,27 @@ export interface LoadedFormat {
   dir: string;
   spec: FormatSpec;
   meta: FormatMeta;
-  data: Measurement;
+  data: Evidence;
   /** Stable identity for this exact spec — see variantId(). */
   variantId: string;
   specHash: string;
+}
+
+/* ------------------------------------------------------------ content axes */
+
+export interface ContentAxis {
+  id: string;
+  name: string;
+  description?: string;
+  pole?: string;
+}
+
+export const AXES_FILE = path.join(ROOT, "data", "content-axes.yml");
+
+export function loadContentAxes(): ContentAxis[] {
+  if (!fs.existsSync(AXES_FILE)) return [];
+  const parsed = YAML.parse(fs.readFileSync(AXES_FILE, "utf8")) as { axes?: ContentAxis[] };
+  return parsed?.axes ?? [];
 }
 
 /* --------------------------------------------------------------- identity */
@@ -134,14 +216,21 @@ export function parseVariantId(
 
 /* ---------------------------------------------------------------- loading */
 
-const UNTESTED: Measurement = {
+export const UNTESTED_FORMAT: FormatMeasurement = {
   n: 0,
   status: "untested",
+  platforms: [],
   hook3s: null,
   avgViewedPct: null,
   viewsPerHour: null,
   vsBaselinePct: null,
   retention: [],
+};
+
+export const UNTESTED_AXIS: ContentAxisMeasurement = {
+  n: 0,
+  status: "untested",
+  axes: [],
 };
 
 export function listFormatSlugs(): string[] {
@@ -151,6 +240,41 @@ export function listFormatSlugs(): string[] {
     .filter((d) => d.isDirectory() && fs.existsSync(path.join(FORMATS_DIR, d.name, "format.json")))
     .map((d) => d.name)
     .sort();
+}
+
+/** Read data.yml into the two-block shape, tolerating the older flat layout. */
+export function readEvidence(dir: string): Evidence {
+  const file = path.join(dir, "data.yml");
+  if (!fs.existsSync(file)) {
+    return { format: { ...UNTESTED_FORMAT }, contentAxis: { ...UNTESTED_AXIS, axes: [] } };
+  }
+
+  const raw = (YAML.parse(fs.readFileSync(file, "utf8")) ?? {}) as Record<string, unknown>;
+
+  /* A pre-schema data.yml has n/status at the top level. Read it as the format
+     block so an old checkout keeps its measurements instead of losing them. */
+  const formatRaw = (raw.format ?? (("n" in raw) ? raw : {})) as Partial<FormatMeasurement>;
+  const axisRaw = (raw.content_axis ?? raw.contentAxis ?? {}) as Partial<ContentAxisMeasurement>;
+
+  const format: FormatMeasurement = { ...UNTESTED_FORMAT, ...formatRaw };
+  const contentAxis: ContentAxisMeasurement = {
+    ...UNTESTED_AXIS,
+    ...axisRaw,
+    axes: Array.isArray(axisRaw.axes) ? axisRaw.axes : [],
+  };
+
+  /* An empty sample set is untested, whatever the file claims. Applied to each
+     block independently — a format can be untested while its axis is measured,
+     and that is a normal, honest state. */
+  if (!format.n || format.n <= 0) {
+    format.n = 0;
+    format.status = format.status === "deprecated" ? "deprecated" : "untested";
+  }
+  const axisTotal = contentAxis.axes.reduce((s, a) => s + (a.n ?? 0), 0);
+  contentAxis.n = axisTotal;
+  contentAxis.status = axisTotal > 0 ? "measured" : "untested";
+
+  return { format, contentAxis };
 }
 
 export function loadFormat(slugOrPath: string): LoadedFormat {
@@ -170,18 +294,15 @@ export function loadFormat(slugOrPath: string): LoadedFormat {
     ? (YAML.parse(fs.readFileSync(metaFile, "utf8")) as FormatMeta)
     : { name: slug, family: "unknown", hypothesis: "", useWhen: "" };
 
-  const dataFile = path.join(dir, "data.yml");
-  const data: Measurement = fs.existsSync(dataFile)
-    ? { ...UNTESTED, ...(YAML.parse(fs.readFileSync(dataFile, "utf8")) as Measurement) }
-    : { ...UNTESTED };
-
-  /* An empty sample set is untested, whatever the file claims. */
-  if (!data.n || data.n <= 0) {
-    data.n = 0;
-    data.status = data.status === "deprecated" ? "deprecated" : "untested";
-  }
-
-  return { slug, dir, spec, meta, data, variantId: variantId(slug, spec), specHash: specHash(spec) };
+  return {
+    slug,
+    dir,
+    spec,
+    meta,
+    data: readEvidence(dir),
+    variantId: variantId(slug, spec),
+    specHash: specHash(spec),
+  };
 }
 
 export function loadAllFormats(): LoadedFormat[] {
@@ -265,25 +386,85 @@ export function validateSpec(spec: FormatSpec, slug?: string): void {
   });
 }
 
+/**
+ * Every format must say where its example numbers came from.
+ *
+ * This is the rule that keeps a library about honest measurement from shipping
+ * invented facts in its own demo copy. Either the sample content is `sourced`
+ * and every source carries a URL and the claim it backs, or it is `placeholder`
+ * and reads as obvious filler. Silence is not allowed, because silence is what
+ * an invented number looks like.
+ */
+export function validateMeta(meta: FormatMeta, slug: string): string[] {
+  const problems: string[] = [];
+
+  if (!meta.sampleContent) {
+    problems.push(
+      `${slug}: meta.yml must declare sampleContent: sourced | placeholder ` +
+        `(say where the example numbers came from)`
+    );
+  } else if (meta.sampleContent === "sourced") {
+    if (!meta.sources?.length) {
+      problems.push(`${slug}: sampleContent is "sourced" but no sources are listed`);
+    } else {
+      meta.sources.forEach((s, i) => {
+        if (!s.url || !/^https?:\/\//.test(s.url)) {
+          problems.push(`${slug}: sources[${i}] needs a http(s) url`);
+        }
+        if (!s.claim) problems.push(`${slug}: sources[${i}] needs a claim it backs`);
+      });
+    }
+  } else if (meta.sampleContent === "placeholder" && meta.sources?.length) {
+    problems.push(`${slug}: sampleContent is "placeholder" but sources are listed — pick one`);
+  }
+
+  return problems;
+}
+
+/** Cross-check that every axis referenced by a measurement is a declared axis. */
+export function validateAxes(fmt: LoadedFormat, axes: ContentAxis[]): string[] {
+  const known = new Set(axes.map((a) => a.id));
+  return fmt.data.contentAxis.axes
+    .filter((a) => !known.has(a.axis))
+    .map((a) => `${fmt.slug}: content_axis references unknown axis "${a.axis}"`);
+}
+
 /* -------------------------------------------------------------- data.yml */
 
-export function writeMeasurement(dir: string, data: Measurement): void {
-  const ordered: Measurement = {
-    n: data.n,
-    status: data.status,
-    platforms: data.platforms,
-    hook3s: data.hook3s ?? null,
-    avgViewedPct: data.avgViewedPct ?? null,
-    viewsPerHour: data.viewsPerHour ?? null,
-    vsBaselinePct: data.vsBaselinePct ?? null,
-    retention: data.retention ?? [],
-    notes: data.notes,
-    updated: data.updated,
-    samples: data.samples,
+const HEADER =
+  "# Evidence for this format. Written by `kw measure apply` — never by hand.\n" +
+  "#\n" +
+  "# Two blocks, deliberately separate:\n" +
+  "#   format:       how this SCENE STRUCTURE performed. Only this block ranks the library.\n" +
+  "#   content_axis: how the SUBJECT MATTER performed, carried by this format.\n" +
+  "#\n" +
+  "# They are never averaged together. One published video carries both labels, so\n" +
+  "# combining them would produce a number that answers neither question.\n" +
+  "# n: 0 means untested. That is a valid, honest state — do not fill it in.\n";
+
+export function writeEvidence(dir: string, evidence: Evidence): void {
+  const format: FormatMeasurement = {
+    n: evidence.format.n,
+    status: evidence.format.status,
+    platforms: evidence.format.platforms ?? [],
+    hook3s: evidence.format.hook3s ?? null,
+    avgViewedPct: evidence.format.avgViewedPct ?? null,
+    viewsPerHour: evidence.format.viewsPerHour ?? null,
+    vsBaselinePct: evidence.format.vsBaselinePct ?? null,
+    retention: evidence.format.retention ?? [],
+    notes: evidence.format.notes,
+    updated: evidence.format.updated,
+    samples: evidence.format.samples ?? [],
   };
-  const header =
-    "# Measured evidence for this format. Written by `kw measure apply`.\n" +
-    "# n is the number of published videos behind these numbers. n: 0 means untested —\n" +
-    "# that is a valid, honest state. Do not fill these in by hand from memory.\n";
-  fs.writeFileSync(path.join(dir, "data.yml"), header + YAML.stringify(ordered), "utf8");
+
+  const contentAxis: ContentAxisMeasurement = {
+    n: evidence.contentAxis.axes.reduce((s, a) => s + (a.n ?? 0), 0),
+    status: evidence.contentAxis.axes.length ? "measured" : "untested",
+    axes: evidence.contentAxis.axes,
+    notes: evidence.contentAxis.notes,
+    updated: evidence.contentAxis.updated,
+  };
+
+  const body = YAML.stringify({ format, content_axis: contentAxis });
+  fs.writeFileSync(path.join(dir, "data.yml"), HEADER + body, "utf8");
 }

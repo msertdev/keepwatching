@@ -13,9 +13,9 @@
     "glowY": 740
   },
   "data": {
-    "claim": "Drink eight glasses of water a day.",
-    "interrupt": "No study ever said that.",
-    "detail": "The 1945 recommendation included the water in your food. The next sentence said so."
+    "claim": "The common assumption goes here.",
+    "interrupt": "And the contradiction here.",
+    "detail": "Replace this with the evidence that supports the reversal."
   },
   "scene": [
     {
