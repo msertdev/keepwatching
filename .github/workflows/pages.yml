@@ -38,24 +38,11 @@ jobs:
 
       - run: npm ci
 
-      - name: Cache Inter
-        uses: actions/cache@v4
-        with:
-          path: engine/assets/fonts
-          key: inter-4.1-${{ hashFiles('engine/src/fonts.ts') }}
-
-      - name: Cache Playwright browsers
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
-
-      - run: npm run setup
-
-      # The gallery is the product, so the previews it shows are rendered fresh
-      # from the specs on every deploy rather than committed as binaries.
-      - name: Render every format
-        run: npx kw render --all
+      # The previews are committed, so a deploy copies rather than renders —
+      # seconds instead of the ten minutes rendering all 24 used to cost. The
+      # drift check in ci.yml is what keeps that safe.
+      - name: Committed previews match their specs
+        run: npx kw previews check
 
       - name: Build the gallery
         run: npx kw site build

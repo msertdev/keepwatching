@@ -14,7 +14,7 @@
 import fs from "node:fs";
 import path from "node:path";
 
-import { OUT_DIR, ROOT, SITE_DIR, rel } from "./paths.js";
+import { ROOT, SITE_DIR, rel } from "./paths.js";
 import {
   loadAllFormats,
   loadAxisResults,
@@ -22,6 +22,7 @@ import {
   type AxisResult,
   type LoadedFormat,
 } from "./format.js";
+import { PREVIEW_DIR, previewFiles } from "./previews.js";
 
 export interface GalleryCard {
   slug: string;
@@ -99,21 +100,17 @@ function rank(a: GalleryCard, b: GalleryCard): number {
   return a.slug.localeCompare(b.slug);
 }
 
-function copyMedia(fmt: LoadedFormat, mediaDir: string): GalleryCard["media"] {
+/**
+ * The previews are committed, so this reads what is in site/previews/ rather
+ * than copying from out/. Getting a fresh render into site/previews/ is
+ * `kw gallery`'s job, and the manifest records which variant produced each one.
+ */
+function mediaFor(fmt: LoadedFormat): GalleryCard["media"] {
   const media: GalleryCard["media"] = {};
-  const src = path.join(OUT_DIR, fmt.slug);
-  const pairs: Array<[string, string, keyof GalleryCard["media"]]> = [
-    ["preview.mp4", `${fmt.slug}.mp4`, "mp4"],
-    ["preview.webm", `${fmt.slug}.webm`, "webm"],
-    ["poster.jpg", `${fmt.slug}.jpg`, "poster"],
-  ];
-  for (const [from, to, key] of pairs) {
-    const f = path.join(src, from);
-    if (fs.existsSync(f)) {
-      fs.copyFileSync(f, path.join(mediaDir, to));
-      media[key] = `previews/${to}`;
-    }
-  }
+  const [mp4, webm, jpg] = previewFiles(fmt.slug);
+  if (fs.existsSync(path.join(PREVIEW_DIR, mp4))) media.mp4 = `previews/${mp4}`;
+  if (fs.existsSync(path.join(PREVIEW_DIR, webm))) media.webm = `previews/${webm}`;
+  if (fs.existsSync(path.join(PREVIEW_DIR, jpg))) media.poster = `previews/${jpg}`;
   return media;
 }
 
@@ -124,8 +121,7 @@ export interface BuildOptions {
 }
 
 export function buildSite(opts: BuildOptions = {}): Gallery {
-  const mediaDir = path.join(SITE_DIR, "previews");
-  fs.mkdirSync(mediaDir, { recursive: true });
+  fs.mkdirSync(PREVIEW_DIR, { recursive: true });
 
   const formats = loadAllFormats();
   const declaredAxes = loadContentAxes();
@@ -161,7 +157,7 @@ export function buildSite(opts: BuildOptions = {}): Gallery {
       axes: f.data.contentAxis.axes,
       updated: f.data.contentAxis.updated,
     },
-    media: copyMedia(f, mediaDir),
+    media: mediaFor(f),
   }));
 
   cards.sort(rank);
