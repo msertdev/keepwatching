@@ -1,0 +1,20 @@
+node_modules/
+out/
+site/previews/
+site/gallery.json
+
+# Fonts are fetched by `npm run setup`, not committed (SIL OFL 1.1).
+engine/assets/fonts/
+engine/composition/comp.js
+
+# Your analytics exports are yours. Only mapping.csv and data.yml are shared.
+measure/inbox/*
+!measure/inbox/.gitkeep
+!measure/inbox/retention/.gitkeep
+measure/normalized/
+measure/report.json
+measure/report.md
+
+.DS_Store
+Thumbs.db
+*.log

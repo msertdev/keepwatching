@@ -1,0 +1,17 @@
+name: "Cold open — one line"
+family: cold-open
+hypothesis: >-
+  A single sentence with no title card, no logo and no build-up removes every reason to swipe in the first second; the cost of reading it is lower than the cost of scrolling past.
+useWhen: >-
+  The sentence is strong enough to carry the clip alone.
+avoidWhen: >-
+  The sentence needs a subject line to make sense.
+tags:
+  - "hook"
+  - "text-only"
+  - "first-second"
+inputs:
+  - key: line
+    description: "The opening sentence. Under twelve words."
+  - key: turn
+    description: "The line that changes its meaning."

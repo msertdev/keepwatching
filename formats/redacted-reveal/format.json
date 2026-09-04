@@ -1,0 +1,99 @@
+{
+  "id": "redacted-reveal",
+  "version": "1.0.0",
+  "canvas": {
+    "w": 1080,
+    "h": 1920,
+    "fps": 30,
+    "durationSec": 10
+  },
+  "theme": {
+    "accent": "#ef4444",
+    "glow": 0.12,
+    "glowY": 760
+  },
+  "data": {
+    "setup": "The most-stolen item in supermarkets is",
+    "answer": "cheese",
+    "closer": "Four times more than alcohol."
+  },
+  "scene": [
+    {
+      "id": "setup",
+      "type": "text",
+      "box": {
+        "y": 560
+      },
+      "text": "{{setup}}",
+      "font": {
+        "size": 68,
+        "weight": 700,
+        "color": "fg",
+        "lineHeight": 1.18
+      }
+    },
+    {
+      "id": "block",
+      "type": "card",
+      "box": {
+        "y": 880,
+        "x": 240,
+        "w": 600
+      },
+      "h": 150,
+      "fill": "rgba(255,255,255,0.16)",
+      "radius": 24,
+      "z": 0,
+      "at": 0.4,
+      "out": {
+        "at": 4.6,
+        "dur": 0.3
+      }
+    },
+    {
+      "id": "answer",
+      "type": "text",
+      "box": {
+        "y": 905
+      },
+      "text": "{{answer}}",
+      "font": {
+        "size": 110,
+        "weight": 800,
+        "color": "accent"
+      },
+      "z": 1,
+      "at": 0.4,
+      "tracks": [
+        {
+          "prop": "reveal",
+          "keys": [
+            [
+              4.6,
+              0
+            ],
+            [
+              5.4,
+              1
+            ]
+          ],
+          "ease": "smooth"
+        }
+      ]
+    },
+    {
+      "id": "closer",
+      "type": "text",
+      "box": {
+        "y": 1200
+      },
+      "text": "{{closer}}",
+      "font": {
+        "size": 60,
+        "weight": 700,
+        "color": "muted"
+      },
+      "at": 5.8
+    }
+  ]
+}

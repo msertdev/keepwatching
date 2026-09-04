@@ -1,0 +1,11 @@
+# Measured evidence for this format. Written by `kw measure apply`.
+# n is the number of published videos behind these numbers. n: 0 means untested —
+# that is a valid, honest state. Do not fill these in by hand from memory.
+n: 0
+status: untested
+platforms: []
+hook3s: null
+avgViewedPct: null
+viewsPerHour: null
+vsBaselinePct: null
+retention: []

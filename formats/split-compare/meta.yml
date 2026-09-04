@@ -1,0 +1,17 @@
+name: "Split comparison"
+family: comparison
+hypothesis: >-
+  Two panels shown together force a choice, and the delayed right-hand panel makes the viewer commit to a guess before the answer arrives.
+useWhen: >-
+  Two options differ on one number the audience will find unintuitive.
+avoidWhen: >-
+  The two things differ on many dimensions — a split will oversimplify them.
+tags:
+  - "versus"
+  - "choice"
+  - "two-column"
+inputs:
+  - key: question
+    description: "The question the split answers."
+  - key: verdict
+    description: "The one-line conclusion."

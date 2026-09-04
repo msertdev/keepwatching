@@ -1,0 +1,15 @@
+name: "Checklist run"
+family: progress
+hypothesis: >-
+  Items ticking off on a fixed cadence set a rhythm the viewer can predict, and a predictable rhythm carries attention through the middle where most formats lose it.
+useWhen: >-
+  You have four to eight parallel items with no ordering.
+avoidWhen: >-
+  The items build on each other — a checklist implies they are independent.
+tags:
+  - "list"
+  - "rhythm"
+  - "middle"
+inputs:
+  - key: title
+    description: "What the checklist covers."

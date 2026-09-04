@@ -1,0 +1,82 @@
+{
+  "id": "three-myths",
+  "version": "1.0.0",
+  "canvas": {
+    "w": 1080,
+    "h": 1920,
+    "fps": 30,
+    "durationSec": 13
+  },
+  "theme": {
+    "accent": "#ef4444",
+    "glow": 0.09,
+    "glowY": 600
+  },
+  "data": {
+    "topic": "Three things you believe about sleep"
+  },
+  "scene": [
+    {
+      "id": "topic",
+      "type": "text",
+      "box": {
+        "y": 340
+      },
+      "text": "{{topic}}",
+      "font": {
+        "size": 68,
+        "weight": 800,
+        "color": "fg",
+        "lineHeight": 1.1
+      }
+    },
+    {
+      "id": "rows",
+      "type": "list",
+      "box": {
+        "y": 600
+      },
+      "at": 0.8,
+      "stagger": 2.6,
+      "rank": true,
+      "rowHeight": 150,
+      "gap": 24,
+      "font": {
+        "size": 44,
+        "weight": 700
+      },
+      "rows": [
+        {
+          "label": "8 hours is the target",
+          "badge": "false",
+          "color": "#ef4444"
+        },
+        {
+          "label": "Naps ruin your night",
+          "badge": "false",
+          "color": "#ef4444"
+        },
+        {
+          "label": "You can catch up at weekends",
+          "badge": "false",
+          "color": "#ef4444"
+        }
+      ]
+    },
+    {
+      "id": "closer",
+      "type": "text",
+      "box": {
+        "y": 1220
+      },
+      "text": "One of these is costing you an hour a night.",
+      "font": {
+        "size": 56,
+        "weight": 800,
+        "color": "fg",
+        "lineHeight": 1.16
+      },
+      "at": 8.4
+    }
+  ]
+}

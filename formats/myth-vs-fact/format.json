@@ -1,0 +1,119 @@
+{
+  "id": "myth-vs-fact",
+  "version": "1.0.0",
+  "canvas": {
+    "w": 1080,
+    "h": 1920,
+    "fps": 30,
+    "durationSec": 12
+  },
+  "theme": {
+    "accent": "#22c55e",
+    "accent2": "#ef4444",
+    "glow": 0.1,
+    "glowY": 700
+  },
+  "data": {
+    "myth": "You lose most heat through your head",
+    "fact": "Head loss is ~10% — proportional to exposed skin",
+    "source": "US Army trials, 1970s; re-tested 2008"
+  },
+  "scene": [
+    {
+      "id": "kicker",
+      "type": "text",
+      "box": {
+        "y": 330
+      },
+      "text": "myth",
+      "font": {
+        "size": 44,
+        "weight": 800,
+        "color": "#ef4444",
+        "tracking": 0.24,
+        "case": "upper"
+      }
+    },
+    {
+      "id": "myth",
+      "type": "text",
+      "box": {
+        "y": 430
+      },
+      "text": "{{myth}}",
+      "font": {
+        "size": 72,
+        "weight": 800,
+        "color": "fg",
+        "lineHeight": 1.12
+      },
+      "panel": {
+        "fill": "rgba(239,68,68,0.10)",
+        "stroke": "#ef4444",
+        "radius": 32,
+        "padX": 36,
+        "padY": 34
+      }
+    },
+    {
+      "id": "kicker2",
+      "type": "text",
+      "box": {
+        "y": 830
+      },
+      "text": "fact",
+      "font": {
+        "size": 44,
+        "weight": 800,
+        "color": "#22c55e",
+        "tracking": 0.24,
+        "case": "upper"
+      },
+      "at": 4.2
+    },
+    {
+      "id": "fact",
+      "type": "text",
+      "box": {
+        "y": 930
+      },
+      "text": "{{fact}}",
+      "font": {
+        "size": 66,
+        "weight": 800,
+        "color": "fg",
+        "lineHeight": 1.14
+      },
+      "at": 4.4,
+      "in": {
+        "at": 4.4,
+        "dur": 0.4,
+        "move": [
+          0,
+          34
+        ]
+      },
+      "panel": {
+        "fill": "rgba(34,197,94,0.10)",
+        "stroke": "#22c55e",
+        "radius": 32,
+        "padX": 36,
+        "padY": 34
+      }
+    },
+    {
+      "id": "source",
+      "type": "text",
+      "box": {
+        "y": 1420
+      },
+      "text": "{{source}}",
+      "font": {
+        "size": 38,
+        "weight": 600,
+        "color": "muted"
+      },
+      "at": 5.6
+    }
+  ]
+}

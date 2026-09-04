@@ -1,0 +1,102 @@
+{
+  "id": "stat-counter-context",
+  "version": "1.0.0",
+  "canvas": {
+    "w": 1080,
+    "h": 1920,
+    "fps": 30,
+    "durationSec": 11
+  },
+  "theme": {
+    "accent": "#f59e0b",
+    "glow": 0.13,
+    "glowY": 760
+  },
+  "data": {
+    "label": "A single search costs",
+    "unit": "grams of CO2",
+    "context": "You will run 8 of them before this clip ends.",
+    "value": 4.5
+  },
+  "scene": [
+    {
+      "id": "label",
+      "type": "text",
+      "box": {
+        "y": 520
+      },
+      "text": "{{label}}",
+      "font": {
+        "size": 60,
+        "weight": 600,
+        "color": "muted"
+      }
+    },
+    {
+      "id": "value",
+      "type": "counter",
+      "box": {
+        "y": 660
+      },
+      "from": 0,
+      "to": 4.5,
+      "decimals": 1,
+      "startSec": 0.2,
+      "endSec": 2.6,
+      "ease": "out",
+      "font": {
+        "size": 300,
+        "weight": 800,
+        "tracking": -0.04
+      }
+    },
+    {
+      "id": "unit",
+      "type": "text",
+      "box": {
+        "y": 1010
+      },
+      "text": "{{unit}}",
+      "font": {
+        "size": 56,
+        "weight": 700,
+        "color": "accent"
+      }
+    },
+    {
+      "id": "rule",
+      "type": "card",
+      "box": {
+        "y": 1200,
+        "x": 360,
+        "w": 360
+      },
+      "h": 6,
+      "fill": "rgba(255,255,255,0.18)",
+      "radius": 3,
+      "at": 4.2
+    },
+    {
+      "id": "context",
+      "type": "text",
+      "box": {
+        "y": 1300
+      },
+      "text": "{{context}}",
+      "font": {
+        "size": 72,
+        "weight": 800,
+        "color": "fg"
+      },
+      "at": 4.5,
+      "in": {
+        "at": 4.5,
+        "dur": 0.45,
+        "move": [
+          0,
+          40
+        ]
+      }
+    }
+  ]
+}

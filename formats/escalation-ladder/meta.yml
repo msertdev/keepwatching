@@ -1,0 +1,15 @@
+name: "Escalation ladder"
+family: escalation
+hypothesis: >-
+  Each row larger than the last teaches the viewer that the next one is bigger again, so the expectation of a bigger number carries them to the final row.
+useWhen: >-
+  The values genuinely escalate and the last one is dramatic.
+avoidWhen: >-
+  The escalation flattens out — the format promises a peak it must deliver.
+tags:
+  - "sequence"
+  - "scale"
+  - "climax"
+inputs:
+  - key: title
+    description: "What is escalating."

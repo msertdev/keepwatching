@@ -1,0 +1,17 @@
+name: "Pattern interrupt"
+family: cold-open
+hypothesis: >-
+  Asserting something flatly and then contradicting it two seconds later breaks the sentence the viewer was already finishing in their head, and a broken prediction restarts attention.
+useWhen: >-
+  The common assumption is confidently wrong and you can prove it.
+avoidWhen: >-
+  The reversal is a technicality — the viewer will feel tricked, not corrected.
+tags:
+  - "hook"
+  - "reversal"
+  - "contradiction"
+inputs:
+  - key: claim
+    description: "The assumption, stated as fact."
+  - key: interrupt
+    description: "The contradiction."

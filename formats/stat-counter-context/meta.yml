@@ -1,0 +1,17 @@
+name: "Stat counter — context flip"
+family: stat-counter
+hypothesis: >-
+  Holding the number alone for four seconds builds a question the viewer cannot answer, so the context line at 4.5s pays off a debt rather than adding a fact.
+useWhen: >-
+  The number is meaningless without a comparison, and the comparison is the actual payload.
+avoidWhen: >-
+  The number already carries its own meaning — the pause will feel like stalling.
+tags:
+  - "number"
+  - "payoff"
+  - "comparison"
+inputs:
+  - key: label
+    description: "Framing line above the number."
+  - key: context
+    description: "The comparison that reframes the number."

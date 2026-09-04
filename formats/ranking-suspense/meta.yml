@@ -1,0 +1,15 @@
+name: "Ranking — bottom up"
+family: ranking
+hypothesis: >-
+  Withholding rank 1 until the final second converts the whole clip into a single unanswered question, trading early drop-off for a higher completion rate among those who stay.
+useWhen: >-
+  Completion and replays matter more than immediate shares.
+avoidWhen: >-
+  The audience already knows the likely #1 — the withholding will read as padding.
+tags:
+  - "list"
+  - "ranking"
+  - "suspense"
+inputs:
+  - key: title
+    description: "What is being ranked."
