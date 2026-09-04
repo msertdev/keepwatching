@@ -668,6 +668,10 @@ footer a {
   .boards {
     grid-template-columns: 1fr;
   }
+  /* auto-fit leaves a lone orphan tile at this width; 2x2 reads as a block. */
+  .stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 760px) {
