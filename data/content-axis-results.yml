@@ -7,7 +7,277 @@
 # single entry is not isolated from that entry — it is the same videos under a
 # second label. The entry `not-in-library` means those samples came from a format
 # that is not part of this library; they count here and nowhere else.
+updated: 2026-09-04
 baseline:
-  avgViewedPct: null
-  source: not enough data
-axes: []
+  avgViewedPct: 0.1857
+  source: mean of 3 axes on youtube only
+axes:
+  - axis: corporate-money
+    name: Corporate / money
+    n: 2
+    observations: 3
+    hook3s: null
+    avgViewedPct: null
+    viewsPerHour: null
+    vsAxisBaselinePct: 2.45
+    carriedBy:
+      - not-in-library
+    byPlatform:
+      - platform: tiktok
+        videos: 1
+        observations: 2
+        views: 398
+        avgPctViewed: 0.6286
+        sources:
+          - csv
+          - manual
+      - platform: youtube
+        videos: 1
+        observations: 1
+        views: 213
+        avgPctViewed: 0.2102
+        sources:
+          - csv
+    rows:
+      - platform: youtube
+        externalId: RycCFHdKbt0
+        variantId: not-in-library
+        title: How much Apple earned since you started watching (30 seconds)
+        publishedAt: 2026-09-02
+        measuredAt: 2026-09-04
+        dataThrough: 2026-09-03
+        durationSec: 31
+        views: 213
+        watchTimeHours: 0.3855
+        avgWatchSec: 6.52
+        avgPctViewed: 0.2102
+        subscribers: 0
+        viewsAt24h: 75
+        viewsAt48h: null
+        viewsAt7d: null
+        source: csv
+        notes:
+          - "viewsAt48h null: daily series ends 2026-09-03; a complete 48h
+            window for a video published 2026-09-02 needs data through
+            2026-09-04"
+          - "viewsAt7d null: daily series ends 2026-09-03; a complete 168h
+            window for a video published 2026-09-02 needs data through
+            2026-09-09"
+          - "thumbnail impressions and CTR deliberately not recorded: on Shorts
+            they cover a small share of views, the rest arriving from the feed"
+      - platform: tiktok
+        externalId: "7681074295207922952"
+        variantId: not-in-library
+        title: "## TikTok How much does Apple earn while you watch a 30-second video?
+          #realtime #facts #didyouknow #apple #money"
+        publishedAt: 2026-09-03
+        measuredAt: 2026-09-04
+        dataThrough: null
+        durationSec: null
+        views: 398
+        watchTimeHours: null
+        avgWatchSec: null
+        avgPctViewed: null
+        likes: 2
+        comments: 0
+        shares: 0
+        viewsAt24h: null
+        viewsAt48h: null
+        viewsAt7d: null
+        source: csv
+        notes:
+          - "avgWatchSec and avgPctViewed null: this export carries no retention
+            or watch-time column"
+          - "viewsAt24h/48h/7d null: this export has no daily series"
+          - 'date year inferred as 2026: this export writes dates without a year
+            (e.g. "3 Eylül")'
+      - platform: tiktok
+        externalId: "7681074295207922952"
+        variantId: not-in-library
+        publishedAt: 2026-09-02
+        measuredAt: 2026-09-04
+        dataThrough: null
+        durationSec: 35
+        views: 6487
+        watchTimeHours: null
+        avgWatchSec: 22
+        avgPctViewed: 0.6286
+        viewsAt24h: null
+        viewsAt48h: null
+        viewsAt7d: null
+        source: manual
+        notes:
+          - "source is manual: entered by hand, not read from an export"
+          - Read from the TikTok app. The export in data/seed/raw/Content.csv
+            reports a different view count taken at a different moment; both
+            readings are kept.
+    notes:
+      - "avgViewedPct null at axis level: this axis spans tiktok and youtube,
+        whose cuts are different videos with different durations. See byPlatform
+        for the figures side by side."
+  - axis: personal-body
+    name: Personal / body
+    n: 1
+    observations: 1
+    hook3s: null
+    avgViewedPct: 0.2314
+    viewsPerHour: null
+    vsAxisBaselinePct: 4.57
+    carriedBy:
+      - not-in-library
+    byPlatform:
+      - platform: youtube
+        videos: 1
+        observations: 1
+        views: 1172
+        avgPctViewed: 0.2314
+        sources:
+          - csv
+    rows:
+      - platform: youtube
+        externalId: 9G3hZjyV30c
+        variantId: not-in-library
+        title: What your body does while you watch this (30 seconds)
+        publishedAt: 2026-09-03
+        measuredAt: 2026-09-04
+        dataThrough: 2026-09-03
+        durationSec: 31
+        views: 1172
+        watchTimeHours: 2.3358
+        avgWatchSec: 7.17
+        avgPctViewed: 0.2314
+        subscribers: 2
+        viewsAt24h: null
+        viewsAt48h: null
+        viewsAt7d: null
+        source: csv
+        notes:
+          - "viewsAt24h null: daily series ends 2026-09-03; a complete 24h
+            window for a video published 2026-09-03 needs data through
+            2026-09-04"
+          - "viewsAt48h null: daily series ends 2026-09-03; a complete 48h
+            window for a video published 2026-09-03 needs data through
+            2026-09-05"
+          - "viewsAt7d null: daily series ends 2026-09-03; a complete 168h
+            window for a video published 2026-09-03 needs data through
+            2026-09-10"
+          - "thumbnail impressions and CTR deliberately not recorded: on Shorts
+            they cover a small share of views, the rest arriving from the feed"
+    notes: []
+  - axis: physical-world
+    name: Physical world
+    n: 1
+    observations: 1
+    hook3s: null
+    avgViewedPct: 0.1155
+    viewsPerHour: null
+    vsAxisBaselinePct: -7.02
+    carriedBy:
+      - not-in-library
+    byPlatform:
+      - platform: youtube
+        videos: 1
+        observations: 1
+        views: 106
+        avgPctViewed: 0.1155
+        sources:
+          - csv
+    rows:
+      - platform: youtube
+        externalId: CgLckp8GpW8
+        variantId: not-in-library
+        title: How many plastic bottles the world buys while you watch this
+        publishedAt: 2026-09-03
+        measuredAt: 2026-09-04
+        dataThrough: 2026-09-03
+        durationSec: 31
+        views: 106
+        watchTimeHours: 0.1054
+        avgWatchSec: 3.58
+        avgPctViewed: 0.1155
+        subscribers: 1
+        viewsAt24h: null
+        viewsAt48h: null
+        viewsAt7d: null
+        source: csv
+        notes:
+          - "viewsAt24h null: daily series ends 2026-09-03; a complete 24h
+            window for a video published 2026-09-03 needs data through
+            2026-09-04"
+          - "viewsAt48h null: daily series ends 2026-09-03; a complete 48h
+            window for a video published 2026-09-03 needs data through
+            2026-09-05"
+          - "viewsAt7d null: daily series ends 2026-09-03; a complete 168h
+            window for a video published 2026-09-03 needs data through
+            2026-09-10"
+          - "thumbnail impressions and CTR deliberately not recorded: on Shorts
+            they cover a small share of views, the rest arriving from the feed"
+    notes: []
+conflicts:
+  - subject: tiktok:7681074295207922952
+    field: views
+    readings:
+      - value: "398"
+        source: csv
+        measuredAt: 2026-09-04
+        from: platform export
+      - value: "6487"
+        source: manual
+        measuredAt: 2026-09-04
+        from: hand-entered
+    resolution: both kept as separate observations. A view count is a moving number;
+      two readings at different moments can both be correct.
+  - subject: tiktok:7681074295207922952
+    field: publishedAt
+    readings:
+      - value: 2026-09-03
+        source: csv
+        measuredAt: 2026-09-04
+        from: platform export
+      - value: 2026-09-02
+        source: manual
+        measuredAt: 2026-09-04
+        from: hand-entered
+    resolution: the platform's own record (2026-09-03) is used; the hand-entered
+      date is recorded here and not discarded.
+  - subject: cross-platform video length
+    field: durationSec
+    readings:
+      - value: 31 s
+        source: csv
+        from: youtube
+      - value: 35 s
+        source: csv
+        from: tiktok
+    resolution: "not a conflict: these are different cuts, so different videos.
+      durationSec is kept per platform and the two percentages are shown side by
+      side, never divided into one another."
+nulls:
+  - field: 9G3hZjyV30c.viewsAt24h
+    reason: daily series ends 2026-09-03; a complete 24h window for a video
+      published 2026-09-03 needs data through 2026-09-04
+  - field: 9G3hZjyV30c.viewsAt48h
+    reason: daily series ends 2026-09-03; a complete 48h window for a video
+      published 2026-09-03 needs data through 2026-09-05
+  - field: 9G3hZjyV30c.viewsAt7d
+    reason: daily series ends 2026-09-03; a complete 168h window for a video
+      published 2026-09-03 needs data through 2026-09-10
+  - field: RycCFHdKbt0.viewsAt48h
+    reason: daily series ends 2026-09-03; a complete 48h window for a video
+      published 2026-09-02 needs data through 2026-09-04
+  - field: RycCFHdKbt0.viewsAt7d
+    reason: daily series ends 2026-09-03; a complete 168h window for a video
+      published 2026-09-02 needs data through 2026-09-09
+  - field: CgLckp8GpW8.viewsAt24h
+    reason: daily series ends 2026-09-03; a complete 24h window for a video
+      published 2026-09-03 needs data through 2026-09-04
+  - field: CgLckp8GpW8.viewsAt48h
+    reason: daily series ends 2026-09-03; a complete 48h window for a video
+      published 2026-09-03 needs data through 2026-09-05
+  - field: CgLckp8GpW8.viewsAt7d
+    reason: daily series ends 2026-09-03; a complete 168h window for a video
+      published 2026-09-03 needs data through 2026-09-10
+  - field: hook3s (every axis)
+    reason: "no retention export exists for any of these videos: the YouTube table
+      export carries no retention curve, and the TikTok export has no retention
+      section"
