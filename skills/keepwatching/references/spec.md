@@ -16,6 +16,7 @@ element type in `engine/composition/comp.ts` — not a special case.
   "safe":   { "top": 130, "bottom": 320, "side": 60 },
   "audio":  { "bed": "assets/music/bed.mp3", "lufs": -14,
               "click": { "everySec": 0.5, "untilSec": 10 } },
+  "posterSec": 8.4,               // the still a card rests on; see below
   "data":   { "headline": "…" },  // interpolated into {{headline}} anywhere
   "scene":  [ /* elements */ ]
 }
@@ -26,6 +27,13 @@ element type in `engine/composition/comp.ts` — not a special case.
   username) covers roughly that much of a 1920px-tall frame. Keep meaning above it.
 - `theme.glow` is a soft radial accent wash; `0` turns it off.
 - `audio` is optional and off by default. No music is bundled with this repo.
+- **`posterSec`** is the second the poster frame is grabbed from — the still a
+  gallery card shows when it is not playing, and the cover a platform shows
+  before playback. Pick the moment the scene is fullest, usually just after the
+  last element lands and before the closing hold. It defaults to 35% of the
+  clip, which is often too early to look finished. `kw frame0` fails a format
+  whose poster carries too little ink or whose content spans too little of the
+  frame height.
 
 ## Common element fields
 

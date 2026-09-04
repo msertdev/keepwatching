@@ -530,6 +530,35 @@ main {
   height: 44px;
 }
 
+/* The no-data state: one honest line instead of a row of empty boxes. */
+.notmeasured {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 11px 14px;
+  border: 1px dashed var(--line-strong);
+  border-radius: 12px;
+  font-size: 13.5px;
+  color: var(--muted);
+}
+
+.notmeasured .nz,
+.axis-strip.none .nz {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  color: #f4d29a;
+}
+
+.axis-strip.none {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--dim);
+}
+
 /* Content-axis strip. Separated from the format metrics by a rule and a colour
    so no reader can mistake one board's number for the other's. */
 .axis-strip {
@@ -601,7 +630,7 @@ main {
   color: #b7f3cd;
 }
 
-.prov.placeholder b {
+.prov.selfref b {
   color: #f4d29a;
 }
 

@@ -274,6 +274,13 @@ export interface FormatSpec {
   theme?: Theme;
   safe?: Safe;
   audio?: AudioSpec;
+  /**
+   * Second to grab the poster frame from — the still a gallery card shows when
+   * it is not playing, and the cover a platform shows before playback. Pick the
+   * moment the scene is fullest, usually just after the last element lands.
+   * Defaults to 35% of the clip, which is often too early to look finished.
+   */
+  posterSec?: number;
   /** Values interpolated into `{{field}}` placeholders across the scene. */
   data?: Record<string, string | number>;
   scene: Element[];

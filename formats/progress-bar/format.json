@@ -13,7 +13,7 @@
     "glowY": 700
   },
   "data": {
-    "title": "Placeholder process, in four stages"
+    "title": "What a progress bar does to your patience"
   },
   "scene": [
     {
@@ -70,20 +70,20 @@
       },
       "rows": [
         {
-          "label": "Stage 1",
-          "value": "placeholder"
+          "label": "You see where it ends",
+          "value": "0%"
         },
         {
-          "label": "Stage 2",
-          "value": "placeholder"
+          "label": "You price the wait",
+          "value": "25%"
         },
         {
-          "label": "Stage 3",
-          "value": "placeholder"
+          "label": "You commit",
+          "value": "50%"
         },
         {
-          "label": "Stage 4",
-          "value": "placeholder"
+          "label": "You finish",
+          "value": "100%"
         }
       ]
     },
@@ -93,7 +93,7 @@
       "box": {
         "y": 1400
       },
-      "text": "Most people leave before stage two.",
+      "text": "You just did all four.",
       "font": {
         "size": 52,
         "weight": 700,
@@ -101,5 +101,6 @@
       },
       "at": 9.6
     }
-  ]
+  ],
+  "posterSec": 10.6
 }

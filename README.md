@@ -130,11 +130,18 @@ Every `meta.yml` must declare `sampleContent: sourced` or `placeholder`, and
 `npx kw check` **fails** if it does not — or if a `sourced` format lacks a URL
 and the specific claim that URL backs.
 
-- **3 formats are `sourced`** — `stat-counter-rise` (the speed of light, exact by
-  SI definition), `ranking-suspense` (the five highest mountains) and
-  `split-compare` (highest vs tallest). Each cites its source on the card.
-- **21 formats are `placeholder`** — "Option A", "12,400 units", "Stage 3". Filler
-  no reader could mistake for a finding, and the gallery labels it as such.
+- **5 formats are `sourced`** — the speed of light (exact by SI definition), the
+  five highest mountains, highest vs tallest, the five largest planets, and the
+  Great Wall from orbit. Each cites its source on the card.
+- **19 formats are self-referential** — their copy is about the format or about
+  the viewer ("You read this before deciding to scroll", "You waited four seconds
+  to find that out"), so it asserts no fact that needs a citation. They are still
+  declared `sampleContent: placeholder`, because that field records whether the
+  *claim* is sourced, not whether the writing is finished.
+
+The word "placeholder" appears in no rendered frame. A gallery gets
+screenshotted, and copy announcing itself as filler makes the library look
+unfinished rather than honest.
 
 ## The engine
 

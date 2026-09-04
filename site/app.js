@@ -52,8 +52,19 @@ function metric(key, value) {
   return `<div><div class="k">${key}</div><div class="v${value ? "" : " none"}">${shown}</div></div>`;
 }
 
-/** The format board's metrics. Green. Orders the gallery. */
+/**
+ * The format board's metrics. Green. Orders the gallery.
+ *
+ * With no measurement there is nothing to put in three boxes, and three empty
+ * boxes on twenty-four cards is ninety-six dashes — a page that looks broken
+ * rather than honest. One line says the same thing and reads as a statement.
+ * The boxes come back the moment there is something to put in them.
+ */
 function formatMetrics(f) {
+  const measured = f.status === "measured" && f.n > 0;
+  if (!measured) {
+    return `<div class="notmeasured"><span>Not measured yet</span><span class="nz">n = ${f.n}</span></div>`;
+  }
   const delta =
     f.vsBaselinePct === null || f.vsBaselinePct === undefined
       ? null
@@ -68,16 +79,19 @@ function formatMetrics(f) {
 /** The content-axis board's strip. Violet. Never sorted on, never totalled with the above. */
 function axisStrip(ca, axisNames) {
   const measured = ca.status === "measured" && ca.n > 0;
-  const rows = measured
-    ? ca.axes
-        .map(
-          (a) =>
-            `<div class="r"><span>${esc(axisNames[a.axis] ?? a.axis)} <span class="an">n=${a.n}</span></span>` +
-            `<span>${pct(a.avgViewedPct) ?? "—"}</span></div>`
-        )
-        .join("")
-    : `<div class="r"><span>no axis attributed yet</span><span>—</span></div>`;
-  return `<div class="axis-strip${measured ? "" : " none"}">
+  if (!measured) {
+    /* Same reasoning as formatMetrics: a sentence, not another dash. */
+    return `<div class="axis-strip none"><span>No content axis attributed</span>` +
+      `<span class="nz">n = ${ca.n}</span></div>`;
+  }
+  const rows = ca.axes
+    .map(
+      (a) =>
+        `<div class="r"><span>${esc(axisNames[a.axis] ?? a.axis)} <span class="an">n=${a.n}</span></span>` +
+        `<span>${pct(a.avgViewedPct) ?? "—"}</span></div>`
+    )
+    .join("");
+  return `<div class="axis-strip">
       <div class="head"><span>content axis</span><span class="n">n = ${ca.n}</span></div>
       ${rows}
     </div>`;
@@ -100,11 +114,14 @@ function cardHtml(c, rank, axisNames) {
         : `<div class="frame-empty"></div>`;
 
   const sourced = c.sampleContent === "sourced";
+  /* The non-sourced cards no longer carry filler: their copy is about the format
+     or the viewer, which is why it needs no citation. Saying "placeholder" here
+     would describe the schema field rather than what is on screen. */
   const prov = sourced
     ? `<p class="prov sourced"><b>Sourced example.</b> ${c.sources
         .map((s) => `<a href="${esc(s.url)}" rel="noopener">${esc(s.title)}</a>`)
         .join("; ")}</p>`
-    : `<p class="prov placeholder"><b>Placeholder example.</b> The copy in this preview is filler, not a fact.</p>`;
+    : `<p class="prov selfref"><b>Self-referential example.</b> The copy describes the format itself, so it asserts no fact to source.</p>`;
 
   return `
   <article class="card${measured && rank === 0 ? " top" : ""}" data-family="${esc(c.family)}">
