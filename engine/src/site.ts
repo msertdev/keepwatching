@@ -6,12 +6,16 @@
  * mean percentage of the clip watched; untested formats after them, alphabetically.
  * Losers are not dropped — a format that measured badly is the most useful row in
  * the table, and it keeps its numbers.
+ *
+ * Content-axis results ride along on each card but never touch the ordering. The
+ * library ranks scene structures; an axis result is a fact about subject matter,
+ * and sorting formats by it would be a category error.
  */
 import fs from "node:fs";
 import path from "node:path";
 
 import { OUT_DIR, ROOT, SITE_DIR, rel } from "./paths.js";
-import { loadAllFormats, type LoadedFormat } from "./format.js";
+import { loadAllFormats, loadContentAxes, type AxisResult, type LoadedFormat } from "./format.js";
 
 export interface GalleryCard {
   slug: string;
@@ -24,16 +28,28 @@ export interface GalleryCard {
   durationSec: number;
   fps: number;
   variantId: string;
-  n: number;
-  status: string;
-  platforms: string[];
-  hook3s: number | null;
-  avgViewedPct: number | null;
-  viewsPerHour: number | null;
-  vsBaselinePct: number | null;
-  retention: Array<{ t: number; p: number }>;
-  notes?: string;
-  updated?: string;
+  sampleContent: string;
+  sources: Array<{ title: string; url: string; claim: string }>;
+  /** How the scene structure performed. Orders the gallery. */
+  format: {
+    n: number;
+    status: string;
+    platforms: string[];
+    hook3s: number | null;
+    avgViewedPct: number | null;
+    viewsPerHour: number | null;
+    vsBaselinePct: number | null;
+    retention: Array<{ t: number; p: number }>;
+    notes?: string;
+    updated?: string;
+  };
+  /** How the subject matter performed. Displayed apart; never sorted on. */
+  contentAxis: {
+    n: number;
+    status: string;
+    axes: AxisResult[];
+    updated?: string;
+  };
   media: { mp4?: string; webm?: string; poster?: string };
 }
 
@@ -46,17 +62,31 @@ export interface Gallery {
     samples: number;
     platforms: string[];
   };
+  /** Repo-wide content-axis roll-up, kept in its own branch for the same reason. */
+  contentAxes: {
+    declared: Array<{ id: string; name: string; description?: string }>;
+    measured: number;
+    samples: number;
+    rows: Array<{
+      axis: string;
+      name: string;
+      n: number;
+      hook3s: number | null;
+      avgViewedPct: number | null;
+      formats: string[];
+    }>;
+  };
   cards: GalleryCard[];
 }
 
 function rank(a: GalleryCard, b: GalleryCard): number {
-  const am = a.status === "measured" && a.avgViewedPct !== null;
-  const bm = b.status === "measured" && b.avgViewedPct !== null;
+  const am = a.format.status === "measured" && a.format.avgViewedPct !== null;
+  const bm = b.format.status === "measured" && b.format.avgViewedPct !== null;
   if (am !== bm) return am ? -1 : 1;
   if (am && bm) {
-    const d = (b.avgViewedPct ?? 0) - (a.avgViewedPct ?? 0);
+    const d = (b.format.avgViewedPct ?? 0) - (a.format.avgViewedPct ?? 0);
     if (Math.abs(d) > 1e-9) return d;
-    return (b.hook3s ?? 0) - (a.hook3s ?? 0);
+    return (b.format.hook3s ?? 0) - (a.format.hook3s ?? 0);
   }
   return a.slug.localeCompare(b.slug);
 }
@@ -84,6 +114,8 @@ export function buildSite(): Gallery {
   fs.mkdirSync(mediaDir, { recursive: true });
 
   const formats = loadAllFormats();
+  const declaredAxes = loadContentAxes();
+
   const cards: GalleryCard[] = formats.map((f) => ({
     slug: f.slug,
     name: f.meta.name || f.slug,
@@ -95,30 +127,84 @@ export function buildSite(): Gallery {
     durationSec: f.spec.canvas.durationSec,
     fps: f.spec.canvas.fps,
     variantId: f.variantId,
-    n: f.data.n,
-    status: f.data.status,
-    platforms: f.data.platforms ?? [],
-    hook3s: f.data.hook3s ?? null,
-    avgViewedPct: f.data.avgViewedPct ?? null,
-    viewsPerHour: f.data.viewsPerHour ?? null,
-    vsBaselinePct: f.data.vsBaselinePct ?? null,
-    retention: f.data.retention ?? [],
-    notes: f.data.notes,
-    updated: f.data.updated,
+    sampleContent: f.meta.sampleContent ?? "undeclared",
+    sources: f.meta.sources ?? [],
+    format: {
+      n: f.data.format.n,
+      status: f.data.format.status,
+      platforms: f.data.format.platforms ?? [],
+      hook3s: f.data.format.hook3s ?? null,
+      avgViewedPct: f.data.format.avgViewedPct ?? null,
+      viewsPerHour: f.data.format.viewsPerHour ?? null,
+      vsBaselinePct: f.data.format.vsBaselinePct ?? null,
+      retention: f.data.format.retention ?? [],
+      notes: f.data.format.notes,
+      updated: f.data.format.updated,
+    },
+    contentAxis: {
+      n: f.data.contentAxis.n,
+      status: f.data.contentAxis.status,
+      axes: f.data.contentAxis.axes,
+      updated: f.data.contentAxis.updated,
+    },
     media: copyMedia(f, mediaDir),
   }));
 
   cards.sort(rank);
 
-  const measured = cards.filter((c) => c.status === "measured" && c.n > 0);
+  const measured = cards.filter((c) => c.format.status === "measured" && c.format.n > 0);
+
+  /* Repo-wide axis roll-up: a weighted mean over each format's per-axis rows,
+     kept in its own branch of the JSON so no consumer can reach it while
+     iterating format metrics. */
+  const pooled = new Map<
+    string,
+    { n: number; hookNum: number; hookN: number; avgNum: number; avgN: number; formats: Set<string> }
+  >();
+  for (const c of cards) {
+    for (const a of c.contentAxis.axes) {
+      if (!pooled.has(a.axis)) {
+        pooled.set(a.axis, { n: 0, hookNum: 0, hookN: 0, avgNum: 0, avgN: 0, formats: new Set() });
+      }
+      const p = pooled.get(a.axis)!;
+      p.n += a.n;
+      p.formats.add(c.slug);
+      if (a.hook3s !== null && a.hook3s !== undefined) {
+        p.hookNum += a.hook3s * a.n;
+        p.hookN += a.n;
+      }
+      if (a.avgViewedPct !== null && a.avgViewedPct !== undefined) {
+        p.avgNum += a.avgViewedPct * a.n;
+        p.avgN += a.n;
+      }
+    }
+  }
+
+  const axisRows = [...pooled]
+    .map(([axis, p]) => ({
+      axis,
+      name: declaredAxes.find((d) => d.id === axis)?.name ?? axis,
+      n: p.n,
+      hook3s: p.hookN ? Number((p.hookNum / p.hookN).toFixed(4)) : null,
+      avgViewedPct: p.avgN ? Number((p.avgNum / p.avgN).toFixed(4)) : null,
+      formats: [...p.formats].sort(),
+    }))
+    .sort((a, b) => (b.avgViewedPct ?? -1) - (a.avgViewedPct ?? -1));
+
   const gallery: Gallery = {
     generatedAt: new Date().toISOString(),
     totals: {
       formats: cards.length,
       measured: measured.length,
       untested: cards.length - measured.length,
-      samples: cards.reduce((s, c) => s + c.n, 0),
-      platforms: [...new Set(cards.flatMap((c) => c.platforms))].sort(),
+      samples: cards.reduce((s, c) => s + c.format.n, 0),
+      platforms: [...new Set(cards.flatMap((c) => c.format.platforms))].sort(),
+    },
+    contentAxes: {
+      declared: declaredAxes.map((a) => ({ id: a.id, name: a.name, description: a.description })),
+      measured: axisRows.length,
+      samples: axisRows.reduce((s, a) => s + a.n, 0),
+      rows: axisRows,
     },
     cards,
   };
@@ -129,7 +215,13 @@ export function buildSite(): Gallery {
 
   const withMedia = cards.filter((c) => c.media.mp4 || c.media.webm).length;
   console.log(`\n▸ gallery built  ${rel(path.join(SITE_DIR, "gallery.json"))}`);
-  console.log(`  ${cards.length} formats · ${measured.length} measured · ${gallery.totals.samples} samples`);
+  console.log(
+    `  formats:      ${cards.length} · ${measured.length} measured · ${gallery.totals.samples} samples`
+  );
+  console.log(
+    `  content axes: ${declaredAxes.length} declared · ${axisRows.length} measured · ` +
+      `${gallery.contentAxes.samples} samples`
+  );
   console.log(`  ${withMedia}/${cards.length} have rendered previews`);
   if (withMedia < cards.length) console.log(`  run \`kw render --all\` to fill the gaps\n`);
   else console.log("");
@@ -153,30 +245,39 @@ function writeFormatIndex(formats: LoadedFormat[]): void {
     v === null || v === undefined ? "—" : `${(v * 100).toFixed(0)}%`;
   const oneLine = (v: string | undefined) => (v ?? "").replace(/\s+/g, " ").trim();
 
-  const measured = formats.filter((f) => f.data.status === "measured").length;
-  const samples = formats.reduce((sum, f) => sum + f.data.n, 0);
+  const measured = formats.filter((f) => f.data.format.status === "measured").length;
+  const samples = formats.reduce((sum, f) => sum + f.data.format.n, 0);
+  const axisSamples = formats.reduce((sum, f) => sum + f.data.contentAxis.n, 0);
 
   const out: string[] = [
     "# The format library",
     "",
     "Generated by `kw site build` from `formats/*/meta.yml` and `data.yml`. Do not edit by hand.",
     "",
-    `${formats.length} formats · ${measured} measured · ${samples} samples total`,
+    `${formats.length} formats · ${measured} measured · ${samples} format samples`,
     "",
     "`n` is the number of published videos behind a row. `n = 0` means untested —",
     "a valid state, not a gap to paper over.",
+    "",
+    "The `n` columns below are **format** sample sizes only. Content-axis results are a",
+    `separate measurement (${axisSamples} samples repo-wide) and are never averaged into`,
+    "these numbers — see `data/content-axes.yml` and section 2 of `measure/report.md`.",
+    "",
+    "`content` says where each format's example copy came from: `sourced` (real numbers,",
+    "with the source listed in its meta.yml) or `placeholder` (obvious filler).",
     "",
   ];
 
   for (const [family, list] of [...byFamily].sort((a, b) => a[0].localeCompare(b[0]))) {
     const sorted = [...list].sort((a, b) => a.slug.localeCompare(b.slug));
     out.push(`## ${family}`, "");
-    out.push("| Format | n | avg viewed | hook @3s | Hypothesis |");
-    out.push("|---|---|---|---|---|");
+    out.push("| Format | content | n | avg viewed | hook @3s | Hypothesis |");
+    out.push("|---|---|---|---|---|---|");
     for (const f of sorted) {
       out.push(
-        `| \`${f.slug}\` | ${f.data.n} | ${pct(f.data.avgViewedPct)} | ` +
-          `${pct(f.data.hook3s)} | ${oneLine(f.meta.hypothesis)} |`
+        `| \`${f.slug}\` | ${f.meta.sampleContent ?? "—"} | ${f.data.format.n} | ` +
+          `${pct(f.data.format.avgViewedPct)} | ${pct(f.data.format.hook3s)} | ` +
+          `${oneLine(f.meta.hypothesis)} |`
       );
     }
     out.push("");
@@ -184,6 +285,9 @@ function writeFormatIndex(formats: LoadedFormat[]): void {
       out.push(`**\`${f.slug}\`** — ${f.meta.name}  `);
       out.push(`Use when: ${oneLine(f.meta.useWhen)}  `);
       if (f.meta.avoidWhen) out.push(`Avoid when: ${oneLine(f.meta.avoidWhen)}  `);
+      if (f.meta.sampleContent === "sourced" && f.meta.sources?.length) {
+        for (const s of f.meta.sources) out.push(`Source: [${s.title}](${s.url}) — ${s.claim}  `);
+      }
       out.push(`${f.spec.canvas.durationSec}s · ${f.spec.canvas.fps}fps · \`${f.variantId}\``);
       out.push("");
     }

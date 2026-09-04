@@ -13,7 +13,7 @@
     "glowY": 780
   },
   "data": {
-    "title": "What one degree of warming costs"
+    "title": "Placeholder escalation, four steps"
   },
   "scene": [
     {
@@ -35,7 +35,7 @@
       "box": {
         "y": 560
       },
-      "text": "+1°C  ·  coral bleaching begins",
+      "text": "Step 1  ·  smallest effect",
       "font": {
         "size": 42,
         "weight": 700,
@@ -49,7 +49,7 @@
       "box": {
         "y": 700
       },
-      "text": "+2°C  ·  99% of reefs gone",
+      "text": "Step 2  ·  larger effect",
       "font": {
         "size": 56,
         "weight": 700,
@@ -63,7 +63,7 @@
       "box": {
         "y": 880
       },
-      "text": "+3°C  ·  the Amazon stops raining",
+      "text": "Step 3  ·  larger again",
       "font": {
         "size": 70,
         "weight": 800,
@@ -78,7 +78,7 @@
       "box": {
         "y": 1120
       },
-      "text": "+4°C  ·  half the planet uninhabitable",
+      "text": "Step 4  ·  the largest effect",
       "font": {
         "size": 84,
         "weight": 800,
@@ -103,7 +103,7 @@
       "box": {
         "y": 1480
       },
-      "text": "We are at +1.4°C.",
+      "text": "Replace these with real, escalating values.",
       "font": {
         "size": 58,
         "weight": 800,

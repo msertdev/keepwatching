@@ -283,9 +283,11 @@ body {
 
 .split-value {
   font-weight: 800;
-  font-size: 1.9em;
+  font-size: 1.75em;
   line-height: 1;
   font-variant-numeric: tabular-nums;
+  /* A wrapped value reads as two numbers. It never wraps. */
+  white-space: nowrap;
 }
 
 .split-body {

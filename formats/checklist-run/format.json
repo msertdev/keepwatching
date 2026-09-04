@@ -13,7 +13,7 @@
     "glowY": 620
   },
   "data": {
-    "title": "Everything a 20-minute walk changes"
+    "title": "Placeholder checklist, six items"
   },
   "scene": [
     {
@@ -64,27 +64,27 @@
       },
       "rows": [
         {
-          "label": "Blood glucose",
+          "label": "Item A",
           "value": "-18%"
         },
         {
-          "label": "Cortisol",
+          "label": "Item B",
           "value": "-12%"
         },
         {
-          "label": "Creative output",
+          "label": "Item C",
           "value": "+60%"
         },
         {
-          "label": "Sleep latency",
+          "label": "Item D",
           "value": "-9 min"
         },
         {
-          "label": "Afternoon slump",
+          "label": "Item E",
           "value": "gone"
         },
         {
-          "label": "Cost",
+          "label": "Item F",
           "value": "0"
         }
       ]
