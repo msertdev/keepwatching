@@ -21,6 +21,12 @@ Format, three levels:
 
 - Content axis: `personal-body`
 - Clip length: 30s ± 2s
+
+  The three formats were retimed to 30s for this experiment. Their earlier
+  durations (10s, 12s, 10s) were arbitrary — I picked them when generating the
+  library and had no evidence behind the choice. 30s matches what the channel
+  actually publishes: the three videos in the Question section are all 31s. The
+  rest of the library is still 8–14s, and those durations are equally arbitrary.
 - Audio: none
 - Posting time of day
 - Caption and hashtag pattern

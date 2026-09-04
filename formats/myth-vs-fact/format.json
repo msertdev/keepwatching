@@ -5,7 +5,7 @@
     "w": 1080,
     "h": 1920,
     "fps": 30,
-    "durationSec": 12
+    "durationSec": 9
   },
   "theme": {
     "accent": "#22c55e",
@@ -116,5 +116,5 @@
       "at": 5.6
     }
   ],
-  "posterSec": 9.6
+  "posterSec": 7.6
 }

@@ -14,8 +14,6 @@ element type in `engine/composition/comp.ts` — not a special case.
   "theme":  { "bg": "#0b0f14", "fg": "#ffffff", "muted": "rgba(255,255,255,0.62)",
               "accent": "#22c55e", "accent2": "#38bdf8", "glow": 0.14, "glowY": 760 },
   "safe":   { "top": 130, "bottom": 320, "side": 60 },
-  "audio":  { "bed": "assets/music/bed.mp3", "lufs": -14,
-              "click": { "everySec": 0.5, "untilSec": 10 } },
   "posterSec": 8.4,               // the still a card rests on; see below
   "data":   { "headline": "…" },  // interpolated into {{headline}} anywhere
   "scene":  [ /* elements */ ]
@@ -26,7 +24,9 @@ element type in `engine/composition/comp.ts` — not a special case.
 - `safe.bottom` defaults to 320px because platform UI (caption, buttons,
   username) covers roughly that much of a 1920px-tall frame. Keep meaning above it.
 - `theme.glow` is a soft radial accent wash; `0` turns it off.
-- `audio` is optional and off by default. No music is bundled with this repo.
+- Clips render **silent**. There is no `audio` block: one existed, no format
+  used it, and untested code in a repo about verification is a liability. Mux a
+  bed after the render if you want one.
 - **`posterSec`** is the second the poster frame is grabbed from — the still a
   gallery card shows when it is not playing, and the cover a platform shows
   before playback. Pick the moment the scene is fullest, usually just after the

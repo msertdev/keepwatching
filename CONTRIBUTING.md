@@ -64,7 +64,11 @@ guess.
 |---|---|---|
 | YouTube Studio | Analytics → Content → **Advanced mode** → Export → CSV | Yes, per video: Engagement → Audience retention → Export |
 | TikTok | Analytics → Content → Download data | Not in the export in most regions — read it by hand and mark `manual` |
-| Instagram | Professional dashboard, per reel | No export at all; `manual` only |
+| Instagram | No usable export — read the reel dashboard by hand | No |
+
+**Instagram has no ingest path.** `kw measure` reads YouTube and TikTok exports
+only. A reel measurement is welcome, but it is entered by hand into
+`measure/manual.yml` and marked `source: manual`.
 
 A YouTube *table* export carries no retention column, so `hook_3s` comes from
 the separate audience-retention export or stays blank. Save that one as

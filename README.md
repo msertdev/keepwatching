@@ -228,7 +228,7 @@ bytes are not, and the repo does not pretend otherwise.
 | Guard | What it catches |
 |---|---|
 | `kw check` | invalid specs, unsourced demo numbers, undeclared content axes, a sourced counter asserting certainty before it lands |
-| `kw frame0` | a blank or thin first frame, and a poster frame that would sit on a card looking empty — DOM and pixels, independently, across all 24 |
+| `kw frame0` | a blank or thin first frame, a poster frame that would sit on a card looking empty, and a stretch of dead air — more than 5s where nothing on screen moves — DOM and pixels, independently, across all 24 |
 | `kw previews check` | a committed preview whose spec has changed since it was rendered |
 | `kw layout` | a control or card row that is off screen or unclickable at 390 / 768 / 1440px |
 | `kw social check` | a social preview card that no longer matches the formats or the layout it was rendered from |
@@ -258,7 +258,7 @@ kw gallery                   refresh stale previews, build and serve the gallery
     --no-serve               build only
 kw list                      every format, with its sample size
 kw check                     validate every format
-kw frame0 [<slug>]           first-frame and poster-frame checks
+kw frame0 [<slug>]           first-frame, poster-frame and dead-air checks
 kw previews check            committed previews match their specs
 kw layout [--url=<live>]     gallery is reachable at 3 widths
 kw social [check]            render the social preview card, or verify it is current
@@ -272,5 +272,8 @@ kw measure [ingest|report|apply|seed]
 
 ## Licence
 
-MIT. Inter is fetched at setup under the SIL Open Font License 1.1. No music
-ships with this repo — point `audio.bed` at a file you have the rights to.
+MIT. Inter is fetched at setup under the SIL Open Font License 1.1.
+
+Clips render silent. There is no audio subsystem: one shipped, no format used
+it, and code that nothing exercises is code nobody has tested. If you want a
+bed, mux it after the render with ffmpeg.

@@ -274,20 +274,6 @@ export interface Canvas {
   durationSec: number;
 }
 
-export interface AudioSpec {
-  /** Path to a music bed, relative to the repo root. Optional. */
-  bed?: string;
-  /** Target integrated loudness for the bed. Default -14 LUFS. */
-  lufs?: number;
-  /** Synthesised click track. Off unless `everySec` is set. */
-  click?: {
-    everySec: number;
-    untilSec?: number;
-    freqHz?: number;
-    gain?: number;
-  };
-}
-
 export interface FormatSpec {
   /** Slug. Must match the containing directory name. */
   id: string;
@@ -296,7 +282,6 @@ export interface FormatSpec {
   canvas: Canvas;
   theme?: Theme;
   safe?: Safe;
-  audio?: AudioSpec;
   /**
    * Second to grab the poster frame from — the still a gallery card shows when
    * it is not playing, and the cover a platform shows before playback. Pick the

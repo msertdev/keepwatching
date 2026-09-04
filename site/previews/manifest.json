@@ -75,7 +75,7 @@
       }
     },
     "cold-open-question": {
-      "variantId": "cold-open-question@1.0.0+7b44eae1f1dd",
+      "variantId": "cold-open-question@1.0.0+08bdded218ae",
       "renderedAt": "2026-09-04",
       "files": {
         "cold-open-question.mp4": {
@@ -87,13 +87,13 @@
           "sha256": "0b1080eae1a25f02ad09b58f361cb2953a91b479c80105af23cbaff58f3f68b4"
         },
         "cold-open-question.jpg": {
-          "bytes": 99410,
-          "sha256": "b94854f02004cc824c67d026b0fd3ea9c315f84f3e41736203091eb71f55c382"
+          "bytes": 134829,
+          "sha256": "96525a6255f249749e98f10288f043eab2d4ceeaa41a9ad238ad8117fc036732"
         }
       }
     },
     "countdown-clock": {
-      "variantId": "countdown-clock@1.0.0+a36a5c8b26c6",
+      "variantId": "countdown-clock@1.0.0+95ff65c264af",
       "renderedAt": "2026-09-04",
       "files": {
         "countdown-clock.mp4": {
@@ -105,8 +105,8 @@
           "sha256": "56062cd4f4c181b053bb40c139321039a6da5384bf60b110a9fe8e94d4f159a1"
         },
         "countdown-clock.jpg": {
-          "bytes": 78676,
-          "sha256": "5d8765255ab5237dbf88bf756ce544263b8c1cf407063c794bf0fd20495a8708"
+          "bytes": 79800,
+          "sha256": "1cd96bc5ff22b436f7d2f3f77eb4d0b2765a56c1454f5765e8c673d0d00694d6"
         }
       }
     },
@@ -183,16 +183,16 @@
       }
     },
     "myth-vs-fact": {
-      "variantId": "myth-vs-fact@1.0.0+eb0ac213a32a",
+      "variantId": "myth-vs-fact@1.0.0+4bf4da1aeb35",
       "renderedAt": "2026-09-04",
       "files": {
         "myth-vs-fact.mp4": {
-          "bytes": 57273,
-          "sha256": "17691fbe4651418120ba581ae0ba4c59af982954e92ab5f7ad59f92ee6592ba2"
+          "bytes": 52227,
+          "sha256": "198c60973cc005295f36676ae973f8698a949d4aba749062080835e550ba3265"
         },
         "myth-vs-fact.webm": {
-          "bytes": 71896,
-          "sha256": "c442ff04f44a112c675f5fa22e815ed256f6734d2fb0ddb17b8e1d97e8ce5cb4"
+          "bytes": 68791,
+          "sha256": "054247bc0c24f907b34ea1abe369fcb2ae102398c279875666039e8ea7e6f79a"
         },
         "myth-vs-fact.jpg": {
           "bytes": 117690,
@@ -237,16 +237,16 @@
       }
     },
     "ranking-reveal": {
-      "variantId": "ranking-reveal@1.0.0+491bd5a2df12",
+      "variantId": "ranking-reveal@1.0.0+ae4dbc442feb",
       "renderedAt": "2026-09-04",
       "files": {
         "ranking-reveal.mp4": {
-          "bytes": 71169,
-          "sha256": "40fb2a4303e95a69005f0dc3c6dfad7f476e03de006f55fb57e182cd6a25ac10"
+          "bytes": 65775,
+          "sha256": "06e0e2e6e4c0b049fb5f9cfd48461164fcf829ee84b3de8009c1e322c14ba6fd"
         },
         "ranking-reveal.webm": {
-          "bytes": 83926,
-          "sha256": "ac0c43c59edc22d9e4452094e80b5f4c81ca1a1d8f8d63819a74ebc16dbe7f2a"
+          "bytes": 80592,
+          "sha256": "c292f4517f3ddced137848999d8d9410ebde4dc431b9d77123c357e545d40efb"
         },
         "ranking-reveal.jpg": {
           "bytes": 116802,
@@ -345,16 +345,16 @@
       }
     },
     "stat-counter-context": {
-      "variantId": "stat-counter-context@1.0.0+42d17abb0477",
+      "variantId": "stat-counter-context@1.0.0+a8078c9c86bd",
       "renderedAt": "2026-09-04",
       "files": {
         "stat-counter-context.mp4": {
-          "bytes": 65683,
-          "sha256": "df67e01d0715ffe39fd888dbfafd93e230cca365bda107c788ea6379c315a24b"
+          "bytes": 48356,
+          "sha256": "4f2c27d38ff0ea0e7b9c4b0ca5e67f5e7eed11ba935612c73ee3ab4fb8191d0d"
         },
         "stat-counter-context.webm": {
-          "bytes": 100265,
-          "sha256": "bb0519c30777543e9ef2ffdc27c7f8f284c3eda5630086a34b0da93d782d24da"
+          "bytes": 81289,
+          "sha256": "d1b4d9c4119647b6121bfe7a559a68a9566526a9166dd1c7373b133b1385b097"
         },
         "stat-counter-context.jpg": {
           "bytes": 96651,
@@ -363,20 +363,20 @@
       }
     },
     "stat-counter-rise": {
-      "variantId": "stat-counter-rise@1.0.0+d69f2377a91d",
+      "variantId": "stat-counter-rise@1.0.0+2b1a816359e9",
       "renderedAt": "2026-09-04",
       "files": {
         "stat-counter-rise.mp4": {
-          "bytes": 142754,
-          "sha256": "2725b9bc33c7810fc00e33b44edfd1c563fe4f1423a428403c7cb0eb4b4e260c"
+          "bytes": 371357,
+          "sha256": "e58c13af7acbcae28ea48da849c35edd901f7cf0f599d3554bf18adc0e119298"
         },
         "stat-counter-rise.webm": {
-          "bytes": 297225,
-          "sha256": "95f5d7dba1c01a3d067900ec31796b4ce07291a4a13a06a096488517fa700448"
+          "bytes": 845928,
+          "sha256": "d768e0ab05e21024ff02e15e783167094480b67652de3de6d09532d76daff42a"
         },
         "stat-counter-rise.jpg": {
-          "bytes": 110119,
-          "sha256": "6453b2cdb27f030060fc36987a5c8ace300d11086f86e5404059fcb4977126fa"
+          "bytes": 120881,
+          "sha256": "32655f45f5a296a58df7822e9ab216a87e833a4b2d02feb125f4523ac6120c40"
         }
       }
     },

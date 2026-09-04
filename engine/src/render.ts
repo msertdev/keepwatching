@@ -17,7 +17,6 @@ import ffprobeStatic from "ffprobe-static";
 
 import { COMP_HTML, OUT_DIR, ROOT, rel } from "./paths.js";
 import { assertFonts } from "./fonts.js";
-import { writeClickWav } from "./audio.js";
 import { ensureBundle } from "./bundle.js";
 import type { LoadedFormat } from "./format.js";
 import { totalFrames, type FormatSpec } from "../shared/spec.js";
@@ -171,65 +170,6 @@ function buildContactSheet(files: string[], out: string, bg: string): void {
   ff([...inputs, "-filter_complex", parts.join(";"), "-map", final, "-frames:v", "1", out], "contact sheet");
 }
 
-/* ---------------------------------------------------------------- audio */
-
-function buildAudio(spec: FormatSpec, workDir: string): string | null {
-  const a = spec.audio;
-  if (!a || (!a.bed && !a.click)) return null;
-
-  const dur = spec.canvas.durationSec;
-  const inputs: string[] = [];
-  const chains: string[] = [];
-  const mixLabels: string[] = [];
-  let idx = 0;
-
-  if (a.bed) {
-    const bed = path.resolve(ROOT, a.bed);
-    if (!fs.existsSync(bed)) {
-      console.warn(`  ! audio.bed not found: ${a.bed} — rendering without it`);
-    } else {
-      inputs.push("-i", bed);
-      chains.push(
-        `[${idx}:a]atrim=0:${dur},asetpts=N/SR/TB,loudnorm=I=${a.lufs ?? -14}:TP=-1.5:LRA=11,` +
-          `aformat=sample_fmts=fltp:sample_rates=48000:channel_layouts=stereo[m]`
-      );
-      mixLabels.push("[m]");
-      idx++;
-    }
-  }
-
-  if (a.click) {
-    const clickFile = path.join(workDir, "click.wav");
-    writeClickWav(clickFile, {
-      durationSec: dur,
-      everySec: a.click.everySec,
-      untilSec: a.click.untilSec ?? dur,
-      freqHz: a.click.freqHz,
-      gain: a.click.gain,
-    });
-    inputs.push("-i", clickFile);
-    chains.push(
-      `[${idx}:a]aformat=sample_fmts=fltp:sample_rates=48000:channel_layouts=stereo[c]`
-    );
-    mixLabels.push("[c]");
-    idx++;
-  }
-
-  if (mixLabels.length === 0) return null;
-
-  const out = path.join(workDir, "audio.m4a");
-  const mix =
-    mixLabels.length === 1
-      ? `${mixLabels[0]}anull[a]`
-      : `${mixLabels.join("")}amix=inputs=${mixLabels.length}:normalize=0:duration=first[a]`;
-
-  ff(
-    [...inputs, "-filter_complex", [...chains, mix].join(";"), "-map", "[a]", "-c:a", "aac", "-b:a", "192k", out],
-    "audio mix"
-  );
-  return out;
-}
-
 /* --------------------------------------------------------------- verify */
 
 function verifyOutput(master: string, spec: FormatSpec): string[] {
@@ -356,7 +296,6 @@ export async function renderFormat(fmt: LoadedFormat, opts: RenderOptions = {}):
 
   let master: string | undefined;
   if (!opts.stillsOnly) {
-    const audio = buildAudio(spec, outDir);
     master = path.join(outDir, "master.mp4");
     ff(
       [
@@ -366,10 +305,8 @@ export async function renderFormat(fmt: LoadedFormat, opts: RenderOptions = {}):
         "0",
         "-i",
         path.join(framesDir, "%06d.png"),
-        ...(audio ? ["-i", audio] : []),
         "-map",
         "0:v",
-        ...(audio ? ["-map", "1:a", "-c:a", "copy"] : []),
         "-c:v",
         "libx264",
         "-preset",
@@ -413,7 +350,6 @@ export async function renderFormat(fmt: LoadedFormat, opts: RenderOptions = {}):
       log(`  preview.mp4 + preview.webm`);
     }
 
-    for (const tmp of ["click.wav", "audio.m4a"]) fs.rmSync(path.join(outDir, tmp), { force: true });
   }
 
   if (!opts.keepFrames) fs.rmSync(framesDir, { recursive: true, force: true });
