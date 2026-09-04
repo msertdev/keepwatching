@@ -25,6 +25,7 @@ import {
   type BarElement,
   type CardElement,
   type CounterElement,
+  type EaseName,
   type Element,
   type FormatSpec,
   type IconGridElement,
@@ -502,10 +503,15 @@ function paint(node: Node, t: number): void {
   const { el, root } = node;
 
   /* --- visibility & transitions --- */
-  const pIn = easeFn(node.inT.ease, (t - node.inT.at) / Math.max(node.inT.dur, 1e-6));
-  const pOut = node.outT
-    ? 1 - easeFn(node.outT.ease, (t - node.outT.at) / Math.max(node.outT.dur, 1e-6))
-    : 1;
+  /* A zero-length transition is a hard cut, not a division by almost-zero.
+     Dividing by an epsilon gives 0/ε = 0 at exactly t = at, which blanked the
+     first frame of every element that was supposed to appear instantly — the
+     precise failure the "no fade up from black" default exists to prevent. */
+  const progress = (at: number, dur: number, ease: EaseName | undefined): number =>
+    dur <= 0 ? (t >= at ? 1 : 0) : easeFn(ease, (t - at) / dur);
+
+  const pIn = progress(node.inT.at, node.inT.dur, node.inT.ease);
+  const pOut = node.outT ? 1 - progress(node.outT.at, node.outT.dur, node.outT.ease) : 1;
   let opacity = Math.min(pIn, pOut);
 
   let dx = (node.inT.move?.[0] ?? 0) * (1 - pIn);

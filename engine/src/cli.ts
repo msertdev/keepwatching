@@ -17,6 +17,8 @@ import path from "node:path";
 import { execFileSync } from "node:child_process";
 
 import { FORMATS_DIR, OUT_DIR, ROOT, SITE_DIR, rel } from "./paths.js";
+import YAML from "yaml";
+
 import { installFonts, missingFonts } from "./fonts.js";
 import { ensureBundle } from "./bundle.js";
 import {
@@ -101,7 +103,7 @@ async function cmdSetup(): Promise<void> {
 
   ensureBundle(true);
   console.log("  composition bundle built");
-  console.log(`\n✓ ready. Try:  npm run render -- ${listFormatSlugs()[0] ?? "<slug>"}\n`);
+  console.log(`\n✓ ready. Try:  npx kw render ${listFormatSlugs()[0] ?? "<slug>"}\n`);
 }
 
 function cmdList(): void {
@@ -235,7 +237,36 @@ function cmdNew(): void {
     const src = loadFormat(from);
     const spec = { ...src.spec, id: slug, version: "0.1.0" };
     fs.writeFileSync(path.join(dir, "format.json"), JSON.stringify(spec, null, 2) + "\n", "utf8");
-    fs.copyFileSync(path.join(src.dir, "meta.yml"), path.join(dir, "meta.yml"));
+
+    /* Copy the claim, never the provenance.
+       The parent's `sources` back the parent's numbers. Inheriting them would
+       attach a real citation to content that has nothing to do with it, and
+       `kw check` would pass — the failure mode is a clip that looks sourced and
+       is not. So the scaffold always starts at `placeholder` with no sources,
+       and the author has to opt back in deliberately. */
+    const parentMeta = YAML.parse(fs.readFileSync(path.join(src.dir, "meta.yml"), "utf8")) as Record<
+      string,
+      unknown
+    >;
+    delete parentMeta.sources;
+    const scaffolded = {
+      ...parentMeta,
+      name: `${slug} (from ${src.slug})`,
+      sampleContent: "placeholder",
+    };
+    fs.writeFileSync(
+      path.join(dir, "meta.yml"),
+      "# Scaffolded from " +
+        `${src.slug}. The hypothesis below is inherited — rewrite it if this\n` +
+        "# format now claims something different.\n" +
+        "#\n" +
+        "# sampleContent was reset to `placeholder` and the parent's sources were\n" +
+        "# dropped, because they backed the parent's numbers, not yours. If you put a\n" +
+        "# real number on screen, set sampleContent: sourced and add a sources: list\n" +
+        "# with a url and the exact claim each source backs.\n" +
+        YAML.stringify(scaffolded),
+      "utf8"
+    );
   } else {
     fs.writeFileSync(
       path.join(dir, "format.json"),
@@ -286,7 +317,7 @@ function cmdNew(): void {
   );
 
   console.log(`\n✓ created ${rel(dir)}`);
-  console.log(`  edit format.json, then:  npm run preview -- ${slug}\n`);
+  console.log(`  edit format.json + meta.yml, then:  npx kw render ${slug}\n`);
 }
 
 function cmdSite(): void {

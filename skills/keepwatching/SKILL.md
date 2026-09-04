@@ -29,12 +29,12 @@ instructions alone cannot render anything, so **step one is always locating or
 installing the repo.**
 
 ```bash
-# 1. Where is it? First match wins.
-#    $KEEPWATCHING_HOME  ->  ./keepwatching  ->  ~/keepwatching
-cd "${KEEPWATCHING_HOME:-$HOME/keepwatching}" 2>/dev/null || {
-  git clone https://github.com/msertdev/keepwatching ~/keepwatching
-  cd ~/keepwatching
-}
+# 1. Find it. First match wins; ask the user if none of these exist.
+KW="${KEEPWATCHING_HOME:-}"
+[ -z "$KW" ] && [ -d ./keepwatching ] && KW="$PWD/keepwatching"
+[ -z "$KW" ] && [ -d "$HOME/keepwatching" ] && KW="$HOME/keepwatching"
+[ -z "$KW" ] && { git clone https://github.com/msertdev/keepwatching "$HOME/keepwatching" && KW="$HOME/keepwatching"; }
+cd "$KW"
 
 # 2. One-time install. Safe to re-run; it no-ops when already done.
 npm install && npm run setup
@@ -48,10 +48,22 @@ fonts, run `npm run setup` again — the composition refuses to render with a
 fallback font, because a substituted font would silently change every frame the
 repo has ever measured.
 
+**Two practical notes.**
+
+- **Shell variables do not persist between tool calls** in most agent harnesses.
+  Either recompute `KW` in every command, or start each one with an explicit
+  `cd /absolute/path/to/keepwatching &&`. Do not assume `$KW` survives.
+- **`npm run setup` can take minutes on a cold machine.** It downloads Inter
+  (≈30 MB) and a headless Chromium (≈150 MB). On a machine that already has both
+  cached it finishes in seconds. Tell the user which one is happening rather than
+  appearing to hang.
+
 **Every command in this file assumes the repo root is the working directory.**
-If the user is working in a different project, render there by pointing at the
-repo (`cd $KEEPWATCHING_HOME && npx kw render …`) and copy the MP4 back; do not
-try to run `kw` from outside the repo.
+If the user is working in a different project, render inside the repo and copy
+the MP4 back; `kw` does not run from outside it.
+
+There is also `npm run check`, which is `kw check` **plus** `tsc --noEmit`. Use
+that one if you have edited anything under `engine/`.
 
 ## The four things you will be asked to do
 
@@ -62,7 +74,12 @@ npx kw list          # every format, with its sample size and measured retention
 ```
 
 Read `formats/<slug>/meta.yml` for the `hypothesis`, `useWhen` and `avoidWhen`.
-Match the *shape of the content* to the format family, not the topic:
+Match the *shape of the content* to the format family, not the topic.
+
+> **Every format in the table below is currently `n = 0`.** These are starting
+> points chosen from a stated hypothesis, not winners chosen from evidence. Say
+> that when you recommend one. The table tells you which format *claims* to suit
+> a shape of content; it does not tell you which one performs.
 
 | The content is… | Family | Start with |
 |---|---|---|
@@ -89,6 +106,10 @@ Copy a format, fill in the `data` block, render:
 npx kw new my-clip --from=stat-counter-rise
 # edit formats/my-clip/format.json -> "data": { ... }
 npx kw render my-clip           # -> out/my-clip/master.mp4
+
+# Optional: scrub it in a browser first, without encoding anything.
+# Blocks until you stop it, so skip it when running unattended.
+npx kw preview my-clip
 ```
 
 Only edit `data` unless the layout genuinely needs to change. The `scene` array
@@ -96,18 +117,55 @@ is the format; changing it makes the clip a different format, and its
 measurements no longer transfer. If you do change the scene, bump `version` in
 `format.json` — the variant id derives from it.
 
-**Length.** `canvas.durationSec` sets the clip length, and `durationSec × fps`
-must be a whole number of frames. When you change it, move every `at`, `until`,
-`startSec` and `endSec` in the scene to match — a counter that finishes at 6.4s
-in a 15-second clip leaves nine dead seconds on screen. `npx kw check` catches
-timings that run past the end of the clip, but it cannot tell you that a clip
-is mostly empty. Look at `out/<slug>/contact.png` after rendering; it samples
-six frames across the whole clip and makes dead air obvious in one glance.
+**Changing the length — read this, it is the most common request.**
 
-**Sourcing.** The scaffold's `meta.yml` starts as `sampleContent: placeholder`.
-If you put a real number on screen, switch it to `sourced` and add a `sources:`
-entry with a URL and the exact claim it backs. `kw check` fails otherwise. This
-applies to clips you generate for a user, not just to library formats.
+Every library format is 10–14 seconds. Any other length *requires* editing the
+scene, so "only edit `data`" does not apply. Use this rule:
+
+> Multiply `canvas.durationSec` **and every timing in the scene** by
+> `newDuration / oldDuration`. Then shorten the final hold to ~2–3 seconds by
+> pushing the last beat later.
+
+Worked example — `stat-counter-rise` (10s) to 15s, so the factor is 1.5:
+
+| field | 10s | ×1.5 | final |
+|---|---|---|---|
+| `canvas.durationSec` | 10 | 15 | **15** |
+| counter `endSec` | 6.4 | 9.6 | **11.0** |
+| bar `endSec` | 6.4 | 9.6 | **11.0** |
+| context `at` / `in.at` | 6.5 | 9.75 | **11.2** |
+
+Naive scaling alone leaves 5.3 seconds of a frozen final card. Nudging the last
+beat from 9.75 to 11.2 gives a 3.8-second hold, which is the upper end of
+acceptable. **A final card held longer than about 3 seconds is dead air**, and
+dead air at the end is what kills a completion rate.
+
+Constraints and checks:
+
+- `durationSec × fps` must be a whole number of frames.
+- Bump `version` in `format.json` whenever you change the scene — retiming
+  counts. A fresh scaffold at `0.1.0` that you then retime becomes `0.2.0`. The
+  variant id derives from `version` plus a hash of the spec, so this keeps a
+  future measurement attributable.
+- `npx kw check` catches timings past the end of the clip. It cannot tell you a
+  clip is mostly empty — for that, open `out/<slug>/contact.png` after
+  rendering. It samples six frames evenly across the clip, so repeated identical
+  tiles at the end *are* the dead air, visible at a glance.
+
+**Sourcing.** `kw new --from=<slug>` deliberately resets the scaffold to
+`sampleContent: placeholder` and drops the parent's `sources` — the parent's
+citations backed the parent's numbers, not yours. If you put a real number on
+screen, set `sampleContent: sourced` and add a `sources:` entry with a URL and
+the exact claim it backs.
+
+What counts as a source: something a reader can open and check the number
+against — a primary paper or its permanent record (DOI, PubMed), a standards
+body, a statistical agency, an official report. Not a listicle, not a blog
+summarising one, and not your own recollection. State any rounding you did for
+the screen in the `claim` field. `kw check` verifies a URL and a claim are
+*present*; it cannot verify they are *true*, so that part is on you. If you
+cannot find a source, use filler copy instead — an invented statistic is the
+same failure as an invented retention figure.
 
 See `references/spec.md` for the full `format.json` reference.
 
