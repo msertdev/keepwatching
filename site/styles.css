@@ -669,9 +669,31 @@ details[open] summary::before {
 }
 
 .empty {
-  padding: 60px 0;
+  padding: 48px 20px;
   text-align: center;
   color: var(--muted);
+  max-width: 62ch;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.empty p + p {
+  margin-top: 12px;
+}
+
+.empty code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.92em;
+}
+
+.empty .cmd {
+  display: inline-block;
+  padding: 11px 18px;
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+  background: var(--panel);
+  color: #cfe9d8;
+  font-size: 14.5px;
 }
 
 /* -------------------------------------------------------------- footer */

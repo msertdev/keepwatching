@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "license": "MIT",
-  "description": "A measured retention database for short-form video formats — that renders.",
+  "description": "A measured retention database for short-form video formats \u2014 that renders.",
   "keywords": [
     "short-form",
     "video",
@@ -27,10 +27,9 @@
     "render": "node engine/bin/kw.mjs render",
     "preview": "node engine/bin/kw.mjs preview",
     "render:all": "node engine/bin/kw.mjs render --all",
-    "site": "node engine/bin/kw.mjs site build",
-    "site:serve": "node engine/bin/kw.mjs site serve",
     "measure": "node engine/bin/kw.mjs measure",
-    "check": "node engine/bin/kw.mjs check && tsc --noEmit"
+    "check": "node engine/bin/kw.mjs check && tsc --noEmit",
+    "gallery": "node engine/bin/kw.mjs gallery"
   },
   "dependencies": {
     "ffmpeg-static": "^5.2.0",
