@@ -323,17 +323,15 @@ h1 {
   flex-wrap: wrap;
 }
 
+/* Chips wrap rather than scroll sideways. A horizontal strip hides whatever
+   does not fit — and nobody swipes a filter bar, so a chip parked off the right
+   edge is a format family that cannot be filtered. `kw layout` fails on it. */
 .filters {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
-  flex: 1 1 340px;
-  overflow-x: auto;
-  scrollbar-width: none;
-  padding-bottom: 2px;
-}
-
-.filters::-webkit-scrollbar {
-  display: none;
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .chip,
@@ -360,6 +358,8 @@ select {
   display: flex;
   gap: 8px;
   align-items: center;
+  flex: 0 0 auto;
+  margin-left: auto;
 }
 
 select {
@@ -749,6 +749,16 @@ footer a {
 @media (max-width: 860px) {
   .boards {
     grid-template-columns: 1fr;
+  }
+
+  /* Wrapped chips make the bar several rows tall; sticking that to the top of a
+     phone would eat a third of the screen. Scroll past it instead. */
+  .toolbar {
+    position: static;
+  }
+
+  .sorts {
+    margin-left: 0;
   }
   /* auto-fit leaves a lone orphan tile at this width; 2x2 reads as a block. */
   .stats {

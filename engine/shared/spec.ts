@@ -79,6 +79,16 @@ export interface ElementBase {
   id: string;
   type: ElementType;
   box: Box;
+  /**
+   * Asserts that this element's wording stays true while a `claim: "final"`
+   * counter is still counting — because it is neutral ("counting…"), or frames
+   * the subject without stating the value.
+   *
+   * A sourced format refuses to build unless every element on screen during the
+   * count carries this. The default is the safe one: an unmarked element beside
+   * an unfinished sourced number is an error, not a warning.
+   */
+  neutralWhileCounting?: boolean;
   align?: "left" | "center" | "right";
   /** Visible window in seconds. Defaults to the whole clip. */
   at?: number;
@@ -109,10 +119,23 @@ export interface TextElement extends ElementBase {
   stagger?: number;
 }
 
+/**
+ * When a counter's displayed value is a claim.
+ *
+ *   "final"   — only the number it settles on is the claim. Every intermediate
+ *               value is wrong, so nothing on screen may assert the final value
+ *               until it lands.
+ *   "running" — every intermediate value is true as a running total ("frames so
+ *               far", "icons shown"). Labels may state the unit throughout.
+ */
+export type CounterClaim = "final" | "running";
+
 export interface CounterElement extends ElementBase {
   type: "counter";
   from: number;
   to: number;
+  /** Required when the format's sample content is `sourced`. */
+  claim?: CounterClaim;
   /** Counting window in seconds. Defaults to the element's visible window. */
   startSec?: number;
   endSec?: number;
