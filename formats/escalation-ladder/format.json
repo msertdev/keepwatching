@@ -1,0 +1,115 @@
+{
+  "id": "escalation-ladder",
+  "version": "1.0.0",
+  "canvas": {
+    "w": 1080,
+    "h": 1920,
+    "fps": 30,
+    "durationSec": 13
+  },
+  "theme": {
+    "accent": "#f97316",
+    "glow": 0.12,
+    "glowY": 780
+  },
+  "data": {
+    "title": "What one degree of warming costs"
+  },
+  "scene": [
+    {
+      "id": "title",
+      "type": "text",
+      "box": {
+        "y": 330
+      },
+      "text": "{{title}}",
+      "font": {
+        "size": 64,
+        "weight": 800,
+        "color": "fg"
+      }
+    },
+    {
+      "id": "s1",
+      "type": "text",
+      "box": {
+        "y": 560
+      },
+      "text": "+1°C  ·  coral bleaching begins",
+      "font": {
+        "size": 42,
+        "weight": 700,
+        "color": "muted"
+      },
+      "at": 0.8
+    },
+    {
+      "id": "s2",
+      "type": "text",
+      "box": {
+        "y": 700
+      },
+      "text": "+2°C  ·  99% of reefs gone",
+      "font": {
+        "size": 56,
+        "weight": 700,
+        "color": "fg"
+      },
+      "at": 3
+    },
+    {
+      "id": "s3",
+      "type": "text",
+      "box": {
+        "y": 880
+      },
+      "text": "+3°C  ·  the Amazon stops raining",
+      "font": {
+        "size": 70,
+        "weight": 800,
+        "color": "accent"
+      },
+      "at": 5.4,
+      "wrapAt": 6
+    },
+    {
+      "id": "s4",
+      "type": "text",
+      "box": {
+        "y": 1120
+      },
+      "text": "+4°C  ·  half the planet uninhabitable",
+      "font": {
+        "size": 84,
+        "weight": 800,
+        "color": "fg",
+        "lineHeight": 1.1
+      },
+      "at": 7.8,
+      "wrapAt": 4,
+      "in": {
+        "at": 7.8,
+        "dur": 0.36,
+        "move": [
+          0,
+          30
+        ],
+        "scale": 0.94
+      }
+    },
+    {
+      "id": "closer",
+      "type": "text",
+      "box": {
+        "y": 1480
+      },
+      "text": "We are at +1.4°C.",
+      "font": {
+        "size": 58,
+        "weight": 800,
+        "color": "accent"
+      },
+      "at": 10.6
+    }
+  ]
+}

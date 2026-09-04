@@ -1,0 +1,15 @@
+name: "Loop seam"
+family: reverse
+hypothesis: >-
+  Ending on the frame the clip opened with removes the visual signal that it is over, so the platform's autoplay loop reads as a continuation and counts a second view.
+useWhen: >-
+  The clip is short and its content is genuinely circular.
+avoidWhen: >-
+  The clip has a real ending — hiding it will frustrate rather than loop.
+tags:
+  - "loop"
+  - "replay"
+  - "structure"
+inputs:
+  - key: line
+    description: "The sentence that reads correctly in both directions."

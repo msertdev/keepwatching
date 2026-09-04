@@ -1,0 +1,17 @@
+name: "Reverse reveal"
+family: reveal
+hypothesis: >-
+  Leading with the answer and withholding the question inverts the usual contract: the viewer stays to find out what they have just been told, not what they are about to be.
+useWhen: >-
+  The answer is strange enough to be its own hook.
+avoidWhen: >-
+  The answer needs context to even parse — leading with it will read as noise.
+tags:
+  - "inversion"
+  - "hook"
+  - "curiosity"
+inputs:
+  - key: answer
+    description: "The strange fact, shown first."
+  - key: question
+    description: "The question it answers."

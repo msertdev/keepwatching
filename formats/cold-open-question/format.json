@@ -1,0 +1,91 @@
+{
+  "id": "cold-open-question",
+  "version": "1.0.0",
+  "canvas": {
+    "w": 1080,
+    "h": 1920,
+    "fps": 30,
+    "durationSec": 10
+  },
+  "theme": {
+    "accent": "#38bdf8",
+    "glow": 0.12,
+    "glowY": 780
+  },
+  "data": {
+    "question": "How far can you drive on the fuel your car burns idling?",
+    "partial": "About 40 km a year. For most people, more.",
+    "closer": "Idling is the cheapest thing you can stop doing."
+  },
+  "scene": [
+    {
+      "id": "question",
+      "type": "text",
+      "box": {
+        "y": 620
+      },
+      "text": "{{question}}",
+      "font": {
+        "size": 84,
+        "weight": 800,
+        "color": "fg",
+        "lineHeight": 1.1
+      },
+      "wrapAt": 4
+    },
+    {
+      "id": "beat",
+      "type": "card",
+      "box": {
+        "y": 1000,
+        "x": 480,
+        "w": 120
+      },
+      "h": 8,
+      "fill": "accent",
+      "radius": 4,
+      "at": 1.4,
+      "out": {
+        "at": 3.4,
+        "dur": 0.25
+      }
+    },
+    {
+      "id": "partial",
+      "type": "text",
+      "box": {
+        "y": 1080
+      },
+      "text": "{{partial}}",
+      "font": {
+        "size": 66,
+        "weight": 800,
+        "color": "accent"
+      },
+      "at": 3.5,
+      "in": {
+        "at": 3.5,
+        "dur": 0.35,
+        "move": [
+          0,
+          26
+        ]
+      }
+    },
+    {
+      "id": "closer",
+      "type": "text",
+      "box": {
+        "y": 1300
+      },
+      "text": "{{closer}}",
+      "font": {
+        "size": 50,
+        "weight": 600,
+        "color": "muted",
+        "lineHeight": 1.2
+      },
+      "at": 6
+    }
+  ]
+}

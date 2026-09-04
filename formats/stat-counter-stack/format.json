@@ -1,0 +1,81 @@
+{
+  "id": "stat-counter-stack",
+  "version": "1.0.0",
+  "canvas": {
+    "w": 1080,
+    "h": 1920,
+    "fps": 30,
+    "durationSec": 12
+  },
+  "theme": {
+    "accent": "#38bdf8",
+    "glow": 0.12,
+    "glowY": 700
+  },
+  "data": {
+    "label": "Phones sold while you watch this",
+    "closer": "One every 0.15 seconds.",
+    "value": 60
+  },
+  "scene": [
+    {
+      "id": "label",
+      "type": "text",
+      "box": {
+        "y": 400
+      },
+      "text": "{{label}}",
+      "font": {
+        "size": 58,
+        "weight": 600,
+        "color": "muted"
+      }
+    },
+    {
+      "id": "value",
+      "type": "counter",
+      "box": {
+        "y": 540
+      },
+      "from": 0,
+      "to": 60,
+      "startSec": 0.3,
+      "endSec": 9.3,
+      "font": {
+        "size": 220,
+        "weight": 800
+      }
+    },
+    {
+      "id": "grid",
+      "type": "iconGrid",
+      "box": {
+        "y": 880,
+        "x": 100,
+        "w": 880
+      },
+      "icon": "phone",
+      "count": 60,
+      "columns": 10,
+      "size": 66,
+      "gap": 16,
+      "everySec": 0.15,
+      "color": "accent",
+      "at": 0.3
+    },
+    {
+      "id": "closer",
+      "type": "text",
+      "box": {
+        "y": 1360
+      },
+      "text": "{{closer}}",
+      "font": {
+        "size": 64,
+        "weight": 800,
+        "color": "fg"
+      },
+      "at": 9.4
+    }
+  ]
+}

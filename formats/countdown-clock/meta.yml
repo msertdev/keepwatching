@@ -1,0 +1,17 @@
+name: "Countdown — clock"
+family: countdown
+hypothesis: >-
+  A visible clock running to zero creates a deadline the viewer did not choose, and leaving before it hits zero feels like abandoning something already started.
+useWhen: >-
+  You have a payoff worth waiting for and the clip is under 15 seconds.
+avoidWhen: >-
+  There is no payoff at zero — the format writes a cheque the ending must cash.
+tags:
+  - "tension"
+  - "deadline"
+  - "timer"
+inputs:
+  - key: promise
+    description: "What happens when the clock hits zero."
+  - key: payoff
+    description: "The line revealed at zero."

@@ -1,0 +1,15 @@
+name: "Split — verdict"
+family: comparison
+hypothesis: >-
+  Naming a winner explicitly at the end resolves the tension the split opened; without a verdict the viewer leaves at the moment both panels are visible.
+useWhen: >-
+  The audience expects you to take a side.
+avoidWhen: >-
+  The honest answer is 'it depends' — a forced verdict will cost you credibility.
+tags:
+  - "versus"
+  - "verdict"
+  - "opinion"
+inputs:
+  - key: verdict
+    description: "Who wins, and why, in one line."

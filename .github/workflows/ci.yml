@@ -1,0 +1,73 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+      - run: npx tsc --noEmit
+
+      - name: Install fonts + Chromium
+        run: npm run setup
+
+      # Every format.json must validate before anything is rendered.
+      - name: Validate the format library
+        run: npx kw check
+
+      # One real render, with the determinism probe: frames are re-seeked out of
+      # order and compared by hash. This is the test that protects every
+      # measurement in the repo.
+      - name: Render with determinism check
+        run: npx kw render stat-counter-rise --check-determinism
+
+      - name: Gallery builds
+        run: npx kw site build
+
+      - name: The generated format index is committed and current
+        run: git diff --exit-code skills/keepwatching/references/formats.md
+
+  measurement-hygiene:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+
+      # A data.yml claiming measurements must carry a sample size and its
+      # samples list. This is the honesty rule, enforced.
+      - name: No measurement without a sample size
+        run: |
+          node -e '
+            const fs = require("fs"), path = require("path"), YAML = require("yaml");
+            let bad = 0;
+            for (const slug of fs.readdirSync("formats")) {
+              const f = path.join("formats", slug, "data.yml");
+              if (!fs.existsSync(f)) continue;
+              const d = YAML.parse(fs.readFileSync(f, "utf8")) || {};
+              const claims = d.avgViewedPct != null || d.hook3s != null;
+              if (claims && !(d.n > 0)) {
+                console.error(`${slug}: has retention numbers but n is ${d.n}`);
+                bad++;
+              }
+              if (d.status === "measured" && !(d.samples && d.samples.length)) {
+                console.error(`${slug}: status is measured but no samples are listed`);
+                bad++;
+              }
+            }
+            if (bad) process.exit(1);
+            console.log("measurement hygiene ok");
+          '

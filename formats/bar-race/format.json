@@ -1,0 +1,151 @@
+{
+  "id": "bar-race",
+  "version": "1.0.0",
+  "canvas": {
+    "w": 1080,
+    "h": 1920,
+    "fps": 30,
+    "durationSec": 12
+  },
+  "theme": {
+    "accent": "#22c55e",
+    "accent2": "#ef4444",
+    "glow": 0.09,
+    "glowY": 700
+  },
+  "data": {
+    "title": "Where an hour of your day goes",
+    "closer": "Same hour. Different decade."
+  },
+  "scene": [
+    {
+      "id": "title",
+      "type": "text",
+      "box": {
+        "y": 360
+      },
+      "text": "{{title}}",
+      "font": {
+        "size": 68,
+        "weight": 800,
+        "color": "fg"
+      }
+    },
+    {
+      "id": "laneA",
+      "type": "text",
+      "box": {
+        "y": 620,
+        "x": 60,
+        "w": 400
+      },
+      "text": "2014",
+      "font": {
+        "size": 46,
+        "weight": 700,
+        "color": "muted"
+      },
+      "align": "left"
+    },
+    {
+      "id": "barA",
+      "type": "bar",
+      "box": {
+        "y": 690,
+        "x": 60,
+        "w": 960
+      },
+      "from": 0,
+      "to": 0.32,
+      "startSec": 0.8,
+      "endSec": 6.5,
+      "ease": "out",
+      "height": 74,
+      "radius": 20,
+      "fill": "#38bdf8",
+      "at": 0.6
+    },
+    {
+      "id": "valA",
+      "type": "text",
+      "box": {
+        "y": 700,
+        "x": 84,
+        "w": 400
+      },
+      "text": "18 min",
+      "font": {
+        "size": 46,
+        "weight": 800,
+        "color": "fg"
+      },
+      "at": 4,
+      "align": "left"
+    },
+    {
+      "id": "laneB",
+      "type": "text",
+      "box": {
+        "y": 880,
+        "x": 60,
+        "w": 400
+      },
+      "text": "2024",
+      "font": {
+        "size": 46,
+        "weight": 700,
+        "color": "muted"
+      },
+      "align": "left"
+    },
+    {
+      "id": "barB",
+      "type": "bar",
+      "box": {
+        "y": 950,
+        "x": 60,
+        "w": 960
+      },
+      "from": 0,
+      "to": 0.94,
+      "startSec": 0.8,
+      "endSec": 6.5,
+      "ease": "out",
+      "height": 74,
+      "radius": 20,
+      "fill": "#ef4444",
+      "at": 0.6
+    },
+    {
+      "id": "valB",
+      "type": "text",
+      "box": {
+        "y": 960,
+        "x": 84,
+        "w": 400
+      },
+      "text": "53 min",
+      "font": {
+        "size": 46,
+        "weight": 800,
+        "color": "fg"
+      },
+      "at": 4,
+      "align": "left"
+    },
+    {
+      "id": "closer",
+      "type": "text",
+      "box": {
+        "y": 1220
+      },
+      "text": "{{closer}}",
+      "font": {
+        "size": 68,
+        "weight": 800,
+        "color": "fg"
+      },
+      "at": 7
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+name: "Myth vs fact"
+family: myth-fact
+hypothesis: >-
+  Stating a belief the viewer probably holds triggers a defensive read, and defensiveness is attention: they stay to see whether they are the one being corrected.
+useWhen: >-
+  The myth is genuinely widespread and the correction is well-sourced.
+avoidWhen: >-
+  You cannot source the correction. This format converts confidence into belief.
+tags:
+  - "correction"
+  - "belief"
+  - "two-panel"
+inputs:
+  - key: myth
+    description: "The widely held belief."
+  - key: fact
+    description: "What is actually true."
+  - key: source
+    description: "Where the correction comes from."

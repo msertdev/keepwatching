@@ -1,0 +1,15 @@
+name: "Countdown — 5 to 1"
+family: countdown
+hypothesis: >-
+  Numbering the items down to one tells the viewer exactly how much is left, which converts an open-ended list into a finite commitment they will complete.
+useWhen: >-
+  You have between three and six discrete items and the last one is the best.
+avoidWhen: >-
+  The items are equally weighted — descending order will make the ending feel flat.
+tags:
+  - "list"
+  - "structure"
+  - "completion"
+inputs:
+  - key: title
+    description: "What the list is counting down."

@@ -1,0 +1,87 @@
+{
+  "id": "pattern-interrupt",
+  "version": "1.0.0",
+  "canvas": {
+    "w": 1080,
+    "h": 1920,
+    "fps": 30,
+    "durationSec": 10
+  },
+  "theme": {
+    "accent": "#f97316",
+    "glow": 0.13,
+    "glowY": 740
+  },
+  "data": {
+    "claim": "Drink eight glasses of water a day.",
+    "interrupt": "No study ever said that.",
+    "detail": "The 1945 recommendation included the water in your food. The next sentence said so."
+  },
+  "scene": [
+    {
+      "id": "claim",
+      "type": "text",
+      "box": {
+        "y": 620
+      },
+      "text": "{{claim}}",
+      "font": {
+        "size": 92,
+        "weight": 800,
+        "color": "fg",
+        "lineHeight": 1.1
+      },
+      "until": 3.2,
+      "wrapAt": 4,
+      "out": {
+        "at": 2.9,
+        "dur": 0.3,
+        "move": [
+          0,
+          -24
+        ]
+      }
+    },
+    {
+      "id": "interrupt",
+      "type": "text",
+      "box": {
+        "y": 640
+      },
+      "text": "{{interrupt}}",
+      "font": {
+        "size": 104,
+        "weight": 800,
+        "color": "accent",
+        "lineHeight": 1.08
+      },
+      "at": 3.2,
+      "wrapAt": 3,
+      "in": {
+        "at": 3.2,
+        "dur": 0.24,
+        "move": [
+          0,
+          0
+        ],
+        "scale": 1.08
+      }
+    },
+    {
+      "id": "detail",
+      "type": "text",
+      "box": {
+        "y": 1080
+      },
+      "text": "{{detail}}",
+      "font": {
+        "size": 52,
+        "weight": 600,
+        "color": "muted",
+        "lineHeight": 1.22
+      },
+      "at": 4.8,
+      "wrapAt": 5
+    }
+  ]
+}

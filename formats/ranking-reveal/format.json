@@ -1,0 +1,92 @@
+{
+  "id": "ranking-reveal",
+  "version": "1.0.0",
+  "canvas": {
+    "w": 1080,
+    "h": 1920,
+    "fps": 30,
+    "durationSec": 12
+  },
+  "theme": {
+    "accent": "#22c55e",
+    "glow": 0.1,
+    "glowY": 560
+  },
+  "data": {
+    "title": "Most-used apps, by hours per week"
+  },
+  "scene": [
+    {
+      "id": "title",
+      "type": "text",
+      "box": {
+        "y": 320
+      },
+      "text": "{{title}}",
+      "font": {
+        "size": 62,
+        "weight": 800,
+        "color": "fg",
+        "lineHeight": 1.1
+      }
+    },
+    {
+      "id": "rows",
+      "type": "list",
+      "box": {
+        "y": 560
+      },
+      "at": 0.6,
+      "stagger": 0.85,
+      "rank": true,
+      "bars": true,
+      "rowHeight": 132,
+      "gap": 20,
+      "font": {
+        "size": 48,
+        "weight": 700
+      },
+      "rows": [
+        {
+          "label": "Short video",
+          "value": "14.2h",
+          "weight": 1
+        },
+        {
+          "label": "Messaging",
+          "value": "9.7h",
+          "weight": 0.68
+        },
+        {
+          "label": "Browser",
+          "value": "6.1h",
+          "weight": 0.43
+        },
+        {
+          "label": "Music",
+          "value": "4.8h",
+          "weight": 0.34
+        },
+        {
+          "label": "Email",
+          "value": "2.3h",
+          "weight": 0.16
+        }
+      ]
+    },
+    {
+      "id": "closer",
+      "type": "text",
+      "box": {
+        "y": 1420
+      },
+      "text": "Where does yours land?",
+      "font": {
+        "size": 54,
+        "weight": 700,
+        "color": "muted"
+      },
+      "at": 5.6
+    }
+  ]
+}

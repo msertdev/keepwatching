@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>keepwatching — composition</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="stage">
+      <div id="glow"></div>
+      <div id="scene"></div>
+    </div>
+
+    <div id="previewBar">
+      <button id="previewPlay" type="button">Play</button>
+      <input id="previewRange" type="range" min="0" max="359" step="1" value="0" />
+      <span id="previewLabel">0 / 359 &middot; 0.00 s</span>
+    </div>
+
+    <script src="comp.js"></script>
+  </body>
+</html>
