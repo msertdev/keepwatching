@@ -1,0 +1,15 @@
+name: "Tier list"
+family: ranking
+hypothesis: >-
+  Tier labels invite disagreement, and a viewer composing an objection in their head watches to the end to check whether their pick was ranked.
+useWhen: >-
+  The audience has strong opinions and a comment section worth provoking.
+avoidWhen: >-
+  The subject is factual — tiers imply judgement the data may not support.
+tags:
+  - "list"
+  - "opinion"
+  - "comments"
+inputs:
+  - key: title
+    description: "What is being tiered."

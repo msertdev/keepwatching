@@ -1,0 +1,15 @@
+name: "Bar race — two lanes"
+family: comparison
+hypothesis: >-
+  Two bars growing at different speeds make the gap visible before it is stated, so the viewer reaches the conclusion a beat before the caption confirms it.
+useWhen: >-
+  The difference between two quantities is large and worth watching accumulate.
+avoidWhen: >-
+  The two values are close — the race will look like a tie and land as nothing.
+tags:
+  - "versus"
+  - "growth"
+  - "bars"
+inputs:
+  - key: title
+    description: "What the two lanes represent."

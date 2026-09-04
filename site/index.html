@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>keepwatching — measured short-form formats</title>
+    <meta
+      name="description"
+      content="An open database of named short-form video formats, each one rendered and each one carrying its measured retention and its sample size."
+    />
+    <meta property="og:title" content="keepwatching" />
+    <meta
+      property="og:description"
+      content="Named short-form formats with rendered previews and measured retention. Sample sizes shown on every card."
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%230b0f14'/><rect x='11' y='6' width='10' height='20' rx='2.5' fill='none' stroke='%2322c55e' stroke-width='2.4'/></svg>"
+    />
+  </head>
+  <body>
+    <a class="skip" href="#formats">Skip to formats</a>
+
+    <header class="hero">
+      <div class="wrap">
+        <div class="mark">
+          <span class="dot" aria-hidden="true"></span>
+          keepwatching
+        </div>
+        <h1>A retention database for short-form formats.<br />That renders.</h1>
+        <p class="lede">
+          Every card below is a named format: a JSON spec, a rendered 9:16 preview, and whatever
+          the numbers actually say. Ranked by measured retention. Untested formats are listed too,
+          marked as untested — because hiding them would make the ranking a lie.
+        </p>
+
+        <dl class="stats" id="stats">
+          <div><dt>formats</dt><dd data-stat="formats">—</dd></div>
+          <div><dt>measured</dt><dd data-stat="measured">—</dd></div>
+          <div><dt>untested</dt><dd data-stat="untested">—</dd></div>
+          <div><dt>samples (n)</dt><dd data-stat="samples">—</dd></div>
+        </dl>
+
+        <div class="cta">
+          <code>npm install &amp;&amp; npm run setup &amp;&amp; npm run render -- stat-counter-rise</code>
+          <a class="btn" href="https://github.com/keepwatching/keepwatching">Repository</a>
+        </div>
+        <p class="honest">
+          Sample sizes are printed on every card. Anything under n=5 is a direction, not a result.
+        </p>
+      </div>
+    </header>
+
+    <nav class="toolbar" id="toolbar" aria-label="Filter formats">
+      <div class="wrap">
+        <div class="filters" id="families" role="group" aria-label="Filter by family"></div>
+        <div class="sorts">
+          <label class="sr" for="sort">Sort</label>
+          <select id="sort">
+            <option value="retention">Measured retention</option>
+            <option value="hook">Hook at 3s</option>
+            <option value="samples">Sample size</option>
+            <option value="name">Name</option>
+          </select>
+          <button type="button" id="motion" class="ghost" aria-pressed="true">Previews: on</button>
+        </div>
+      </div>
+    </nav>
+
+    <main class="wrap" id="formats">
+      <div class="grid" id="grid"></div>
+      <p class="empty" id="empty" hidden>No format matches that filter.</p>
+    </main>
+
+    <footer>
+      <div class="wrap">
+        <p>
+          MIT licensed. Seed data is one creator's; the numbers are only worth what the sample
+          sizes say they are.
+          <a href="https://github.com/keepwatching/keepwatching/blob/main/CONTRIBUTING.md"
+            >Send your own measurements →</a
+          >
+        </p>
+        <p class="built" id="built"></p>
+      </div>
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,93 @@
+{
+  "id": "countdown-list",
+  "version": "1.0.0",
+  "canvas": {
+    "w": 1080,
+    "h": 1920,
+    "fps": 30,
+    "durationSec": 14
+  },
+  "theme": {
+    "accent": "#a855f7",
+    "glow": 0.12,
+    "glowY": 620
+  },
+  "data": {
+    "title": "5 things that quietly drain your battery"
+  },
+  "scene": [
+    {
+      "id": "title",
+      "type": "text",
+      "box": {
+        "y": 330
+      },
+      "text": "{{title}}",
+      "font": {
+        "size": 66,
+        "weight": 800,
+        "color": "fg",
+        "lineHeight": 1.1
+      }
+    },
+    {
+      "id": "big",
+      "type": "counter",
+      "box": {
+        "y": 560,
+        "x": 60,
+        "w": 200
+      },
+      "align": "left",
+      "from": 5,
+      "to": 1,
+      "startSec": 1.6,
+      "endSec": 11.6,
+      "ease": "linear",
+      "font": {
+        "size": 150,
+        "weight": 800,
+        "color": "accent"
+      }
+    },
+    {
+      "id": "rows",
+      "type": "list",
+      "box": {
+        "y": 780
+      },
+      "at": 1.4,
+      "stagger": 2.4,
+      "reverse": true,
+      "rank": false,
+      "rowHeight": 128,
+      "gap": 18,
+      "font": {
+        "size": 48,
+        "weight": 700
+      },
+      "rows": [
+        {
+          "label": "Always-on display",
+          "value": "8%"
+        },
+        {
+          "label": "Background location",
+          "value": "11%"
+        },
+        {
+          "label": "Auto-brightness off",
+          "value": "14%"
+        },
+        {
+          "label": "5G in a weak-signal area",
+          "value": "22%"
+        },
+        {
+          "label": "Push email on 1-minute fetch",
+          "value": "27%"
+        }
+      ]
+    }
+  ]
+}

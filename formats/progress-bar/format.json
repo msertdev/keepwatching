@@ -1,0 +1,105 @@
+{
+  "id": "progress-bar",
+  "version": "1.0.0",
+  "canvas": {
+    "w": 1080,
+    "h": 1920,
+    "fps": 30,
+    "durationSec": 12
+  },
+  "theme": {
+    "accent": "#22c55e",
+    "glow": 0.1,
+    "glowY": 700
+  },
+  "data": {
+    "title": "What happens 20 minutes after you stop smoking"
+  },
+  "scene": [
+    {
+      "id": "title",
+      "type": "text",
+      "box": {
+        "y": 360
+      },
+      "text": "{{title}}",
+      "font": {
+        "size": 66,
+        "weight": 800,
+        "color": "fg",
+        "lineHeight": 1.12
+      }
+    },
+    {
+      "id": "bar",
+      "type": "bar",
+      "box": {
+        "y": 700,
+        "x": 60,
+        "w": 960
+      },
+      "from": 0,
+      "to": 1,
+      "startSec": 0.6,
+      "endSec": 10.4,
+      "ease": "linear",
+      "height": 30,
+      "radius": 15,
+      "fill": "accent",
+      "ticks": [
+        0.25,
+        0.5,
+        0.75
+      ],
+      "at": 0.4
+    },
+    {
+      "id": "stages",
+      "type": "list",
+      "box": {
+        "y": 820
+      },
+      "at": 0.8,
+      "stagger": 2.4,
+      "rank": false,
+      "rowHeight": 120,
+      "gap": 18,
+      "font": {
+        "size": 44,
+        "weight": 700
+      },
+      "rows": [
+        {
+          "label": "20 minutes",
+          "value": "pulse normal"
+        },
+        {
+          "label": "12 hours",
+          "value": "CO cleared"
+        },
+        {
+          "label": "2 weeks",
+          "value": "lung function +30%"
+        },
+        {
+          "label": "1 year",
+          "value": "heart risk halved"
+        }
+      ]
+    },
+    {
+      "id": "closer",
+      "type": "text",
+      "box": {
+        "y": 1400
+      },
+      "text": "Most people quit before the second row.",
+      "font": {
+        "size": 52,
+        "weight": 700,
+        "color": "muted"
+      },
+      "at": 9.6
+    }
+  ]
+}

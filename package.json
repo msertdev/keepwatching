@@ -1,0 +1,47 @@
+{
+  "name": "keepwatching",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "description": "A measured retention database for short-form video formats — that renders.",
+  "keywords": [
+    "short-form",
+    "video",
+    "retention",
+    "9:16",
+    "playwright",
+    "ffmpeg",
+    "agent-skill"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "bin": {
+    "kw": "engine/bin/kw.mjs"
+  },
+  "scripts": {
+    "setup": "node engine/bin/kw.mjs setup",
+    "build:comp": "esbuild engine/composition/comp.ts --bundle --format=iife --target=chrome110 --outfile=engine/composition/comp.js",
+    "kw": "node engine/bin/kw.mjs",
+    "render": "node engine/bin/kw.mjs render",
+    "preview": "node engine/bin/kw.mjs preview",
+    "render:all": "node engine/bin/kw.mjs render --all",
+    "site": "node engine/bin/kw.mjs site build",
+    "site:serve": "node engine/bin/kw.mjs site serve",
+    "measure": "node engine/bin/kw.mjs measure",
+    "check": "node engine/bin/kw.mjs check && tsc --noEmit"
+  },
+  "dependencies": {
+    "ffmpeg-static": "^5.2.0",
+    "ffprobe-static": "^3.1.0",
+    "playwright": "^1.49.1",
+    "yaml": "^2.6.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "esbuild": "^0.24.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}

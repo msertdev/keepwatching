@@ -1,0 +1,99 @@
+{
+  "id": "split-verdict",
+  "version": "1.0.0",
+  "canvas": {
+    "w": 1080,
+    "h": 1920,
+    "fps": 30,
+    "durationSec": 11
+  },
+  "theme": {
+    "accent": "#22c55e",
+    "accent2": "#ef4444",
+    "glow": 0.11,
+    "glowY": 660
+  },
+  "data": {
+    "question": "Cold shower or hot?",
+    "verdict": "Hot wins for sleep. Cold wins for nothing you were promised."
+  },
+  "scene": [
+    {
+      "id": "question",
+      "type": "text",
+      "box": {
+        "y": 380
+      },
+      "text": "{{question}}",
+      "font": {
+        "size": 82,
+        "weight": 800,
+        "color": "fg"
+      }
+    },
+    {
+      "id": "panels",
+      "type": "split",
+      "box": {
+        "y": 620
+      },
+      "at": 0.6,
+      "rightDelay": 1.6,
+      "height": 480,
+      "gap": 24,
+      "font": {
+        "size": 44
+      },
+      "left": {
+        "title": "Cold",
+        "value": "-0.4h",
+        "body": "sleep onset, measured",
+        "color": "#38bdf8"
+      },
+      "right": {
+        "title": "Hot",
+        "value": "+0.6h",
+        "body": "sleep onset, measured",
+        "color": "#f97316"
+      }
+    },
+    {
+      "id": "stamp",
+      "type": "text",
+      "box": {
+        "y": 1200
+      },
+      "text": "VERDICT",
+      "font": {
+        "size": 40,
+        "weight": 800,
+        "color": "muted",
+        "tracking": 0.24,
+        "case": "upper"
+      },
+      "at": 6.4
+    },
+    {
+      "id": "verdict",
+      "type": "text",
+      "box": {
+        "y": 1300
+      },
+      "text": "{{verdict}}",
+      "font": {
+        "size": 62,
+        "weight": 800,
+        "color": "fg"
+      },
+      "at": 6.6,
+      "in": {
+        "at": 6.6,
+        "dur": 0.4,
+        "move": [
+          0,
+          30
+        ]
+      }
+    }
+  ]
+}

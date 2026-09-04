@@ -1,0 +1,101 @@
+{
+  "id": "tier-list",
+  "version": "1.0.0",
+  "canvas": {
+    "w": 1080,
+    "h": 1920,
+    "fps": 30,
+    "durationSec": 13
+  },
+  "theme": {
+    "accent": "#eab308",
+    "glow": 0.1,
+    "glowY": 600
+  },
+  "data": {
+    "title": "Password habits, tiered"
+  },
+  "scene": [
+    {
+      "id": "title",
+      "type": "text",
+      "box": {
+        "y": 320
+      },
+      "text": "{{title}}",
+      "font": {
+        "size": 66,
+        "weight": 800,
+        "color": "fg"
+      }
+    },
+    {
+      "id": "rows",
+      "type": "list",
+      "box": {
+        "y": 540
+      },
+      "at": 0.6,
+      "stagger": 1.6,
+      "rank": false,
+      "bars": true,
+      "rowHeight": 140,
+      "gap": 22,
+      "font": {
+        "size": 46,
+        "weight": 700
+      },
+      "rows": [
+        {
+          "label": "Passkeys everywhere",
+          "badge": "S",
+          "value": "",
+          "weight": 1,
+          "color": "#22c55e"
+        },
+        {
+          "label": "Manager + 2FA app",
+          "badge": "A",
+          "value": "",
+          "weight": 0.82,
+          "color": "#84cc16"
+        },
+        {
+          "label": "Manager, SMS 2FA",
+          "badge": "B",
+          "value": "",
+          "weight": 0.6,
+          "color": "#eab308"
+        },
+        {
+          "label": "Same password, +1",
+          "badge": "D",
+          "value": "",
+          "weight": 0.3,
+          "color": "#f97316"
+        },
+        {
+          "label": "Sticky note on the monitor",
+          "badge": "F",
+          "value": "",
+          "weight": 0.12,
+          "color": "#ef4444"
+        }
+      ]
+    },
+    {
+      "id": "closer",
+      "type": "text",
+      "box": {
+        "y": 1440
+      },
+      "text": "Argue in the comments.",
+      "font": {
+        "size": 54,
+        "weight": 700,
+        "color": "muted"
+      },
+      "at": 8.6
+    }
+  ]
+}

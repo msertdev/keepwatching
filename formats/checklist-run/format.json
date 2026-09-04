@@ -1,0 +1,107 @@
+{
+  "id": "checklist-run",
+  "version": "1.0.0",
+  "canvas": {
+    "w": 1080,
+    "h": 1920,
+    "fps": 30,
+    "durationSec": 13
+  },
+  "theme": {
+    "accent": "#22c55e",
+    "glow": 0.08,
+    "glowY": 620
+  },
+  "data": {
+    "title": "Everything a 20-minute walk changes"
+  },
+  "scene": [
+    {
+      "id": "title",
+      "type": "text",
+      "box": {
+        "y": 340
+      },
+      "text": "{{title}}",
+      "font": {
+        "size": 66,
+        "weight": 800,
+        "color": "fg",
+        "lineHeight": 1.12
+      }
+    },
+    {
+      "id": "ticks",
+      "type": "iconGrid",
+      "box": {
+        "y": 580,
+        "x": 320,
+        "w": 440
+      },
+      "icon": "check",
+      "count": 6,
+      "columns": 6,
+      "size": 56,
+      "gap": 18,
+      "everySec": 1.7,
+      "color": "accent",
+      "at": 0.8
+    },
+    {
+      "id": "rows",
+      "type": "list",
+      "box": {
+        "y": 720
+      },
+      "at": 0.8,
+      "stagger": 1.7,
+      "rank": false,
+      "rowHeight": 118,
+      "gap": 16,
+      "font": {
+        "size": 44,
+        "weight": 700
+      },
+      "rows": [
+        {
+          "label": "Blood glucose",
+          "value": "-18%"
+        },
+        {
+          "label": "Cortisol",
+          "value": "-12%"
+        },
+        {
+          "label": "Creative output",
+          "value": "+60%"
+        },
+        {
+          "label": "Sleep latency",
+          "value": "-9 min"
+        },
+        {
+          "label": "Afternoon slump",
+          "value": "gone"
+        },
+        {
+          "label": "Cost",
+          "value": "0"
+        }
+      ]
+    },
+    {
+      "id": "closer",
+      "type": "text",
+      "box": {
+        "y": 1500
+      },
+      "text": "Twenty minutes.",
+      "font": {
+        "size": 60,
+        "weight": 800,
+        "color": "fg"
+      },
+      "at": 11
+    }
+  ]
+}

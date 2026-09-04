@@ -1,0 +1,15 @@
+name: "Three myths"
+family: myth-fact
+hypothesis: >-
+  Three corrections in sequence give the viewer three chances to be personally wrong, and each miss raises the odds they stay for the next one.
+useWhen: >-
+  You have three unrelated corrections in the same subject area.
+avoidWhen: >-
+  One of the three is weak — the weakest item sets the credibility of all three.
+tags:
+  - "list"
+  - "correction"
+  - "sequence"
+inputs:
+  - key: topic
+    description: "The subject the three myths share."

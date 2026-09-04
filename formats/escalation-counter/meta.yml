@@ -1,0 +1,15 @@
+name: "Escalation — threshold counter"
+family: escalation
+hypothesis: >-
+  A counter that passes named thresholds converts a single climbing number into a series of small events, each one a fresh reason not to leave yet.
+useWhen: >-
+  The number crosses milestones the audience already recognises.
+avoidWhen: >-
+  There are no meaningful thresholds — the labels will feel arbitrary.
+tags:
+  - "number"
+  - "milestones"
+  - "sequence"
+inputs:
+  - key: label
+    description: "What the counter measures."

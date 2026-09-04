@@ -1,0 +1,97 @@
+{
+  "id": "reverse-reveal",
+  "version": "1.0.0",
+  "canvas": {
+    "w": 1080,
+    "h": 1920,
+    "fps": 30,
+    "durationSec": 11
+  },
+  "theme": {
+    "accent": "#a855f7",
+    "glow": 0.14,
+    "glowY": 760
+  },
+  "data": {
+    "answer": "Eleven minutes.",
+    "question": "That is how long it takes to fall asleep after you put the phone down — if you put it down.",
+    "tag": "the answer"
+  },
+  "scene": [
+    {
+      "id": "tag",
+      "type": "text",
+      "box": {
+        "y": 480
+      },
+      "text": "{{tag}}",
+      "font": {
+        "size": 40,
+        "weight": 700,
+        "color": "muted",
+        "tracking": 0.22,
+        "case": "upper"
+      }
+    },
+    {
+      "id": "answer",
+      "type": "text",
+      "box": {
+        "y": 580
+      },
+      "text": "{{answer}}",
+      "font": {
+        "size": 150,
+        "weight": 800,
+        "color": "fg",
+        "tracking": -0.03
+      }
+    },
+    {
+      "id": "rule",
+      "type": "card",
+      "box": {
+        "y": 880,
+        "x": 400,
+        "w": 280
+      },
+      "h": 6,
+      "fill": "rgba(255,255,255,0.2)",
+      "radius": 3,
+      "at": 3.4
+    },
+    {
+      "id": "qtag",
+      "type": "text",
+      "box": {
+        "y": 980
+      },
+      "text": "the question",
+      "font": {
+        "size": 40,
+        "weight": 700,
+        "color": "accent",
+        "tracking": 0.22,
+        "case": "upper"
+      },
+      "at": 3.6
+    },
+    {
+      "id": "question",
+      "type": "text",
+      "box": {
+        "y": 1080
+      },
+      "text": "{{question}}",
+      "font": {
+        "size": 62,
+        "weight": 700,
+        "color": "fg",
+        "lineHeight": 1.2
+      },
+      "at": 3.9,
+      "wrapAt": 4,
+      "stagger": 0.5
+    }
+  ]
+}
