@@ -72,12 +72,12 @@ Avoid when: The honest answer is 'it depends' — a forced verdict will cost you
 **`countdown-clock`** — Countdown — clock  
 Use when: You have a payoff worth waiting for and the clip is under 15 seconds.  
 Avoid when: There is no payoff at zero — the format writes a cheque the ending must cash.  
-12s · 30fps · `countdown-clock@1.0.0+a30f5e5031fc`
+12s · 30fps · `countdown-clock@1.0.0+a36a5c8b26c6`
 
 **`countdown-list`** — Countdown — 5 to 1  
 Use when: You have between three and six discrete items and the last one is the best.  
 Avoid when: The items are equally weighted — descending order will make the ending feel flat.  
-14s · 30fps · `countdown-list@1.0.0+b9bba1a4e6e2`
+14s · 30fps · `countdown-list@1.0.0+623e2a49fbae`
 
 ## escalation
 
@@ -89,7 +89,7 @@ Avoid when: The items are equally weighted — descending order will make the en
 **`escalation-counter`** — Escalation — threshold counter  
 Use when: The number crosses milestones the audience already recognises.  
 Avoid when: There are no meaningful thresholds — the labels will feel arbitrary.  
-13s · 30fps · `escalation-counter@1.0.0+7bd053e53445`
+13s · 30fps · `escalation-counter@1.0.0+a58cea5d85f1`
 
 **`escalation-ladder`** — Escalation ladder  
 Use when: The values genuinely escalate and the last one is dramatic.  
@@ -202,15 +202,15 @@ Avoid when: The clip has a real ending — hiding it will frustrate rather than 
 **`stat-counter-context`** — Stat counter — context flip  
 Use when: The number is meaningless without a comparison, and the comparison is the actual payload.  
 Avoid when: The number already carries its own meaning — the pause will feel like stalling.  
-11s · 30fps · `stat-counter-context@1.0.0+86e15546e6b6`
+11s · 30fps · `stat-counter-context@1.0.0+42d17abb0477`
 
 **`stat-counter-rise`** — Stat counter — rise  
 Use when: You have one number that is large, surprising, and easy to say out loud.  
 Avoid when: The number needs a paragraph of setup before it means anything.  
 Source: [BIPM — The International System of Units (SI), 9th edition, 2019](https://www.bipm.org/en/publications/si-brochure) — The speed of light in vacuum is exactly 299,792,458 m/s; the metre is defined from it.  
-10s · 30fps · `stat-counter-rise@1.0.0+1afb24fca512`
+10s · 30fps · `stat-counter-rise@1.0.0+d69f2377a91d`
 
 **`stat-counter-stack`** — Stat counter — stacking proof  
 Use when: The number counts discrete things a viewer can picture one at a time.  
 Avoid when: The quantity is continuous (money, time, mass) — the icons will read as decoration.  
-12s · 30fps · `stat-counter-stack@1.0.0+193dd45a72e8`
+12s · 30fps · `stat-counter-stack@1.0.0+87a87cb20ce5`

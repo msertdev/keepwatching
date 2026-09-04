@@ -187,6 +187,47 @@ export async function checkFrame0(formats?: LoadedFormat[]): Promise<Frame0Resul
       const cdp = await page.context().newCDPSession(page);
       const png = path.join(tmp, `${fmt.slug}.png`);
       await shoot(page, cdp, 0, png);
+      const problemsEarly: string[] = [];
+
+      /* --- a sourced counter must actually land on the number it cites ---
+         Static validation keeps certainty language off the screen while the
+         count runs; this checks the other half, that the value it settles on is
+         the one the source backs. A counter that never reaches its cited figure
+         would make the citation wrong in the opposite direction. */
+      for (const el of spec.scene) {
+        if (el.type !== "counter") continue;
+        const c = el as unknown as {
+          id: string;
+          to: number;
+          endSec?: number;
+          until?: number;
+          claim?: string;
+        };
+        if (c.claim !== "final") continue;
+
+        const settle = c.endSec ?? c.until ?? spec.canvas.durationSec;
+        const settleFrame = Math.min(
+          Math.round(spec.canvas.durationSec * spec.canvas.fps) - 1,
+          Math.round(settle * spec.canvas.fps)
+        );
+        await page.evaluate(
+          (f) => (window as unknown as { seek: (n: number) => void }).seek(f),
+          settleFrame
+        );
+        const shown = await page.evaluate((id: string) => {
+          const node = document.querySelector<HTMLElement>(`[data-id="${id}"] .cnum`);
+          return node?.textContent ?? "";
+        }, c.id);
+        const digitsShown = shown.replace(/[^0-9]/g, "");
+        const digitsWanted = String(Math.trunc(Math.abs(c.to)));
+        if (digitsShown !== digitsWanted) {
+          problemsEarly.push(
+            `counter "${c.id}" is sourced but shows "${shown}" at its settle time ` +
+              `(${settle}s) instead of ${c.to} — the citation would back a number the ` +
+              `clip never displays`
+          );
+        }
+      }
 
       /* --- poster frame: the still the card rests on --- */
       const posterSec = spec.posterSec ?? spec.canvas.durationSec * 0.35;
@@ -218,6 +259,7 @@ export async function checkFrame0(formats?: LoadedFormat[]): Promise<Frame0Resul
       const expected = expectedAtZero(spec);
       const problems: string[] = [];
 
+      problems.push(...problemsEarly);
       for (const e of pageErrors) problems.push(`composition error: ${e}`);
 
       /* 1. Something must be promised at t=0 at all. */

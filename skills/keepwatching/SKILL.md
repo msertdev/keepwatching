@@ -164,6 +164,13 @@ citations backed the parent's numbers, not yours. If you put a real number on
 screen, set `sampleContent: sourced` and add a `sources:` entry with a URL and
 the exact claim it backs.
 
+**A sourced number is only sourced once it lands.** If you animate a counter to
+a cited figure, mark it `claim: "final"` and keep the unit and any word like
+"exactly" off screen until `endSec` — show "counting…" until then. Every other
+element visible during the count needs `neutralWhileCounting: true`. `kw check`
+refuses the format otherwise. Counters whose intermediate values are honestly
+true ("frames so far") are marked `claim: "running"` and are exempt.
+
 What counts as a source: something a reader can open and check the number
 against — a primary paper or its permanent record (DOI, PubMed), a standards
 body, a statistical agency, an official report. Not a listicle, not a blog

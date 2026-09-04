@@ -27,6 +27,7 @@ import {
   loadContentAxes,
   loadFormat,
   validateAxes,
+  validateClaims,
   validateMeta,
   validateSpec,
   type LoadedFormat,
@@ -35,6 +36,7 @@ import { renderFormat } from "./render.js";
 import { startPreview } from "./preview.js";
 import { buildSite } from "./site.js";
 import { checkFrame0, reportFrame0 } from "./frame0.js";
+import { checkLayout, reportLayout } from "./layout.js";
 import {
   checkPreviews,
   previewStatus,
@@ -73,6 +75,7 @@ keepwatching — a measured retention database for short-form formats, that rend
       --no-serve                  build only, do not start the server
       --force                     re-render every preview, not just stale ones
   kw previews check               verify committed previews match their specs
+  kw layout                       open the gallery at 3 widths, assert nothing is unreachable
   kw site build [--allow-missing] rebuild site/gallery.json from existing renders
   kw site serve [--port=8080]     serve site/ locally
   kw measure                      ingest CSVs, then report
@@ -171,6 +174,7 @@ function cmdCheck(): void {
          cannot ship unattributed numbers in its own demo copy. */
       errors.push(...validateMeta(f.meta, slug));
       errors.push(...validateAxes(f, axes));
+      errors.push(...validateClaims(f.spec, f.meta, slug));
 
       if (!f.meta.hypothesis) warnings.push(`${slug}: meta.yml has no hypothesis`);
       if (!f.meta.useWhen) warnings.push(`${slug}: meta.yml has no useWhen`);
@@ -394,7 +398,8 @@ async function cmdGallery(): Promise<void> {
       const elapsed = (Date.now() - t0) / 1000;
       const eta = (elapsed / done) * (needRender.length - done);
       process.stdout.write(
-        `  ${String(done).padStart(2)}/${needRender.length} rendered  ` +
+        `
+  ${String(done).padStart(2)}/${needRender.length} rendered  ` +
           `${fmt.slug.padEnd(22)} ${elapsed.toFixed(0)}s elapsed` +
           `${done < needRender.length ? `, ~${eta.toFixed(0)}s left` : ""}      `
       );
@@ -424,6 +429,14 @@ async function cmdGallery(): Promise<void> {
  * The drift guard. Committed previews are the gallery's visible surface, so a
  * preview that no longer matches its spec must never ship quietly.
  */
+/**
+ * The page's equivalent of the frame tests. A control that a reader cannot
+ * click is a control that is not there, however good it looks in a screenshot.
+ */
+async function cmdLayout(): Promise<void> {
+  if (!reportLayout(await checkLayout())) process.exit(1);
+}
+
 function cmdPreviews(): void {
   const sub = positional[0] ?? "check";
   if (sub !== "check") fail(new Error(`unknown: kw previews ${sub}`));
@@ -530,6 +543,8 @@ async function main(): Promise<void> {
       return cmdGallery();
     case "previews":
       return cmdPreviews();
+    case "layout":
+      return cmdLayout();
     case "site":
       return cmdSite();
     case "measure":
