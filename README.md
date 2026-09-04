@@ -18,16 +18,18 @@ actually say — including "nothing yet".
 |---|---|
 | **24** | named formats, 10 families |
 | **24** | render deterministically today |
-| **0** | measured so far — sample sizes are printed everywhere, and this one is zero |
+| **0** | formats measured — `n = 0`, and it says so on every card |
+| **0** | content axes measured — a **separate** board, never averaged with the above |
+| **3** | formats whose demo copy uses real, cited numbers; the other 21 are marked filler |
 | **~20s** | to render a 12-second 1080×1920 clip |
 
-That last row is the point. This repo is being published with its evidence
-column empty, because the alternative is publishing numbers nobody can check.
-Every format is marked `n: 0 · untested` until a CSV says otherwise.
+Those two zeroes are the point. This repo ships with its evidence columns empty,
+because the alternative is publishing numbers nobody can check. Every format is
+marked `n: 0 · untested` until a CSV says otherwise.
 
 ```bash
 git clone https://github.com/msertdev/keepwatching && cd keepwatching
-npm install && npm run setup
+npm install && npm run setup             # ~9s warm, under 3 min on a cold machine
 npm run render -- stat-counter-rise      # -> out/stat-counter-rise/master.mp4
 ```
 
@@ -47,8 +49,9 @@ A format here is three files:
 ```
 formats/ranking-suspense/
 ├── format.json   the render spec — deterministic, JSON, no code
-├── meta.yml      the claim — an explicit, losable hypothesis
-└── data.yml      the evidence — n, retention curve, or `status: untested`
+├── meta.yml      the claim — an explicit, losable hypothesis, and where its
+│                 example numbers came from
+└── data.yml      the evidence — in two blocks that never merge
 ```
 
 The `meta.yml` for that one says:
@@ -61,6 +64,53 @@ The `meta.yml` for that one says:
 > read as padding.
 
 That is a claim you can measure and lose. `data.yml` says whether it did.
+
+## Two measurements, deliberately kept apart
+
+The easiest way to fool yourself with this data is to average the wrong things
+together, so the repo makes that structurally hard.
+
+```yaml
+# formats/<slug>/data.yml
+format:            # how the SCENE STRUCTURE performed. Orders the library.
+  n: 0
+  status: untested
+content_axis:      # how the SUBJECT MATTER performed, carried by this format.
+  n: 0             # Its own n. Its own baseline. Never merged with the above.
+  status: untested
+  axes: []
+```
+
+One published video carries both labels — it is *a countdown*, and it is *about
+the body*. "Countdowns retain 62%" and "body subjects retain 68%" are different
+claims, and a single blended number answers neither.
+
+So the separation is enforced in four places at once: they are different types
+in `engine/src/format.ts`, different blocks in `data.yml`, two tables with two
+baselines in `measure/report.md`, and two colours on the gallery — green for
+format, violet for axis, each with its own visible `n`.
+
+The report also prints a **carried by** column: if an axis was only ever carried
+by one format, it says so, because those are the same videos wearing two labels
+and neither result is isolated.
+
+Axes are yours, not the library's. Declare whatever distinction you actually test
+in [`data/content-axes.yml`](data/content-axes.yml) and tag videos with the
+optional `content_axis` column in `measure/mapping.csv`.
+
+## Where the demo numbers come from
+
+A library about honest measurement cannot ship invented facts in its own screenshots.
+
+Every `meta.yml` must declare `sampleContent: sourced` or `placeholder`, and
+`npx kw check` **fails** if it does not — or if a `sourced` format lacks a URL
+and the specific claim that URL backs.
+
+- **3 formats are `sourced`** — `stat-counter-rise` (the speed of light, exact by
+  SI definition), `ranking-suspense` (the five highest mountains) and
+  `split-compare` (highest vs tallest). Each cites its source on the card.
+- **21 formats are `placeholder`** — "Option A", "12,400 units", "Stage 3". Filler
+  no reader could mistake for a finding, and the gallery labels it as such.
 
 ## The engine
 
@@ -125,17 +175,32 @@ Works in Claude Code, Codex, Cursor, Windsurf, and anything else that reads a
 markdown skill file.
 
 ```bash
+git clone https://github.com/msertdev/keepwatching ~/keepwatching
+cd ~/keepwatching && npm install && npm run setup
+export KEEPWATCHING_HOME=~/keepwatching     # add to your shell profile
+
 # Claude Code
 cp -r skills/keepwatching ~/.claude/skills/
 
-# Cursor / Windsurf / Codex — point your rules file at it
-skills/keepwatching/SKILL.md
+# Cursor / Windsurf / Codex — point your rules file at
+# ~/keepwatching/skills/keepwatching/SKILL.md
 ```
+
+The clone is not optional: the skill drives a real renderer that lives in the
+repo, so the instruction file alone renders nothing. `KEEPWATCHING_HOME` is how
+the agent finds it from another project.
+
+**Measured onboarding**, from an empty directory to a verified MP4, on a machine
+with a warm npm cache and Chromium already installed: `npm install` 5s,
+`npm run setup` 4s, first render ~25s. On a genuinely cold machine the two
+downloads (≈130 MB Chromium, ≈30 MB Inter archive) dominate — budget 2–3 minutes
+on a normal connection. Either way, well under five.
 
 The skill teaches an agent to pick a format for a topic, fill in a `data` block,
 render, and read the numbers back — and, more importantly, **never to invent a
-retention number**. Every performance claim it makes has to come from a
-`data.yml` with an `n` attached.
+number**, whether that is a retention figure or a statistic on screen. Every
+performance claim has to come from a `data.yml` with an `n` attached, and every
+number in a rendered clip has to come from a cited source.
 
 ## Honesty rules
 
@@ -146,7 +211,11 @@ Not style preferences. The repo is worthless if they slip.
 3. **Losing formats stay listed, with their numbers.** A format that measured
    badly is the most useful row in the table.
 4. **Only `kw measure apply` writes `data.yml`.**
-5. **Seed data is one creator's channel** — a starting point, not a law of the
+5. **A format number and an axis number are never averaged.** Enforced by the
+   types, the schema, the report and the gallery — see above.
+6. **Every number on screen carries a source, or is labelled filler.** `kw check`
+   fails otherwise.
+7. **Seed data is one creator's channel** — a starting point, not a law of the
    platform. Your audience is not that audience, which is why you can run your
    own A/B and send it back.
 
