@@ -117,7 +117,13 @@ function copyMedia(fmt: LoadedFormat, mediaDir: string): GalleryCard["media"] {
   return media;
 }
 
-export function buildSite(): Gallery {
+export interface BuildOptions {
+  /** Build even when previews are missing. Only for callers that render a
+   *  subset on purpose, such as CI. */
+  allowMissing?: boolean;
+}
+
+export function buildSite(opts: BuildOptions = {}): Gallery {
   const mediaDir = path.join(SITE_DIR, "previews");
   fs.mkdirSync(mediaDir, { recursive: true });
 

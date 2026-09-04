@@ -251,20 +251,51 @@ function renderAxisBoard(ca) {
       : "");
 }
 
-fetch("gallery.json")
-  .then((r) => r.json())
+/**
+ * Load order: the generated gallery.js if it is present (works everywhere,
+ * including file://), otherwise fetch gallery.json. `fetch` cannot read the
+ * file: scheme, so a page opened by double-clicking would otherwise show
+ * nothing — and blaming a missing file for that was itself a misdiagnosis.
+ */
+function loadGallery() {
+  if (window.__GALLERY__) return Promise.resolve(window.__GALLERY__);
+  return fetch("gallery.json").then((r) => {
+    if (!r.ok) throw new Error(`gallery.json responded ${r.status}`);
+    return r.json();
+  });
+}
+
+function showLoadFailure(err) {
+  const offline = location.protocol === "file:";
+  grid.innerHTML =
+    `<div class="empty">` +
+    `<p><b>The gallery data did not load.</b></p>` +
+    (offline
+      ? `<p>This page was opened straight from disk, and the browser blocks reading ` +
+        `<code>gallery.json</code> over <code>file://</code>. The build also writes ` +
+        `<code>gallery.js</code>, which does work offline — if it is missing, the ` +
+        `gallery has not been built yet.</p>`
+      : `<p><code>${esc(err && err.message)}</code></p>`) +
+    `<p>Build it and serve it with one command, from the repo root:</p>` +
+    `<p><code class="cmd">npx kw gallery</code></p>` +
+    `</div>`;
+}
+
+loadGallery()
   .then((g) => {
     state.cards = g.cards;
     state.axisNames = Object.fromEntries(g.contentAxes.declared.map((a) => [a.id, a.name]));
 
+    /* Zero is a number and reads as one. A dash here would look like missing
+       data on a page whose entire argument is that the numbers are shown. */
     const stats = {
-      formats: g.totals.formats,
-      measured: g.totals.measured,
-      untested: g.totals.untested,
-      samples: g.totals.samples,
+      formats: g.totals.formats ?? 0,
+      measured: g.totals.measured ?? 0,
+      untested: g.totals.untested ?? 0,
+      samples: g.totals.samples ?? 0,
       axesDeclared: g.contentAxes.declared.length,
-      axesMeasured: g.contentAxes.measured,
-      axesSamples: g.contentAxes.samples,
+      axesMeasured: g.contentAxes.measured ?? 0,
+      axesSamples: g.contentAxes.samples ?? 0,
     };
     for (const [key, value] of Object.entries(stats)) {
       const el = document.querySelector(`[data-stat="${key}"]`);
@@ -278,9 +309,7 @@ fetch("gallery.json")
     buildFilters(g.cards);
     render();
   })
-  .catch(() => {
-    grid.innerHTML = `<p class="empty">gallery.json is missing. Run <code>npm run site</code> to build it.</p>`;
-  });
+  .catch(showLoadFailure);
 
 $("#sort").addEventListener("change", (e) => {
   state.sort = e.target.value;
