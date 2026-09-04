@@ -41,6 +41,13 @@ jobs:
       - name: Build the gallery
         run: npx kw site build
 
+      # The social card is built from four committed preview frames, so it drifts
+      # the same way a preview does: change a featured format and the shared link
+      # still advertises the old clip. Needs no browser — it recomputes the
+      # variant ids and compares them with the card's manifest.
+      - name: Social card matches the formats it shows
+        run: npx kw social check
+
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
