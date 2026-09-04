@@ -15,7 +15,13 @@ import fs from "node:fs";
 import path from "node:path";
 
 import { OUT_DIR, ROOT, SITE_DIR, rel } from "./paths.js";
-import { loadAllFormats, loadContentAxes, type AxisResult, type LoadedFormat } from "./format.js";
+import {
+  loadAllFormats,
+  loadAxisResults,
+  loadContentAxes,
+  type AxisResult,
+  type LoadedFormat,
+} from "./format.js";
 
 export interface GalleryCard {
   slug: string;
@@ -67,12 +73,14 @@ export interface Gallery {
     declared: Array<{ id: string; name: string; description?: string }>;
     measured: number;
     samples: number;
+    baseline: { avgViewedPct: number | null; source: string };
     rows: Array<{
       axis: string;
       name: string;
       n: number;
       hook3s: number | null;
       avgViewedPct: number | null;
+      /** Format slugs, plus `not-in-library` where samples came from outside. */
       formats: string[];
     }>;
   };
@@ -154,40 +162,19 @@ export function buildSite(): Gallery {
 
   const measured = cards.filter((c) => c.format.status === "measured" && c.format.n > 0);
 
-  /* Repo-wide axis roll-up: a weighted mean over each format's per-axis rows,
-     kept in its own branch of the JSON so no consumer can reach it while
-     iterating format metrics. */
-  const pooled = new Map<
-    string,
-    { n: number; hookNum: number; hookN: number; avgNum: number; avgN: number; formats: Set<string> }
-  >();
-  for (const c of cards) {
-    for (const a of c.contentAxis.axes) {
-      if (!pooled.has(a.axis)) {
-        pooled.set(a.axis, { n: 0, hookNum: 0, hookN: 0, avgNum: 0, avgN: 0, formats: new Set() });
-      }
-      const p = pooled.get(a.axis)!;
-      p.n += a.n;
-      p.formats.add(c.slug);
-      if (a.hook3s !== null && a.hook3s !== undefined) {
-        p.hookNum += a.hook3s * a.n;
-        p.hookN += a.n;
-      }
-      if (a.avgViewedPct !== null && a.avgViewedPct !== undefined) {
-        p.avgNum += a.avgViewedPct * a.n;
-        p.avgN += a.n;
-      }
-    }
-  }
-
-  const axisRows = [...pooled]
-    .map(([axis, p]) => ({
-      axis,
-      name: declaredAxes.find((d) => d.id === axis)?.name ?? axis,
-      n: p.n,
-      hook3s: p.hookN ? Number((p.hookNum / p.hookN).toFixed(4)) : null,
-      avgViewedPct: p.avgN ? Number((p.avgNum / p.avgN).toFixed(4)) : null,
-      formats: [...p.formats].sort(),
+  /* The axis board comes from data/content-axis-results.yml, not from pooling
+     formats/. An axis can be carried entirely by videos whose format is not in
+     this library; pooling from the format directories would silently drop
+     exactly those samples, which is the opposite of what the board is for. */
+  const axisResults = loadAxisResults();
+  const axisRows = axisResults.axes
+    .map((a) => ({
+      axis: a.axis,
+      name: a.name ?? declaredAxes.find((d) => d.id === a.axis)?.name ?? a.axis,
+      n: a.n,
+      hook3s: a.hook3s ?? null,
+      avgViewedPct: a.avgViewedPct ?? null,
+      formats: a.carriedBy ?? [],
     }))
     .sort((a, b) => (b.avgViewedPct ?? -1) - (a.avgViewedPct ?? -1));
 
@@ -204,6 +191,7 @@ export function buildSite(): Gallery {
       declared: declaredAxes.map((a) => ({ id: a.id, name: a.name, description: a.description })),
       measured: axisRows.length,
       samples: axisRows.reduce((s, a) => s + a.n, 0),
+      baseline: axisResults.baseline,
       rows: axisRows,
     },
     cards,

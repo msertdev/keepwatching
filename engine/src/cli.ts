@@ -34,6 +34,7 @@ import {
 import { renderFormat } from "./render.js";
 import { startPreview } from "./preview.js";
 import { buildSite } from "./site.js";
+import { checkFrame0, reportFrame0 } from "./frame0.js";
 
 const argv = process.argv.slice(2);
 const cmd = argv[0] ?? "help";
@@ -56,6 +57,7 @@ keepwatching — a measured retention database for short-form formats, that rend
       --check-determinism         re-seek frames out of order and compare hashes
       --keep-frames               leave the PNG sequence on disk
       --no-previews               skip the gallery-sized webm/mp4
+  kw frame0 [<slug>]              assert every format paints a real first frame
   kw preview <slug> [--port=5173] scrub a format in a browser
   kw new <slug> [--from=<slug>]   scaffold a new format directory
   kw variant <slug>               print the variant id for the current spec
@@ -212,6 +214,17 @@ async function cmdRender(): Promise<void> {
     console.log("");
     if (failed.length) process.exit(1);
   }
+}
+
+/**
+ * The first frame is the hook and the platform cover image. It has broken twice
+ * for unrelated reasons, so it gets its own test over the whole library rather
+ * than a spot check on one format.
+ */
+async function cmdFrame0(): Promise<void> {
+  const targets = positional.length ? [loadFormat(positional[0])] : loadAllFormats();
+  const ok = reportFrame0(await checkFrame0(targets));
+  if (!ok) process.exit(1);
 }
 
 function cmdPreview(): void {
@@ -395,6 +408,8 @@ async function main(): Promise<void> {
       return cmdCheck();
     case "render":
       return cmdRender();
+    case "frame0":
+      return cmdFrame0();
     case "preview":
       return cmdPreview();
     case "new":

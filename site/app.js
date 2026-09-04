@@ -207,6 +207,8 @@ function buildFilters(cards) {
   });
 }
 
+const NOT_IN_LIBRARY = "not-in-library";
+
 function renderAxisBoard(ca) {
   const el = $("#axisRows");
   if (!ca.rows.length) {
@@ -217,13 +219,36 @@ function renderAxisBoard(ca) {
     return;
   }
   el.className = "axis-rows";
-  el.innerHTML = ca.rows
-    .map(
-      (r) =>
-        `<div class="axis-row"><span>${esc(r.name)} <span class="an">n=${r.n}</span></span>` +
-        `<span class="av">${pct(r.avgViewedPct) ?? "—"}</span></div>`
-    )
-    .join("");
+
+  /* "Carried by" is the honesty column. An axis carried by one entry is that
+     entry's videos under a second label, and `not-in-library` marks samples from
+     a format that is not in this repo — visible, never folded into the format
+     board. */
+  el.innerHTML =
+    ca.rows
+      .map((r) => {
+        const carried = (r.formats || [])
+          .map((f) =>
+            f === NOT_IN_LIBRARY
+              ? `<span class="outside">${esc(f)}</span>`
+              : `<span>${esc(f)}</span>`
+          )
+          .join(", ");
+        const lone = (r.formats || []).length === 1;
+        return (
+          `<div class="axis-row">` +
+          `<span>${esc(r.name)} <span class="an">n=${r.n}</span>` +
+          `<span class="carried">carried by ${carried || "—"}` +
+          `${lone ? ' <span class="warn-lone">· not isolated</span>' : ""}</span></span>` +
+          `<span class="av">${pct(r.avgViewedPct) ?? "—"}</span></div>`
+        );
+      })
+      .join("") +
+    (ca.rows.some((r) => (r.formats || []).includes(NOT_IN_LIBRARY))
+      ? `<p class="axis-note"><span class="outside">${NOT_IN_LIBRARY}</span> means those samples ` +
+        `came from a format that is not part of this library. They count toward the axis ` +
+        `numbers above and appear nowhere on the format board.</p>`
+      : "");
 }
 
 fetch("gallery.json")
