@@ -29,7 +29,7 @@ marked `n: 0 · untested` until a CSV says otherwise.
 
 ```bash
 git clone https://github.com/msertdev/keepwatching && cd keepwatching
-npm install && npm run setup             # ~9s warm, under 3 min on a cold machine
+npm install && npm run setup             # seconds if cached, ~2-3 min cold
 npm run render -- stat-counter-rise      # -> out/stat-counter-rise/master.mp4
 ```
 
@@ -190,11 +190,20 @@ The clone is not optional: the skill drives a real renderer that lives in the
 repo, so the instruction file alone renders nothing. `KEEPWATCHING_HOME` is how
 the agent finds it from another project.
 
-**Measured onboarding**, from an empty directory to a verified MP4, on a machine
-with a warm npm cache and Chromium already installed: `npm install` 5s,
-`npm run setup` 4s, first render ~25s. On a genuinely cold machine the two
-downloads (≈130 MB Chromium, ≈30 MB Inter archive) dominate — budget 2–3 minutes
-on a normal connection. Either way, well under five.
+**Measured onboarding.** An independent agent, given only `SKILL.md` and an
+empty directory, went from nothing to a verified 15-second MP4 without help.
+Timed with `date +%s` on a machine that already had npm and Chromium cached:
+
+| step | time |
+|---|---|
+| `npm install` | 6s |
+| `npm run setup` | 4s (cache hit on Chromium) |
+| first render, 15s clip | 37s |
+
+The 4s is not representative of a cold machine: `npm run setup` fetches Inter
+(≈30 MB) and a headless Chromium (≈150 MB), so budget **2–3 minutes** on a fresh
+box with a normal connection. Either way, comfortably under five minutes to a
+first rendered clip.
 
 The skill teaches an agent to pick a format for a topic, fill in a `data` block,
 render, and read the numbers back — and, more importantly, **never to invent a
