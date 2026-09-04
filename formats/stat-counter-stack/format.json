@@ -13,7 +13,7 @@
     "glowY": 700
   },
   "data": {
-    "label": "Placeholder items counted",
+    "label": "Icons that appear while you read this",
     "closer": "One every 0.15 seconds."
   },
   "scene": [
@@ -53,7 +53,7 @@
         "x": 100,
         "w": 880
       },
-      "icon": "phone",
+      "icon": "dot",
       "count": 60,
       "columns": 10,
       "size": 66,
@@ -76,5 +76,6 @@
       },
       "at": 9.4
     }
-  ]
+  ],
+  "posterSec": 10.6
 }

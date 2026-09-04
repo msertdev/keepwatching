@@ -13,8 +13,8 @@
     "glowY": 800
   },
   "data": {
-    "line": "One placeholder sentence goes here.",
-    "turn": "And the line that changes its meaning goes here."
+    "line": "You read this before deciding to scroll.",
+    "turn": "No title card, no logo. That is the entire format."
   },
   "scene": [
     {
@@ -56,5 +56,6 @@
         ]
       }
     }
-  ]
+  ],
+  "posterSec": 6.4
 }

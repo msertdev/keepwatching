@@ -14,8 +14,8 @@
     "glowY": 660
   },
   "data": {
-    "question": "Option A or Option B?",
-    "verdict": "Replace this with the verdict your evidence supports."
+    "question": "Which side did you read first?",
+    "verdict": "You compared them before you finished reading either."
   },
   "scene": [
     {
@@ -45,15 +45,15 @@
         "size": 44
       },
       "left": {
-        "title": "Option A",
-        "value": "12,400",
-        "body": "units, placeholder",
+        "title": "Left",
+        "value": "first",
+        "body": "where the eye lands",
         "color": "#38bdf8"
       },
       "right": {
-        "title": "Option B",
-        "value": "18,900",
-        "body": "units, placeholder",
+        "title": "Right",
+        "value": "second",
+        "body": "where it checks",
         "color": "#f97316"
       }
     },
@@ -95,5 +95,6 @@
         ]
       }
     }
-  ]
+  ],
+  "posterSec": 9.2
 }

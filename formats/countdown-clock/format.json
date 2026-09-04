@@ -14,8 +14,8 @@
   },
   "data": {
     "promise": "In 10 seconds you will know",
-    "subject": "the answer this placeholder is holding back",
-    "payoff": "Replace this with your actual payoff line."
+    "subject": "whether a clock alone can hold you",
+    "payoff": "It did. You watched it reach zero."
   },
   "scene": [
     {
@@ -108,5 +108,6 @@
         "scale": 0.9
       }
     }
-  ]
+  ],
+  "posterSec": 9
 }

@@ -501,6 +501,12 @@ export function validateSpec(spec: FormatSpec, slug?: string): void {
     fail(`durationSec x fps must be a whole number of frames (got ${c.durationSec * c.fps})`);
   }
 
+  if (spec.posterSec !== undefined) {
+    if (spec.posterSec < 0 || spec.posterSec >= c.durationSec) {
+      fail(`posterSec (${spec.posterSec}) must be inside the clip (0 to ${c.durationSec})`);
+    }
+  }
+
   const safe = { ...DEFAULT_SAFE, ...(spec.safe ?? {}) };
   if (safe.top + safe.bottom >= c.h) fail("safe.top + safe.bottom exceeds the canvas height");
 

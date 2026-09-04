@@ -6,10 +6,11 @@ useWhen: >-
   The myth is genuinely widespread and the correction is well-sourced.
 avoidWhen: >-
   You cannot source the correction. This format converts confidence into belief.
-sampleContent: placeholder
-# The example copy in format.json is deliberate filler. Replace the `data`
-# block with your own content — and if it contains a real number, add a
-# sources: list and switch sampleContent to "sourced".
+sampleContent: sourced
+sources:
+  - title: "NASA Earth Observatory — China's Wall Less Great in View from Space"
+    url: https://earthobservatory.nasa.gov/images/6845/chinas-wall-less-great-in-view-from-space
+    claim: "The Great Wall of China is generally not visible to the unaided eye from low Earth orbit."
 tags:
   - "correction"
   - "belief"

@@ -37,6 +37,17 @@ const FFMPEG = ffmpegPath as unknown as string;
 /** Fraction of pixels that must be brighter than mid-grey for a frame to have ink. */
 const MIN_INK_FRACTION = 0.0004; // 0.04% of 1080x1920 ≈ 830 px
 
+/**
+ * The poster frame is held still on a gallery card and used as the platform's
+ * cover image, so "not blank" is far too low a bar for it. It has to look
+ * finished. This threshold is calibrated against the library: a scene with its
+ * elements on screen clears it comfortably, a near-empty one does not.
+ */
+const MIN_POSTER_INK = 0.014; // 1.4%; the thinnest legitimate card in the library is 1.86%
+
+/** How much of the frame's height the content spans, top-most to bottom-most. */
+const MIN_POSTER_SPREAD = 0.25;
+
 export interface ElementReport {
   id: string;
   type: string;
@@ -51,6 +62,9 @@ export interface Frame0Result {
   slug: string;
   ok: boolean;
   inkFraction: number;
+  posterSec: number;
+  posterInk: number;
+  posterSpread: number;
   expected: string[];
   problems: string[];
   elements: ElementReport[];
@@ -174,6 +188,31 @@ export async function checkFrame0(formats?: LoadedFormat[]): Promise<Frame0Resul
       const png = path.join(tmp, `${fmt.slug}.png`);
       await shoot(page, cdp, 0, png);
 
+      /* --- poster frame: the still the card rests on --- */
+      const posterSec = spec.posterSec ?? spec.canvas.durationSec * 0.35;
+      const posterFrame = Math.min(
+        Math.round(spec.canvas.durationSec * spec.canvas.fps) - 1,
+        Math.round(posterSec * spec.canvas.fps)
+      );
+      const posterPng = path.join(tmp, `${fmt.slug}-poster.png`);
+      await shoot(page, cdp, posterFrame, posterPng);
+      const posterInk = inkFraction(posterPng);
+      const posterSpread = await page.evaluate(() => {
+        let top = Infinity;
+        let bottom = -Infinity;
+        document.querySelectorAll<HTMLElement>("#scene .el").forEach((el) => {
+          if (Number(getComputedStyle(el).opacity || "1") < 0.05) return;
+          const r = el.getBoundingClientRect();
+          if (r.height === 0 || r.width === 0) return;
+          top = Math.min(top, Math.max(0, r.top));
+          bottom = Math.max(bottom, Math.min(window.innerHeight, r.bottom));
+        });
+        if (!Number.isFinite(top) || bottom <= top) return 0;
+        return (bottom - top) / window.innerHeight;
+      });
+
+      /* Back to frame 0 for the DOM inspection below. */
+      await shoot(page, cdp, 0, png);
       const elements = await inspect(page);
       const byId = new Map(elements.map((e) => [e.id, e]));
       const expected = expectedAtZero(spec);
@@ -217,10 +256,28 @@ export async function checkFrame0(formats?: LoadedFormat[]): Promise<Frame0Resul
         );
       }
 
+      if (posterInk < MIN_POSTER_INK) {
+        problems.push(
+          `poster frame at ${posterSec}s carries only ${(posterInk * 100).toFixed(2)}% ink ` +
+            `(need ${(MIN_POSTER_INK * 100).toFixed(1)}%) — it will sit on the card looking empty. ` +
+            `Set posterSec to a fuller moment.`
+        );
+      }
+      if (posterSpread < MIN_POSTER_SPREAD) {
+        problems.push(
+          `poster frame content spans only ${(posterSpread * 100).toFixed(0)}% of the frame height ` +
+            `(need ${(MIN_POSTER_SPREAD * 100).toFixed(0)}%) — it reads as a caption on an empty ` +
+            `card. Set posterSec to a moment with more of the scene on screen.`
+        );
+      }
+
       results.push({
         slug: fmt.slug,
         ok: problems.length === 0,
         inkFraction: Number(ink.toFixed(6)),
+        posterSec,
+        posterInk: Number(posterInk.toFixed(6)),
+        posterSpread: Number(posterSpread.toFixed(4)),
         expected,
         problems,
         elements,
@@ -244,8 +301,9 @@ export function reportFrame0(results: Frame0Result[]): boolean {
   for (const r of results) {
     const mark = r.ok ? "\x1b[32mok  \x1b[0m" : "\x1b[31mFAIL\x1b[0m";
     console.log(
-      `  ${mark} ${r.slug.padEnd(width)}  ${String(r.expected.length).padStart(2)} element(s), ` +
-        `ink ${(r.inkFraction * 100).toFixed(2)}%`
+      `  ${mark} ${r.slug.padEnd(width)}  f0 ink ${(r.inkFraction * 100).toFixed(2).padStart(5)}%  ` +
+        `poster@${String(r.posterSec).padStart(5)}s ink ${(r.posterInk * 100).toFixed(2).padStart(5)}% ` +
+        `spread ${(r.posterSpread * 100).toFixed(0).padStart(3)}%`
     );
     for (const p of r.problems) console.log(`       \x1b[31m·\x1b[0m ${p}`);
   }
