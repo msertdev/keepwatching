@@ -76,7 +76,7 @@ keepwatching — a measured retention database for short-form formats, that rend
       --no-serve                  build only, do not start the server
       --force                     re-render every preview, not just stale ones
   kw previews check               verify committed previews match their specs
-  kw layout                       open the gallery at 3 widths, assert nothing is unreachable
+  kw layout [--url=<live>]        open the gallery at 3 widths, assert nothing is unreachable
   kw social                       render the social preview card from real frames
   kw site build [--allow-missing] rebuild site/gallery.json from existing renders
   kw site serve [--port=8080]     serve site/ locally
@@ -436,7 +436,10 @@ async function cmdGallery(): Promise<void> {
  * click is a control that is not there, however good it looks in a screenshot.
  */
 async function cmdLayout(): Promise<void> {
-  if (!reportLayout(await checkLayout())) process.exit(1);
+  const live = opt("url");
+  if (live) console.log(`
+  testing the deployed gallery at ${live}`);
+  if (!reportLayout(await checkLayout(live))) process.exit(1);
 }
 
 function cmdPreviews(): void {
