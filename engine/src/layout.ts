@@ -80,12 +80,17 @@ export interface LayoutResult {
   problems: LayoutProblem[];
 }
 
-export async function checkLayout(): Promise<LayoutResult[]> {
-  if (!fs.existsSync(path.join(SITE_DIR, "gallery.json"))) {
+/**
+ * @param liveUrl test a deployed gallery instead of the local build. The point
+ *                of a launch check is the page people will actually open.
+ */
+export async function checkLayout(liveUrl?: string): Promise<LayoutResult[]> {
+  if (!liveUrl && !fs.existsSync(path.join(SITE_DIR, "gallery.json"))) {
     throw new Error("site/gallery.json is missing — run `npx kw gallery --no-serve` first");
   }
 
-  const { url, close } = await serve();
+  const served = liveUrl ? { url: liveUrl, close: () => {} } : await serve();
+  const { url, close } = served;
   const browser = await chromium.launch();
   const results: LayoutResult[] = [];
 
