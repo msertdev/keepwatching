@@ -1,0 +1,147 @@
+{
+  "id": "social-card",
+  "version": "1.0.0",
+  "canvas": {
+    "w": 1280,
+    "h": 640,
+    "fps": 1,
+    "durationSec": 1
+  },
+  "theme": {
+    "bg": "#07090c",
+    "fg": "#f2f5f8",
+    "muted": "rgba(255,255,255,0.62)",
+    "accent": "#22c55e",
+    "glow": 0.1,
+    "glowY": 200
+  },
+  "safe": {
+    "top": 60,
+    "bottom": 60,
+    "side": 64
+  },
+  "posterSec": 0,
+  "data": {
+    "title": "keepwatching",
+    "line": "A retention database for short-form formats. That renders.",
+    "stats": "24 formats · 0 measured · MIT"
+  },
+  "scene": [
+    {
+      "id": "title",
+      "type": "text",
+      "box": {
+        "y": 150,
+        "x": 64,
+        "w": 600
+      },
+      "align": "left",
+      "text": "{{title}}",
+      "font": {
+        "size": 86,
+        "weight": 800,
+        "tracking": -0.03
+      }
+    },
+    {
+      "id": "rule",
+      "type": "card",
+      "box": {
+        "y": 268,
+        "x": 64,
+        "w": 96
+      },
+      "h": 5,
+      "fill": "accent",
+      "radius": 3
+    },
+    {
+      "id": "line",
+      "type": "text",
+      "box": {
+        "y": 308,
+        "x": 64,
+        "w": 600
+      },
+      "align": "left",
+      "text": "{{line}}",
+      "wrapAt": 5,
+      "font": {
+        "size": 36,
+        "weight": 600,
+        "color": "muted",
+        "lineHeight": 1.3
+      }
+    },
+    {
+      "id": "stats",
+      "type": "text",
+      "box": {
+        "y": 452,
+        "x": 64,
+        "w": 640
+      },
+      "align": "left",
+      "text": "{{stats}}",
+      "font": {
+        "size": 27,
+        "weight": 700,
+        "color": "accent",
+        "tracking": 0.01
+      },
+      "wrapAt": 9
+    },
+    {
+      "id": "shot0",
+      "type": "image",
+      "box": {
+        "y": 196,
+        "x": 712,
+        "w": 128
+      },
+      "h": 248,
+      "src": "../../site/previews/stat-counter-rise.jpg",
+      "fit": "cover",
+      "radius": 14
+    },
+    {
+      "id": "shot1",
+      "type": "image",
+      "box": {
+        "y": 196,
+        "x": 856,
+        "w": 128
+      },
+      "h": 248,
+      "src": "../../site/previews/ranking-suspense.jpg",
+      "fit": "cover",
+      "radius": 14
+    },
+    {
+      "id": "shot2",
+      "type": "image",
+      "box": {
+        "y": 196,
+        "x": 1000,
+        "w": 128
+      },
+      "h": 248,
+      "src": "../../site/previews/redacted-reveal.jpg",
+      "fit": "cover",
+      "radius": 14
+    },
+    {
+      "id": "shot3",
+      "type": "image",
+      "box": {
+        "y": 196,
+        "x": 1144,
+        "w": 128
+      },
+      "h": 248,
+      "src": "../../site/previews/countdown-clock.jpg",
+      "fit": "cover",
+      "radius": 14
+    }
+  ]
+}
