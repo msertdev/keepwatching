@@ -194,23 +194,104 @@ export const isNotInLibrary = (variantId: string): boolean =>
 
 /* --------------------------------------- repo-level content-axis results */
 
+/** Where a number came from. Rendered distinctly everywhere it is shown. */
+export type EvidenceSource = "csv" | "manual";
+
+/**
+ * One measurement of one published video at one moment.
+ *
+ * Deliberately not deduplicated: the same video measured twice at different
+ * times is two observations, both kept with their own `measuredAt`. A view
+ * count that grew between readings is not a conflict to resolve by picking a
+ * winner — it is two true readings of a moving number.
+ *
+ * Every numeric field is nullable and stays null when the export did not
+ * contain it. Nothing here is interpolated, extrapolated or approximated.
+ */
+export interface Observation {
+  platform: string;
+  externalId: string;
+  /** `not-in-library` when the format is deliberately outside this repo. */
+  variantId: string;
+  title?: string;
+  publishedAt?: string | null;
+  /** When this reading was taken. */
+  measuredAt: string;
+  /** Last day the underlying daily series covers. Null for a point reading. */
+  dataThrough?: string | null;
+  /** Per platform. Two cuts of the same story are two different videos. */
+  durationSec?: number | null;
+
+  views?: number | null;
+  watchTimeHours?: number | null;
+  avgWatchSec?: number | null;
+  avgPctViewed?: number | null;
+  subscribers?: number | null;
+
+  likes?: number | null;
+  comments?: number | null;
+  shares?: number | null;
+
+  /** Filled only when the daily series actually covers the window. */
+  viewsAt24h?: number | null;
+  viewsAt48h?: number | null;
+  viewsAt7d?: number | null;
+
+  source: EvidenceSource;
+  /** Why a field is null, and any conflict this reading is part of. */
+  notes?: string[];
+}
+
+/** Per-platform summary. Never combined across platforms — see the report. */
+export interface PlatformSummary {
+  platform: string;
+  videos: number;
+  observations: number;
+  views: number | null;
+  avgPctViewed: number | null;
+  sources: EvidenceSource[];
+}
+
 export interface AxisRollup {
   axis: string;
   name?: string;
+  /** Distinct published videos on this axis. */
   n: number;
+  /** Distinct readings, which can exceed `n`. */
+  observations?: number;
   hook3s?: number | null;
+  /**
+   * Only meaningful when a single platform carries the axis. Null whenever the
+   * axis spans platforms, because two platforms' percentages describe two
+   * different videos and averaging them would invent a number.
+   */
   avgViewedPct?: number | null;
   viewsPerHour?: number | null;
   vsAxisBaselinePct?: number | null;
   retention?: RetentionPoint[];
   /** Format slugs, plus the literal `not-in-library` when applicable. */
   carriedBy: string[];
+  byPlatform?: PlatformSummary[];
+  rows?: Observation[];
+  notes?: string[];
+}
+
+/** A disagreement between two sources, recorded rather than resolved. */
+export interface Conflict {
+  subject: string;
+  field: string;
+  readings: Array<{ value: string; source: EvidenceSource; measuredAt?: string; from: string }>;
+  resolution: string;
 }
 
 export interface ContentAxisResults {
   updated?: string;
+  /** Computed within one platform only; `source` says which. */
   baseline: { avgViewedPct: number | null; source: string };
   axes: AxisRollup[];
+  conflicts?: Conflict[];
+  /** Fields left null across the dataset, each with the reason. */
+  nulls?: Array<{ field: string; reason: string }>;
 }
 
 export const AXIS_RESULTS_FILE = path.join(ROOT, "data", "content-axis-results.yml");

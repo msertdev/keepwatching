@@ -1,0 +1,27 @@
+# Hand-entered readings.
+#
+# Everything here is written into the results with `source: manual` and is
+# rendered distinctly from exported numbers, in the report and in the gallery.
+# It sits alongside the CSV readings rather than replacing them: where the two
+# disagree, both are kept as separate observations with their own measuredAt,
+# and the disagreement is recorded as a conflict.
+#
+# Only enter what you actually read. A field left out stays null.
+
+observations:
+  # TikTok retention is not in the platform's export, so these came from the
+  # app's own per-video screen. `matchTitle` resolves the video id against
+  # Content.csv, so the id does not have to be transcribed by hand.
+  - platform: tiktok
+    matchTitle: Apple
+    contentAxis: corporate-money
+    measuredAt: 2026-09-04
+    # Recorded because it disagrees with the export. The export wins as the
+    # platform's own record; this is kept so the disagreement stays visible.
+    publishedAt: 2026-09-02
+    durationSec: 35
+    views: 6487
+    avgWatchSec: 22
+    note: >-
+      Read from the TikTok app. The export in data/seed/raw/Content.csv reports a
+      different view count taken at a different moment; both readings are kept.
