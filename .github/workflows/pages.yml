@@ -1,20 +1,14 @@
 name: pages
 
-# Manual until launch.
+# Deploys the gallery on every push to main.
 #
-# GitHub Pages is not enabled on this repository, and Pages for a private repo
-# needs a paid plan, so an automatic run on every push would render all 24
-# formats for ~12 minutes and then fail at the deploy step — leaving the repo
-# permanently red for a reason that is not a defect.
-#
-# At launch: make the repo public, set Settings -> Pages -> Source to
-# "GitHub Actions", then add the `push` trigger back:
-#
-#   on:
-#     push:
-#       branches: [main]
-#     workflow_dispatch:
+# This costs seconds rather than the ten minutes it once did: the previews are
+# committed, so a deploy copies files and builds one JSON instead of rendering
+# 24 clips. `kw previews check` runs first, so a deploy cannot publish a preview
+# whose spec has moved since it was rendered.
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
