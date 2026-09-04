@@ -22,16 +22,36 @@ including "nothing yet".
 claim about how a format performs comes from `formats/<slug>/data.yml`, and every
 one of those carries an `n`. If `n: 0`, the honest answer is "untested" — say so.
 
-## Setup
+## Setup — do this first, every session
+
+This skill drives a real renderer that lives in the keepwatching repo. The
+instructions alone cannot render anything, so **step one is always locating or
+installing the repo.**
 
 ```bash
-git clone https://github.com/msertdev/keepwatching
-cd keepwatching
-npm install && npm run setup    # Inter + a headless Chromium, ~2 min
+# 1. Where is it? First match wins.
+#    $KEEPWATCHING_HOME  ->  ./keepwatching  ->  ~/keepwatching
+cd "${KEEPWATCHING_HOME:-$HOME/keepwatching}" 2>/dev/null || {
+  git clone https://github.com/msertdev/keepwatching ~/keepwatching
+  cd ~/keepwatching
+}
+
+# 2. One-time install. Safe to re-run; it no-ops when already done.
+npm install && npm run setup
+
+# 3. Confirm the library is intact before doing anything else.
+npx kw check
 ```
 
-`npm run setup` is required once. It downloads the fonts locally, because a
-missing font would silently change every frame the repo has ever measured.
+`kw check` printing `no problems` means you are ready. If it reports missing
+fonts, run `npm run setup` again — the composition refuses to render with a
+fallback font, because a substituted font would silently change every frame the
+repo has ever measured.
+
+**Every command in this file assumes the repo root is the working directory.**
+If the user is working in a different project, render there by pointing at the
+repo (`cd $KEEPWATCHING_HOME && npx kw render …`) and copy the MP4 back; do not
+try to run `kw` from outside the repo.
 
 ## The four things you will be asked to do
 
@@ -68,7 +88,6 @@ Copy a format, fill in the `data` block, render:
 ```bash
 npx kw new my-clip --from=stat-counter-rise
 # edit formats/my-clip/format.json -> "data": { ... }
-npx kw preview my-clip          # scrub it in a browser first
 npx kw render my-clip           # -> out/my-clip/master.mp4
 ```
 
@@ -76,6 +95,19 @@ Only edit `data` unless the layout genuinely needs to change. The `scene` array
 is the format; changing it makes the clip a different format, and its
 measurements no longer transfer. If you do change the scene, bump `version` in
 `format.json` — the variant id derives from it.
+
+**Length.** `canvas.durationSec` sets the clip length, and `durationSec × fps`
+must be a whole number of frames. When you change it, move every `at`, `until`,
+`startSec` and `endSec` in the scene to match — a counter that finishes at 6.4s
+in a 15-second clip leaves nine dead seconds on screen. `npx kw check` catches
+timings that run past the end of the clip, but it cannot tell you that a clip
+is mostly empty. Look at `out/<slug>/contact.png` after rendering; it samples
+six frames across the whole clip and makes dead air obvious in one glance.
+
+**Sourcing.** The scaffold's `meta.yml` starts as `sampleContent: placeholder`.
+If you put a real number on screen, switch it to `sourced` and add a `sources:`
+entry with a URL and the exact claim it backs. `kw check` fails otherwise. This
+applies to clips you generate for a user, not just to library formats.
 
 See `references/spec.md` for the full `format.json` reference.
 
@@ -116,6 +148,36 @@ When editing the engine, never introduce `Date.now()`, `Math.random()`,
 `npx kw render <slug> --check-determinism` re-seeks frames out of order and fails
 if any pixel moved.
 
+## Two measurements that must never be mixed
+
+`data.yml` has two blocks, and they answer different questions:
+
+| Block | Question | Ranks the library? |
+|---|---|---|
+| `format` | How does this **scene structure** perform? | Yes |
+| `content_axis` | How does this **subject matter** perform? | No |
+
+A single published video carries both labels — it is *a countdown* and it is
+*about the body*. Averaging the two produces a number that answers neither
+question, so they are stored separately, reported separately, and shown in
+different colours in the gallery.
+
+When you report a result, say which one it is:
+
+- "`countdown-clock` retained 62% (n=6)" — a format claim.
+- "personal/body subjects retained 68% (n=9)" — an axis claim.
+- "personal/body countdowns retained 68%" — **neither**, unless you also say how
+  many videos, in which formats, and that the two are confounded.
+
+`measure/report.md` prints a **carried by** column for every axis. If an axis was
+only ever carried by one format, that axis result and that format result are the
+same videos wearing two labels; say so rather than presenting them as two
+independent findings.
+
+Content axes are declared in `data/content-axes.yml` and attached to a video by
+the optional `content_axis` column in `measure/mapping.csv`. They are the user's
+own axes, not the library's — add whatever distinction they actually test.
+
 ## Honesty rules
 
 These are not style preferences. The repo is worthless if they slip.
@@ -125,7 +187,12 @@ These are not style preferences. The repo is worthless if they slip.
 3. **Losing formats stay listed with their numbers.** Do not quietly drop them.
 4. **Never hand-write `data.yml`.** Only `kw measure apply` writes it. Numbers
    typed from memory are indistinguishable from numbers that were invented.
-5. **Seed data is one creator's channel.** It is a starting point, not a law of
+5. **Never merge a format number with an axis number.** See the table above.
+6. **Every number on screen needs a source.** A clip you generate carries either
+   `sampleContent: sourced` with a URL, or `placeholder` with obvious filler.
+   Inventing a plausible statistic for a demo is the same failure as inventing a
+   retention figure.
+7. **Seed data is one creator's channel.** It is a starting point, not a law of
    the platform. Say whose sample it is when the distinction matters.
 
 ## Reference files
