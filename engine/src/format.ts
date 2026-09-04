@@ -318,6 +318,21 @@ export function loadAxisResults(): ContentAxisResults {
 }
 
 export function writeAxisResults(results: ContentAxisResults): void {
+  /* Video titles are dropped on the way out.
+     A published title describes the video's premise, and for samples tagged
+     `not-in-library` that premise is the withheld format's mechanic — publishing
+     it would hand over by accident exactly what the label exists to keep back.
+     The platform id stays, which is what makes a row auditable; the title was
+     only ever convenience. The local report keeps them, and it is gitignored. */
+  const stripped: ContentAxisResults = {
+    ...results,
+    axes: results.axes.map((a) => ({
+      ...a,
+      rows: a.rows?.map(({ title, ...rest }) => rest),
+    })),
+  };
+  results = stripped;
+
   const header =
     "# Repo-level content-axis results. Written by `kw measure apply` — never by hand.\n" +
     "#\n" +
@@ -479,7 +494,19 @@ const ELEMENT_TYPES = new Set([
   "image",
 ]);
 
-export function validateSpec(spec: FormatSpec, slug?: string): void {
+export interface ValidateOptions {
+  /**
+   * Every format in the library must be vertical. Relaxed only for the social
+   * preview card, which uses the same engine but is not a format.
+   */
+  requireVertical?: boolean;
+}
+
+export function validateSpec(
+  spec: FormatSpec,
+  slug?: string,
+  opts: ValidateOptions = {}
+): void {
   const fail = (msg: string): never => {
     throw new Error(`Invalid format${slug ? ` "${slug}"` : ""}: ${msg}`);
   };
@@ -494,7 +521,9 @@ export function validateSpec(spec: FormatSpec, slug?: string): void {
 
   const c = { ...DEFAULT_CANVAS, ...spec.canvas };
   if (!(c.w > 0 && c.h > 0)) fail("canvas.w and canvas.h must be > 0");
-  if (c.h <= c.w) fail(`canvas must be vertical (got ${c.w}x${c.h})`);
+  if (opts.requireVertical !== false && c.h <= c.w) {
+    fail(`canvas must be vertical (got ${c.w}x${c.h})`);
+  }
   if (!(c.fps > 0)) fail("canvas.fps must be > 0");
   if (!(c.durationSec > 0)) fail("canvas.durationSec must be > 0");
   if (Math.abs(c.durationSec * c.fps - Math.round(c.durationSec * c.fps)) > 1e-6) {

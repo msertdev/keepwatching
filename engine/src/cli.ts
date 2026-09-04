@@ -37,6 +37,7 @@ import { startPreview } from "./preview.js";
 import { buildSite } from "./site.js";
 import { checkFrame0, reportFrame0 } from "./frame0.js";
 import { checkLayout, reportLayout } from "./layout.js";
+import { renderSocialCard } from "./social.js";
 import {
   checkPreviews,
   previewStatus,
@@ -76,6 +77,7 @@ keepwatching — a measured retention database for short-form formats, that rend
       --force                     re-render every preview, not just stale ones
   kw previews check               verify committed previews match their specs
   kw layout                       open the gallery at 3 widths, assert nothing is unreachable
+  kw social                       render the social preview card from real frames
   kw site build [--allow-missing] rebuild site/gallery.json from existing renders
   kw site serve [--port=8080]     serve site/ locally
   kw measure                      ingest CSVs, then report
@@ -545,6 +547,8 @@ async function main(): Promise<void> {
       return cmdPreviews();
     case "layout":
       return cmdLayout();
+    case "social":
+      return void (await renderSocialCard());
     case "site":
       return cmdSite();
     case "measure":

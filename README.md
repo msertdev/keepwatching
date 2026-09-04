@@ -1,33 +1,45 @@
-<div align="center">
-
 # keepwatching
 
-### A measured retention database for short-form video formats. That renders.
+**A retention database for short-form formats. That renders.**
 
-**[Browse the gallery →](https://msertdev.github.io/keepwatching/)**
+[Gallery](https://msertdev.github.io/keepwatching) · 24 formats · 0 measured · MIT
 
-</div>
+## Why this exists
 
----
+I built this to stop myself publishing numbers I hadn't measured.
+Two weeks in, it didn't catch me. That is the point.
 
-Not a video generator. A **database of named formats**, where every row carries a
-rendered 9:16 preview, an explicit hypothesis, and whatever the measurements
-actually say — including "nothing yet".
+A YouTube analytics export gave me `"Sep 3, 2026"`. The parser passed it
+through `new Date(...).toISOString()`, which reads the string as local
+midnight and re-expresses it in UTC. At UTC+3, every publish date moved
+back a day.
 
-|  |  |
-|---|---|
-| **24** | named formats, 10 families |
-| **24** | render deterministically today |
-| **0** | formats measured — `n = 0`, and it says so on every card |
-| **0** | content axes measured — a **separate** board, never averaged with the above |
-| **3** | formats whose demo copy uses real, cited numbers; the other 21 are marked filler |
-| **~20s** | to render a 12-second 1080×1920 clip |
+Nothing crashed. Nothing warned. A video published on the 2nd looked
+published on the 1st, so a 48-hour window that was still open was judged
+complete and filled with a number covering about twenty-four hours.
+A wrong figure, with a plausible reason attached, sitting in a file whose
+entire job is to say how the number was measured.
 
-Those two zeroes are the point. This repo ships with its evidence columns empty,
-because the alternative is publishing numbers nobody can check. Every format is
-marked `n: 0 · untested` until a CSV says otherwise.
+I found it by checking four computed percentages against the raw rows
+by hand.
 
-**To see the gallery — 5 seconds from a clean clone, measured:**
+So the argument here isn't that the tooling is clever — it wasn't clever
+enough. It's that every number carries where it came from and when it was
+measured, so a person can do that check.
+
+## What's measured right now
+
+Format board: **24 formats, 0 measured.**
+Content-axis board: **3 axes, 4 samples**, every one of them carried by a
+format that isn't in this library — labelled as such, on the axis board
+only, never counted toward a format.
+
+Nothing is hidden to make the ranking look fuller. Anything under n=5 is
+a direction, not a result.
+
+## Install
+
+Five seconds from a clean clone to a working gallery, measured:
 
 ```bash
 git clone https://github.com/msertdev/keepwatching && cd keepwatching
@@ -36,10 +48,10 @@ npx kw gallery  # 2s -> http://localhost:8080
 ```
 
 No font download, no browser download, no rendering. The 24 previews are
-committed, so `kw gallery` copies and builds rather than rendering, and
-`npm run setup` is not needed at all to look at the page.
+committed, so `kw gallery` copies and builds rather than rendering.
 
-**To render video**, which is when you need the fonts and a headless Chromium:
+Rendering video is a separate step, and the only one that needs the fonts and a
+headless Chromium:
 
 ```bash
 npm run setup                     # seconds if cached, ~2-3 min cold
@@ -47,43 +59,51 @@ npx kw render stat-counter-rise   # -> out/stat-counter-rise/master.mp4
 ```
 
 `kw gallery` re-renders only what is missing or **stale** — a preview whose
-format spec has changed since it was rendered — printing `7/24 rendered` with an
-ETA when it has work to do. `npx kw gallery --force` re-renders everything
-(~10 min for all 24).
+format spec changed since it was rendered — printing `7/24 rendered` with an ETA
+when it has work to do.
 
----
+## What a format is
 
-## Why this exists
-
-Everyone shares short-form advice. Almost nobody shares the retention curve
-behind it, or the number of videos it came from. "Hook them in the first three
-seconds" is not a claim you can be wrong about.
-
-So: name the formats, render them so they are comparable, publish the numbers
-with their sample sizes, and let anyone add theirs.
-
-A format here is three files:
+Three files. No per-format code anywhere in the engine.
 
 ```
 formats/ranking-suspense/
-├── format.json   the render spec — deterministic, JSON, no code
-├── meta.yml      the claim — an explicit, losable hypothesis, and where its
+├── format.json   the render spec — deterministic JSON, no code
+├── meta.yml      the claim: a hypothesis you could lose, and where the
 │                 example numbers came from
-└── data.yml      the evidence — in two blocks that never merge
+└── data.yml      the evidence, in two blocks that never merge
 ```
 
-The `meta.yml` for that one says:
+`meta.yml` states something you can be wrong about:
 
-> Withholding rank 1 until the final second converts the whole clip into a single
-> unanswered question, trading early drop-off for a higher completion rate among
-> those who stay.
+> Withholding rank 1 until the final second converts the whole clip into a
+> single unanswered question, trading early drop-off for a higher completion
+> rate among those who stay.
 >
-> **Avoid when:** the audience already knows the likely #1 — the withholding will
-> read as padding.
+> **Avoid when:** the audience already knows the likely #1 — the withholding
+> will read as padding.
 
-That is a claim you can measure and lose. `data.yml` says whether it did.
+### Adding one
 
-## Two measurements, deliberately kept apart
+```bash
+npx kw new my-format --from=cold-open-line
+npx kw preview my-format                        # scrub it in a browser
+npx kw render my-format --check-determinism
+npx kw check
+```
+
+The bar: a hypothesis you could lose, not a re-skin of an existing format, and
+it generalises past one video. `data.yml` ships as `n: 0 · untested` and stays
+that way until a CSV says otherwise.
+
+`kw new --from` deliberately resets the scaffold to `sampleContent: placeholder`
+and drops the parent's sources — a parent's citations back the parent's numbers,
+not yours. Full guidance in
+[`references/authoring.md`](skills/keepwatching/references/authoring.md); the
+`format.json` reference is in
+[`references/spec.md`](skills/keepwatching/references/spec.md).
+
+## Two measurements, kept apart
 
 The easiest way to fool yourself with this data is to average the wrong things
 together, so the repo makes that structurally hard.
@@ -103,158 +123,42 @@ One published video carries both labels — it is *a countdown*, and it is *abou
 the body*. "Countdowns retain 62%" and "body subjects retain 68%" are different
 claims, and a single blended number answers neither.
 
-So the separation is enforced in four places at once: they are different types
-in `engine/src/format.ts`, different blocks in `data.yml`, two tables with two
-baselines in `measure/report.md`, and two colours on the gallery — green for
-format, violet for axis, each with its own visible `n`.
+The separation is enforced in four places: different types in
+`engine/src/format.ts`, different blocks in `data.yml`, two tables with two
+baselines in `measure/report.md`, and two colours in the gallery, each with its
+own visible `n`.
 
-The report also prints a **carried by** column: if an axis was only ever carried
-by one format, it says so, because those are the same videos wearing two labels
-and neither result is isolated.
+A published video whose format is not in this library is tagged
+`variant_id: not-in-library`. It counts toward content axes and nothing else —
+never the format board, never a `data.yml` — and the **carried by** column names
+the label so the gap is visible rather than hidden. That is why an axis can be
+measured while every format is still `n = 0`.
 
-Axes are yours, not the library's. Declare whatever distinction you actually test
-in [`data/content-axes.yml`](data/content-axes.yml) and tag videos with the
-optional `content_axis` column in `measure/mapping.csv`.
+## Sending a measurement
 
-**Videos whose format is not in this library** get `variant_id: not-in-library`.
-Those rows are content-axis samples and nothing else: no format board, no
-`data.yml`, no ranking — `kw check` and CI both fail if one leaks. The `carried
-by` column names the label so the gap is visible rather than hidden, which is
-why an axis can be measured while every format is still `n = 0`.
-
-## Where the demo numbers come from
-
-A library about honest measurement cannot ship invented facts in its own screenshots.
-
-Every `meta.yml` must declare `sampleContent: sourced` or `placeholder`, and
-`npx kw check` **fails** if it does not — or if a `sourced` format lacks a URL
-and the specific claim that URL backs.
-
-- **5 formats are `sourced`** — the speed of light (exact by SI definition), the
-  five highest mountains, highest vs tallest, the five largest planets, and the
-  Great Wall from orbit. Each cites its source on the card.
-- **19 formats are self-referential** — their copy is about the format or about
-  the viewer ("You read this before deciding to scroll", "You waited four seconds
-  to find that out"), so it asserts no fact that needs a citation. They are still
-  declared `sampleContent: placeholder`, because that field records whether the
-  *claim* is sourced, not whether the writing is finished.
-
-The word "placeholder" appears in no rendered frame. A gallery gets
-screenshotted, and copy announcing itself as filler makes the library look
-unfinished rather than honest.
-
-## The engine
-
-**Node + Playwright + ffmpeg. No React, no Remotion.** Chromium paints each frame
-through CDP, ffmpeg encodes the sequence, and the whole thing is a pure function
-of the frame number.
-
-The same `format.json` produces the same frames on any machine, forever — which
-is the only reason a retention curve can be attributed to a *format* rather than
-to one lucky render. `--check-determinism` re-seeks frames out of order and fails
-if a single pixel moved.
+The library is only worth its sample sizes, and right now most of them are zero.
 
 ```bash
-npx kw render ranking-suspense --check-determinism
-```
-```
-▸ ranking-suspense  13s @ 30fps = 390 frames
-  variant ranking-suspense@1.0.0+7101b32c10da
-  determinism ok (4 frames re-seeked out of order)
-  verified  1080x1920 · 390 frames · 30fps
+# export analytics CSVs into measure/inbox/, then
+npx kw measure          # -> measure/report.md
+npx kw measure apply    # writes formats/*/data.yml
 ```
 
-**The previews are committed, and checked against their specs.** All 24 live in
-`site/previews/` because the gallery is the product and Pages publishes from the
-repo — re-rendering them on every deploy cost ten minutes to reproduce bytes
-that had not changed. The risk that creates is a preview drifting out of step
-with its spec and shipping quietly, so `site/previews/manifest.json` records the
-**variant id** that produced each one, and `kw previews check` recomputes it from
-the tree and fails when they disagree. It runs in CI on both workflows.
+No API, no OAuth, no tokens — friction is why measurement loops die. Every
+render stamps a **variant id** (`slug@version+specHash`) into
+`out/<slug>/variant.json` and the MP4's metadata; you write one line in
+`measure/mapping.csv` at upload time and that is the whole join.
 
-```bash
-npx kw previews check
-```
-```
-✗ stale   tier-list
-          spec now hashes to tier-list@1.0.0+ddc93d4703ec, but the committed
-          preview was rendered from tier-list@1.0.0+a49fcf451285
-```
+`data.yml` is machine-written and never edited by hand. A number typed from
+memory is indistinguishable from a number that was invented.
 
-**A sourced number is not sourced until it lands.** A counter animating to
-299,792,458 displays a false number for six seconds; a unit reading "metres per
-second — exactly" sitting under it the whole time makes the citation vouch for
-the wrong figure. So in a `sourced` format, anything on screen while a
-`claim: "final"` counter is counting must declare `neutralWhileCounting`, and
-`kw check` refuses the format otherwise. `kw frame0` checks the other direction:
-the counter must actually display the cited number at its settle time.
-
-**The gallery page is tested too, not just the clips.** `kw layout` opens the
-built gallery in a real browser at 390, 768 and 1440px and asserts every filter
-chip, control and card row is on screen and would actually receive a click
-(`elementFromPoint`), with no horizontal scrollbar and nothing parked outside a
-sideways-scrolling strip. It exists because a filter chip slid under the sort
-controls and hid an entire format family while the page still screenshotted
-fine.
-
-**The first frame is tested, in every format.** It is the hook and it is the
-cover image the platform shows before playback, and it broke twice for unrelated
-reasons — both times because the contract was eyeballed on one format. `kw
-frame0` now asserts across all 24 that frame 0 paints its promised elements
-(DOM) *and* contains real ink (pixels), independently, so a CSS or clip-path
-mistake cannot pass by satisfying the DOM alone. It runs in CI, and reinstating
-either historical bug fails all 24.
-
-```bash
-npx kw frame0
-```
-```
-▸ frame 0
-  24 formats checked — DOM, ink coverage, and element content
-  ok  bar-race               3 element(s), ink 1.11%
-  ...
-  every first frame paints its promised content
-```
-
-Formats are **data, not code**. Eight element types — `text`, `counter`, `bar`,
-`iconGrid`, `list`, `split`, `card`, `image` — plus keyframe tracks and wipes.
-There is no per-format code anywhere in the engine. Full reference:
-[`skills/keepwatching/references/spec.md`](skills/keepwatching/references/spec.md).
-
-## The measurement loop
-
-The part that makes this a database instead of a template pack. **No API, no
-OAuth, no tokens** — friction is why measurement loops die.
-
-```
-render  ──>  publish  ──>  export CSV  ──>  ingest  ──>  report  ──>  apply
-   │                            │                                       │
-   └── variantId ───────────────┴─── mapping.csv ────────────────────────┘
-```
-
-1. Every render stamps a **variant id** — `slug@version+hash-of-the-spec` — into
-   `out/<slug>/variant.json` and into the MP4's metadata. Edit one pixel-affecting
-   field and the hash changes, so a measurement can never be silently attributed
-   to a spec that has since moved.
-2. You write one line in `measure/mapping.csv` at upload time.
-3. Export CSVs from YouTube Studio or TikTok analytics into `measure/inbox/`.
-
-```bash
-npx kw measure           # -> measure/report.md, "which format won"
-npx kw measure apply     # writes formats/*/data.yml
-npx kw gallery           # re-render + rebuild the gallery
-```
-
-`data.yml` is machine-written and **never edited by hand**. A number typed from
-memory is indistinguishable from a number that was invented, and the whole repo
-rests on that distinction.
-
-Full instructions, including which export button to press:
-[`references/measuring.md`](skills/keepwatching/references/measuring.md).
+**[Submit a measurement →](https://github.com/msertdev/keepwatching/issues/new?template=measurement.yml)**
+· [CONTRIBUTING.md](CONTRIBUTING.md) for what a measurement needs and what gets
+rejected.
 
 ## Install as an agent skill
 
-Works in Claude Code, Codex, Cursor, Windsurf, and anything else that reads a
+Works in Claude Code, Codex, Cursor, Windsurf, and anything that reads a
 markdown skill file.
 
 ```bash
@@ -270,29 +174,62 @@ cp -r skills/keepwatching ~/.claude/skills/
 ```
 
 The clone is not optional: the skill drives a real renderer that lives in the
-repo, so the instruction file alone renders nothing. `KEEPWATCHING_HOME` is how
-the agent finds it from another project.
+repo, so the instruction file alone renders nothing.
 
-**Measured onboarding.** An independent agent, given only `SKILL.md` and an
-empty directory, went from nothing to a verified 15-second MP4 without help.
-Timed with `date +%s` on a machine that already had npm and Chromium cached:
+An independent agent, given only `SKILL.md` and an empty directory, went from
+nothing to a verified 15-second MP4 without help. The skill's main job is
+refusal: it may not invent a retention number, and every performance claim it
+makes has to come from a `data.yml` with an `n` attached.
 
-| step | time |
+## The engine
+
+**Node + Playwright + ffmpeg. No React, no Remotion.** Chromium paints each
+frame through CDP, ffmpeg encodes the sequence, and the whole thing is a pure
+function of the frame number.
+
+```bash
+npx kw render ranking-suspense --check-determinism
+```
+```
+▸ ranking-suspense  13s @ 30fps = 390 frames
+  variant ranking-suspense@1.0.0+7101b32c10da
+  determinism ok (4 frames re-seeked out of order)
+  verified  1080x1920 · 390 frames · 30fps
+```
+
+Formats are **data, not code**. Eight element types — `text`, `counter`, `bar`,
+`iconGrid`, `list`, `split`, `card`, `image` — plus keyframe tracks and wipes.
+
+### What the hashes do, and what they do not
+
+Two different jobs, often confused:
+
+- **The variant id** (`slug@version+specHash`) guards **correctness**. It hashes
+  the spec, not the output. Change one pixel-affecting field and the hash
+  changes, so a measurement can never be silently attributed to a spec that has
+  since moved, and `kw previews check` fails when a committed preview's spec no
+  longer hashes to the variant that produced it.
+- **The file hashes** in `site/previews/manifest.json` guard **integrity** only:
+  they detect a committed file that was corrupted or edited by hand.
+
+They are never used to decide whether a re-render is needed. Encoders are not
+byte-reproducible across platforms — two machines can emit different bytes for
+identical frames — so comparing a fresh render's hash against the manifest would
+fail on Linux CI for no real reason. The frames are deterministic; the container
+bytes are not, and the repo does not pretend otherwise.
+
+## What is tested
+
+| Guard | What it catches |
 |---|---|
-| `npm install` | 6s |
-| `npm run setup` | 4s (cache hit on Chromium) |
-| first render, 15s clip | 37s |
+| `kw check` | invalid specs, unsourced demo numbers, undeclared content axes, a sourced counter asserting certainty before it lands |
+| `kw frame0` | a blank or thin first frame, and a poster frame that would sit on a card looking empty — DOM and pixels, independently, across all 24 |
+| `kw previews check` | a committed preview whose spec has changed since it was rendered |
+| `kw layout` | a control or card row that is off screen or unclickable at 390 / 768 / 1440px |
+| `--check-determinism` | frames that depend on seek history rather than on time |
 
-The 4s is not representative of a cold machine: `npm run setup` fetches Inter
-(≈30 MB) and a headless Chromium (≈150 MB), so budget **2–3 minutes** on a fresh
-box with a normal connection. Either way, comfortably under five minutes to a
-first rendered clip.
-
-The skill teaches an agent to pick a format for a topic, fill in a `data` block,
-render, and read the numbers back — and, more importantly, **never to invent a
-number**, whether that is a retention figure or a statistic on screen. Every
-performance claim has to come from a `data.yml` with an `n` attached, and every
-number in a rendered clip has to come from a cited source.
+Every one was negative-tested: broken on purpose, watched to fail, then fixed. A
+guard nobody has tried to defeat is a guard nobody knows works.
 
 ## Honesty rules
 
@@ -300,56 +237,33 @@ Not style preferences. The repo is worthless if they slip.
 
 1. **`n: 0` means untested.** Never rounded up to "promising".
 2. **Under n=5 is a direction, not a result.** Say which one you are giving.
-3. **Losing formats stay listed, with their numbers.** A format that measured
-   badly is the most useful row in the table.
+3. **Losing formats stay listed, with their numbers.**
 4. **Only `kw measure apply` writes `data.yml`.**
-5. **A format number and an axis number are never averaged.** Enforced by the
-   types, the schema, the report and the gallery — see above.
-6. **Every number on screen carries a source, or is labelled filler.** `kw check`
-   fails otherwise.
-7. **Seed data is one creator's channel** — a starting point, not a law of the
-   platform. Your audience is not that audience, which is why you can run your
-   own A/B and send it back.
-
-## Contributing your measurements
-
-The library is only as good as its `n`. If you publish with a format from this
-repo, sending the numbers back costs one command and one CSV:
-
-```bash
-npx kw measure && npx kw measure apply
-git checkout -b measure/my-channel && git commit -am "measure: 6 samples, ranking-*"
-```
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for what a measurement PR needs — and what
-gets rejected (chiefly: numbers with no `n`, and formats that are re-skins).
-
-New formats are welcome too. The bar: a hypothesis you could lose, not a re-skin,
-and it generalises past one video.
-[`references/authoring.md`](skills/keepwatching/references/authoring.md).
+5. **A format number and an axis number are never averaged.**
+6. **Every number on screen carries a source, or is labelled filler.**
+7. **A sourced number is not sourced until the counter lands on it.**
 
 ## Commands
 
 ```
-kw setup                     install Inter + a headless Chromium (run once)
+kw setup                     install Inter + a headless Chromium (render only)
+kw gallery                   refresh stale previews, build and serve the gallery
+    --force                  re-render every preview
+    --no-serve               build only
 kw list                      every format, with its sample size
-kw check                     validate every format.json
+kw check                     validate every format
+kw frame0 [<slug>]           first-frame and poster-frame checks
+kw previews check            committed previews match their specs
+kw layout                    gallery is reachable at 3 widths
 kw render <slug> | --all     render to out/<slug>/
-    --stills                 poster + contact sheet only, no encode
     --check-determinism      re-seek frames out of order and compare hashes
 kw preview <slug>            scrub a format in a browser
 kw new <slug> --from=<slug>  scaffold a new format
 kw variant <slug>            print the variant id for the current spec
-kw gallery                   refresh stale previews, build and serve the gallery
-    --force                  re-render every preview, not just stale ones
-    --no-serve               build only, do not start the server
-kw previews check            verify committed previews match their specs
-kw site build --allow-missing  rebuild gallery.json without every preview
-kw measure [ingest|report|apply]
+kw measure [ingest|report|apply|seed]
 ```
 
 ## Licence
 
-MIT. Inter is bundled at setup time under the SIL Open Font License 1.1.
-No music beds ship with this repo — point `audio.bed` at a file you have the
-rights to.
+MIT. Inter is fetched at setup under the SIL Open Font License 1.1. No music
+ships with this repo — point `audio.bed` at a file you have the rights to.

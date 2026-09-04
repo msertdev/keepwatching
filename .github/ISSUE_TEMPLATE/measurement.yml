@@ -1,0 +1,159 @@
+name: Submit a measurement
+description: Report how a format performed on your channel. Small n is welcome; overclaiming is not.
+title: "measure: "
+labels: ["measurement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you — sample size is the only thing this library is short of.
+
+        Every field below exists because a number without it cannot be checked
+        by anyone but you. If you would rather send a pull request with the
+        `data.yml` diffs that `kw measure apply` wrote, that is better still:
+        see [CONTRIBUTING.md](https://github.com/msertdev/keepwatching/blob/main/CONTRIBUTING.md).
+
+  - type: input
+    id: variant
+    attributes:
+      label: Variant id
+      description: >-
+        From `out/<slug>/variant.json`, or `npx kw variant <slug>`. It is also in
+        the MP4: `ffprobe -show_entries format_tags=comment master.mp4`.
+        If the format is not in this library, put `not-in-library` — the result
+        will count toward a content axis and never toward a format.
+      placeholder: ranking-suspense@1.0.0+7101b32c10da
+    validations:
+      required: true
+
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      options:
+        - youtube
+        - tiktok
+        - instagram
+        - other
+    validations:
+      required: true
+
+  - type: input
+    id: external_id
+    attributes:
+      label: Video id
+      description: The platform's own id, so the row can be audited against the export.
+      placeholder: dQw4w9WgXcQ
+    validations:
+      required: true
+
+  - type: input
+    id: published_at
+    attributes:
+      label: Published at (ISO 8601)
+      placeholder: 2026-03-02T09:00:00Z
+    validations:
+      required: true
+
+  - type: input
+    id: measured_at
+    attributes:
+      label: Measured at (YYYY-MM-DD)
+      description: >-
+        Required, and not the same as the publish date. Views and retention both
+        move. A number without the moment it was read cannot be compared with
+        anything, and two readings of the same video days apart are two
+        observations rather than a contradiction.
+      placeholder: "2026-03-09"
+    validations:
+      required: true
+
+  - type: input
+    id: n
+    attributes:
+      label: n — how many published videos is this based on?
+      description: Not views. Videos. "1" is a fine answer.
+      placeholder: "1"
+    validations:
+      required: true
+
+  - type: textarea
+    id: numbers
+    attributes:
+      label: The numbers
+      description: >-
+        Leave anything your export does not contain blank. Do not estimate,
+        interpolate, or round to something tidier — a null is more useful than a
+        guess, and this repo would rather print a gap than a plausible fiction.
+      value: |
+        duration_sec:
+        views:
+        avg_watch_sec:
+        avg_pct_viewed:
+        hook_3s:
+        likes:
+        comments:
+        shares:
+    validations:
+      required: true
+
+  - type: dropdown
+    id: source
+    attributes:
+      label: Where did these come from?
+      options:
+        - csv — a platform analytics export
+        - manual — read by hand off the app or dashboard
+      description: >-
+        Hand-entered numbers are kept and rendered distinctly from exported ones.
+        Neither is better; the difference just has to be visible.
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        ### What each platform actually gives you
+
+        | Platform | Export | Retention curve? |
+        |---|---|---|
+        | YouTube Studio | Analytics → Content → **Advanced mode** → Export → CSV | Yes, per video: Engagement → Audience retention → Export |
+        | TikTok | Analytics → Content → Download data | Not in the export in most regions — read by hand and mark `manual` |
+        | Instagram | Professional dashboard, per reel | No export; `manual` only |
+
+        A YouTube table export has no retention column, so `hook_3s` comes from
+        the separate audience-retention export or stays blank.
+
+  - type: input
+    id: content_axis
+    attributes:
+      label: Content axis (optional)
+      description: >-
+        What the video was about, as opposed to how it was structured — see
+        data/content-axes.yml. Kept on a separate board and never averaged into
+        a format's numbers.
+      placeholder: personal-body
+
+  - type: textarea
+    id: confounds
+    attributes:
+      label: What confounds this?
+      description: >-
+        Follower count band, posting time, whether the topic differed between
+        variants, anything unusual about that week. Every number here is
+        confounded by something; naming it is the difference between data and
+        decoration.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: honesty
+    attributes:
+      label: Before submitting
+      options:
+        - label: These numbers came from an export or a dashboard I read, not from memory.
+          required: true
+        - label: I left blank anything I do not actually have.
+          required: true
+        - label: I understand n under 5 will be shown as a direction, not a result.
+          required: true
