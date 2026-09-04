@@ -37,6 +37,11 @@ only, never counted toward a format.
 Nothing is hidden to make the ranking look fuller. Anything under n=5 is
 a direction, not a result.
 
+An experiment is running. Its hypothesis, sample size and stopping rule were
+committed before the first video went out — the git timestamp on
+[`experiments/2026-09-counter-vs-hook.md`](experiments/2026-09-counter-vs-hook.md)
+is the claim.
+
 ## Install
 
 Five seconds from a clean clone to a working gallery, measured:
