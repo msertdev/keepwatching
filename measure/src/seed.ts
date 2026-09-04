@@ -59,7 +59,7 @@ const FILES = {
 };
 
 const DAY = 86_400_000;
-const addDays = (iso: string, n: number): string =>
+export const addDays = (iso: string, n: number): string =>
   new Date(Date.parse(iso) + n * DAY).toISOString().slice(0, 10);
 
 function findFile(names: string[]): string | null {
@@ -92,7 +92,7 @@ const isTotalRow = (row: Row): boolean => {
 
 /* ------------------------------------------------------------- youtube */
 
-interface DailySeries {
+export interface DailySeries {
   /** date -> views on that date */
   byDate: Map<string, number>;
   maxDate: string | null;
@@ -126,7 +126,7 @@ function readYouTubeDaily(file: string | null): Map<string, DailySeries> {
  * export's final day is partial, so counting it would understate the window by
  * an unknown amount. The series must extend at least one day past the window.
  */
-function viewsInWindow(
+export function viewsInWindow(
   series: DailySeries | undefined,
   publishedAt: string | null | undefined,
   days: number
@@ -389,7 +389,7 @@ function readManual(csvObservations: Observation[]): {
  * Find disagreements between readings. Nothing is resolved here — a conflict is
  * a fact about the data, and hiding it would be the one unrecoverable mistake.
  */
-function findConflicts(observations: Observation[]): Conflict[] {
+export function findConflicts(observations: Observation[]): Conflict[] {
   const conflicts: Conflict[] = [];
   const key = (o: Observation) => `${o.platform}:${o.externalId}`;
   const groups = new Map<string, Observation[]>();
