@@ -5,7 +5,7 @@
     "w": 1080,
     "h": 1920,
     "fps": 30,
-    "durationSec": 10
+    "durationSec": 30
   },
   "theme": {
     "accent": "#22c55e",
@@ -16,7 +16,8 @@
     "label": "Light travels, every second",
     "counting": "counting…",
     "unit": "metres per second — exactly",
-    "context": "Not measured. Defined. The metre is derived from this number."
+    "context": "Not measured. Defined. The metre is derived from this number.",
+    "source": "BIPM SI Brochure, 9th ed. — the metre is defined from it."
   },
   "scene": [
     {
@@ -43,7 +44,7 @@
       "from": 0,
       "to": 299792458,
       "startSec": 0.15,
-      "endSec": 6.4,
+      "endSec": 21,
       "ease": "out",
       "font": {
         "size": 230,
@@ -66,7 +67,7 @@
         "color": "muted"
       },
       "at": 0.4,
-      "until": 6.4,
+      "until": 21,
       "neutralWhileCounting": true
     },
     {
@@ -81,7 +82,7 @@
         "weight": 600,
         "color": "accent"
       },
-      "at": 6.4
+      "at": 21
     },
     {
       "id": "bar",
@@ -94,7 +95,7 @@
       "from": 0,
       "to": 1,
       "startSec": 0.15,
-      "endSec": 6.4,
+      "endSec": 21,
       "height": 18,
       "fill": "accent",
       "at": 0.2,
@@ -112,16 +113,31 @@
         "weight": 800,
         "color": "fg"
       },
-      "at": 6.5,
+      "at": 21.6,
       "in": {
-        "at": 6.5,
+        "at": 21.6,
         "dur": 0.4,
         "move": [
           0,
           34
         ]
       }
+    },
+    {
+      "id": "source",
+      "type": "text",
+      "box": {
+        "y": 1500
+      },
+      "text": "{{source}}",
+      "font": {
+        "size": 38,
+        "weight": 600,
+        "color": "muted",
+        "lineHeight": 1.25
+      },
+      "at": 25.5
     }
   ],
-  "posterSec": 8.4
+  "posterSec": 27.5
 }

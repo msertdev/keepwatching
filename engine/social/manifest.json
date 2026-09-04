@@ -5,7 +5,7 @@
   "featured": [
     {
       "slug": "stat-counter-rise",
-      "variantId": "stat-counter-rise@1.0.0+d69f2377a91d"
+      "variantId": "stat-counter-rise@1.0.0+2b1a816359e9"
     },
     {
       "slug": "ranking-suspense",
@@ -17,7 +17,7 @@
     },
     {
       "slug": "countdown-clock",
-      "variantId": "countdown-clock@1.0.0+a36a5c8b26c6"
+      "variantId": "countdown-clock@1.0.0+95ff65c264af"
     }
   ]
 }

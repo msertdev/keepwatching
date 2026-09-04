@@ -144,7 +144,8 @@ Worked example — `stat-counter-rise` (10s) to 15s, so the factor is 1.5:
 Naive scaling alone leaves 5.3 seconds of a frozen final card. Nudging the last
 beat from 9.75 to 11.2 gives a 3.8-second hold, which is the upper end of
 acceptable. **A final card held longer than about 3 seconds is dead air**, and
-dead air at the end is what kills a completion rate.
+dead air at the end is what kills a completion rate. `kw frame0` fails outright
+at 5 seconds of a motionless screen: 3 is the craft advice, 5 is the hard floor.
 
 Constraints and checks:
 

@@ -18,6 +18,7 @@
  * A format with nothing visible at t=0 fails. That is a library rule, not a
  * technical limit: an empty first frame is an empty cover image.
  */
+import crypto from "node:crypto";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -48,6 +49,20 @@ const MIN_POSTER_INK = 0.014; // 1.4%; the thinnest legitimate card in the libra
 /** How much of the frame's height the content spans, top-most to bottom-most. */
 const MIN_POSTER_SPREAD = 0.25;
 
+/**
+ * Longest stretch, in seconds, during which the frame may not change at all.
+ *
+ * A clip that stops moving has stopped earning the next second. The authoring
+ * guide has warned about this since the beginning — and nothing checked it, so
+ * a retiming pass produced a fourteen-second frozen card and only a contact
+ * sheet caught it. Five seconds allows a deliberate closing hold and refuses a
+ * clip that has quietly ended early.
+ */
+const MAX_STILL_SEC = 5;
+
+/** How often to sample when looking for a frozen stretch. */
+const STILL_SAMPLE_SEC = 1;
+
 export interface ElementReport {
   id: string;
   type: string;
@@ -62,6 +77,7 @@ export interface Frame0Result {
   slug: string;
   ok: boolean;
   inkFraction: number;
+  longestStillSec: number;
   posterSec: number;
   posterInk: number;
   posterSpread: number;
@@ -107,6 +123,13 @@ function inkFraction(png: string): number {
   );
   const m = /lavfi\.signalstats\.YAVG=([0-9.eE+-]+)/.exec(String(out));
   return m ? Number(m[1]) / 255 : 0;
+}
+
+/** Capture a frame without writing it to disk — used by the stillness sweep. */
+async function shootBuffer(page: Page, cdp: any, frame: number): Promise<Buffer> {
+  await page.evaluate((f) => (window as unknown as { seek: (n: number) => void }).seek(f), frame);
+  const { data } = await cdp.send("Page.captureScreenshot", { format: "png", optimizeForSpeed: true });
+  return Buffer.from(data, "base64");
 }
 
 async function shoot(page: Page, cdp: any, frame: number, file: string): Promise<void> {
@@ -229,6 +252,34 @@ export async function checkFrame0(formats?: LoadedFormat[]): Promise<Frame0Resul
         }
       }
 
+      /* --- dead air: is the clip still moving? --- */
+      const stillSamples: Array<{ t: number; hash: string }> = [];
+      for (let t = 0; t <= spec.canvas.durationSec + 1e-6; t += STILL_SAMPLE_SEC) {
+        const frame = Math.min(
+          Math.round(spec.canvas.durationSec * spec.canvas.fps) - 1,
+          Math.round(t * spec.canvas.fps)
+        );
+        const buf = await shootBuffer(page, cdp, frame);
+        stillSamples.push({
+          t,
+          hash: crypto.createHash("sha1").update(buf).digest("hex"),
+        });
+      }
+      let longestStill = 0;
+      let stillFrom = 0;
+      let runStart = 0;
+      for (let i = 1; i < stillSamples.length; i++) {
+        if (stillSamples[i].hash !== stillSamples[i - 1].hash) {
+          runStart = i;
+          continue;
+        }
+        const run = stillSamples[i].t - stillSamples[runStart].t;
+        if (run > longestStill) {
+          longestStill = run;
+          stillFrom = stillSamples[runStart].t;
+        }
+      }
+
       /* --- poster frame: the still the card rests on --- */
       const posterSec = spec.posterSec ?? spec.canvas.durationSec * 0.35;
       const posterFrame = Math.min(
@@ -298,6 +349,14 @@ export async function checkFrame0(formats?: LoadedFormat[]): Promise<Frame0Resul
         );
       }
 
+      if (longestStill > MAX_STILL_SEC) {
+        problems.push(
+          `nothing changes for ${longestStill}s, from ${stillFrom}s to ` +
+            `${stillFrom + longestStill}s — the clip has stopped earning the next second. ` +
+            `Add a beat, or shorten canvas.durationSec.`
+        );
+      }
+
       if (posterInk < MIN_POSTER_INK) {
         problems.push(
           `poster frame at ${posterSec}s carries only ${(posterInk * 100).toFixed(2)}% ink ` +
@@ -317,6 +376,7 @@ export async function checkFrame0(formats?: LoadedFormat[]): Promise<Frame0Resul
         slug: fmt.slug,
         ok: problems.length === 0,
         inkFraction: Number(ink.toFixed(6)),
+        longestStillSec: longestStill,
         posterSec,
         posterInk: Number(posterInk.toFixed(6)),
         posterSpread: Number(posterSpread.toFixed(4)),
@@ -345,7 +405,8 @@ export function reportFrame0(results: Frame0Result[]): boolean {
     console.log(
       `  ${mark} ${r.slug.padEnd(width)}  f0 ink ${(r.inkFraction * 100).toFixed(2).padStart(5)}%  ` +
         `poster@${String(r.posterSec).padStart(5)}s ink ${(r.posterInk * 100).toFixed(2).padStart(5)}% ` +
-        `spread ${(r.posterSpread * 100).toFixed(0).padStart(3)}%`
+        `spread ${(r.posterSpread * 100).toFixed(0).padStart(3)}%  ` +
+        `still ${String(r.longestStillSec).padStart(2)}s`
     );
     for (const p of r.problems) console.log(`       \x1b[31m·\x1b[0m ${p}`);
   }

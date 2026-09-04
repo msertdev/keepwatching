@@ -5,7 +5,7 @@
     "w": 1080,
     "h": 1920,
     "fps": 30,
-    "durationSec": 12
+    "durationSec": 30
   },
   "theme": {
     "accent": "#ef4444",
@@ -13,7 +13,7 @@
     "glowY": 780
   },
   "data": {
-    "promise": "In 10 seconds you will know",
+    "promise": "In 25 seconds you will know",
     "subject": "whether a clock alone can hold you",
     "payoff": "It did. You watched it reach zero."
   },
@@ -51,18 +51,18 @@
       "box": {
         "y": 830
       },
-      "from": 10,
+      "from": 25,
       "to": 0,
       "clock": true,
-      "startSec": 0.5,
-      "endSec": 10.5,
+      "startSec": 1,
+      "endSec": 26,
       "ease": "linear",
       "font": {
         "size": 300,
         "weight": 800,
         "tracking": -0.03
       },
-      "until": 10.8,
+      "until": 26.6,
       "claim": "running"
     },
     {
@@ -75,8 +75,8 @@
       },
       "from": 1,
       "to": 0,
-      "startSec": 0.5,
-      "endSec": 10.5,
+      "startSec": 1,
+      "endSec": 26,
       "height": 22,
       "fill": "accent",
       "ticks": [
@@ -84,7 +84,7 @@
         0.5,
         0.75
       ],
-      "until": 10.8
+      "until": 26.6
     },
     {
       "id": "payoff",
@@ -98,9 +98,9 @@
         "weight": 800,
         "color": "fg"
       },
-      "at": 10.6,
+      "at": 26.4,
       "in": {
-        "at": 10.6,
+        "at": 26.4,
         "dur": 0.35,
         "move": [
           0,
@@ -110,5 +110,5 @@
       }
     }
   ],
-  "posterSec": 9
+  "posterSec": 14
 }

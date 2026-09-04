@@ -5,7 +5,7 @@
     "w": 1080,
     "h": 1920,
     "fps": 30,
-    "durationSec": 10
+    "durationSec": 30
   },
   "theme": {
     "accent": "#38bdf8",
@@ -15,7 +15,9 @@
   "data": {
     "question": "How long did you look before deciding?",
     "partial": "Long enough to finish this line.",
-    "closer": "The question is the format. The answer is you."
+    "closer": "The question is the format. The answer is you.",
+    "turn": "Which is longer than you would have guessed,",
+    "detail": "and shorter than it takes to decide anything."
   },
   "scene": [
     {
@@ -44,9 +46,9 @@
       "h": 8,
       "fill": "accent",
       "radius": 4,
-      "at": 1.4,
+      "at": 2,
       "out": {
-        "at": 3.4,
+        "at": 6.5,
         "dur": 0.25
       }
     },
@@ -62,9 +64,9 @@
         "weight": 800,
         "color": "accent"
       },
-      "at": 3.5,
+      "at": 7,
       "in": {
-        "at": 3.5,
+        "at": 7,
         "dur": 0.35,
         "move": [
           0,
@@ -73,20 +75,50 @@
       }
     },
     {
-      "id": "closer",
+      "id": "turn",
       "type": "text",
       "box": {
-        "y": 1300
+        "y": 1260
       },
-      "text": "{{closer}}",
+      "text": "{{turn}}",
       "font": {
-        "size": 50,
+        "size": 52,
         "weight": 600,
         "color": "muted",
         "lineHeight": 1.2
       },
-      "at": 6
+      "at": 13
+    },
+    {
+      "id": "detail",
+      "type": "text",
+      "box": {
+        "y": 1400
+      },
+      "text": "{{detail}}",
+      "font": {
+        "size": 52,
+        "weight": 600,
+        "color": "muted",
+        "lineHeight": 1.2
+      },
+      "at": 18.5
+    },
+    {
+      "id": "closer",
+      "type": "text",
+      "box": {
+        "y": 1560
+      },
+      "text": "{{closer}}",
+      "font": {
+        "size": 48,
+        "weight": 700,
+        "color": "fg",
+        "lineHeight": 1.2
+      },
+      "at": 24
     }
   ],
-  "posterSec": 7.6
+  "posterSec": 26.5
 }
