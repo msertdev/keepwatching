@@ -79,6 +79,14 @@ jobs:
       - name: Gallery builds
         run: npx kw site build
 
+      # The page's equivalent of the frame tests. Opens the built gallery in a
+      # real browser at phone, tablet and desktop widths and asserts every
+      # control and card row is on screen and actually clickable. A filter chip
+      # that slides under the sort controls hides a whole format family while
+      # looking fine in a screenshot, which is exactly how this shipped.
+      - name: Gallery layout is reachable at every width
+        run: npx kw layout
+
       - name: The generated format index is committed and current
         run: git diff --exit-code skills/keepwatching/references/formats.md
 

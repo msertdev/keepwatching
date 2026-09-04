@@ -93,16 +93,16 @@
       }
     },
     "countdown-clock": {
-      "variantId": "countdown-clock@1.0.0+a30f5e5031fc",
+      "variantId": "countdown-clock@1.0.0+a36a5c8b26c6",
       "renderedAt": "2026-09-04",
       "files": {
         "countdown-clock.mp4": {
           "bytes": 58224,
-          "sha256": "e71f9c90617724cccc3c6e95bac607c92068dfe5d0b600369f807930f6703b76"
+          "sha256": "a02abdb112f11d0cd2b5def4eb25f52ebd0a87fdb6661d0aedc05f2d29a5a859"
         },
         "countdown-clock.webm": {
           "bytes": 86771,
-          "sha256": "3b8acba23ccf5630be589876e4e27bdef4d3048022e6237b2e220f66408ca3fe"
+          "sha256": "56062cd4f4c181b053bb40c139321039a6da5384bf60b110a9fe8e94d4f159a1"
         },
         "countdown-clock.jpg": {
           "bytes": 78676,
@@ -111,16 +111,16 @@
       }
     },
     "countdown-list": {
-      "variantId": "countdown-list@1.0.0+b9bba1a4e6e2",
+      "variantId": "countdown-list@1.0.0+623e2a49fbae",
       "renderedAt": "2026-09-04",
       "files": {
         "countdown-list.mp4": {
           "bytes": 64741,
-          "sha256": "f1316ee3a18b32cf69aa081cf90d6038d5d3e7b4a1211d528031816995eecd89"
+          "sha256": "36bc3b17f38fbbc6327f75cd93f80e64e93d718b369e41fe3922f86d23607c06"
         },
         "countdown-list.webm": {
           "bytes": 97402,
-          "sha256": "b316b80841f2e19c77af696b5d6c8091a2d90409a070bc0821e56e6fc6d8c391"
+          "sha256": "c5bf110a64f9d6201dbbe8df37f371047a8ca6dea2ab1e2a5f920327b4413dc7"
         },
         "countdown-list.jpg": {
           "bytes": 102694,
@@ -129,16 +129,16 @@
       }
     },
     "escalation-counter": {
-      "variantId": "escalation-counter@1.0.0+7bd053e53445",
+      "variantId": "escalation-counter@1.0.0+a58cea5d85f1",
       "renderedAt": "2026-09-04",
       "files": {
         "escalation-counter.mp4": {
           "bytes": 80960,
-          "sha256": "347a583ddf6f1892cdcaedfbefd2a42489fb0de4559deac2cdc2941b9f35e41d"
+          "sha256": "2db54d91e7626d7d7b7a1c633ecf7d9b3c18e4a4ab41c3c3d6a53aa0d4572b40"
         },
         "escalation-counter.webm": {
           "bytes": 143585,
-          "sha256": "b457f3bcac90c7dc152d19943693fad0cb8196e2711e682270a92e8ab8412b8c"
+          "sha256": "e41c0306660f385ea85fb5fe5575c6d1a95e26de400ea8fc3ee217c4c4369811"
         },
         "escalation-counter.jpg": {
           "bytes": 80529,
@@ -345,16 +345,16 @@
       }
     },
     "stat-counter-context": {
-      "variantId": "stat-counter-context@1.0.0+86e15546e6b6",
+      "variantId": "stat-counter-context@1.0.0+42d17abb0477",
       "renderedAt": "2026-09-04",
       "files": {
         "stat-counter-context.mp4": {
           "bytes": 65683,
-          "sha256": "065ffec0fbe8e83e263b0710d5e32de2501515ec3751e71171e236f3014616d4"
+          "sha256": "df67e01d0715ffe39fd888dbfafd93e230cca365bda107c788ea6379c315a24b"
         },
         "stat-counter-context.webm": {
           "bytes": 100265,
-          "sha256": "74dec8936c9998675fa88e77affe470af944765ec31581492852654c1eb2d0b7"
+          "sha256": "bb0519c30777543e9ef2ffdc27c7f8f284c3eda5630086a34b0da93d782d24da"
         },
         "stat-counter-context.jpg": {
           "bytes": 96651,
@@ -363,16 +363,16 @@
       }
     },
     "stat-counter-rise": {
-      "variantId": "stat-counter-rise@1.0.0+1afb24fca512",
+      "variantId": "stat-counter-rise@1.0.0+d69f2377a91d",
       "renderedAt": "2026-09-04",
       "files": {
         "stat-counter-rise.mp4": {
-          "bytes": 139648,
-          "sha256": "5ea6237c8a4678fa4de0e1892e864f22f41344c787b3e8e938df844301a5d980"
+          "bytes": 142754,
+          "sha256": "2725b9bc33c7810fc00e33b44edfd1c563fe4f1423a428403c7cb0eb4b4e260c"
         },
         "stat-counter-rise.webm": {
-          "bytes": 299207,
-          "sha256": "de3f27493d2ac75655d2adc05f1942e0cfe26d456182659392d1b08ace271e13"
+          "bytes": 297225,
+          "sha256": "95f5d7dba1c01a3d067900ec31796b4ce07291a4a13a06a096488517fa700448"
         },
         "stat-counter-rise.jpg": {
           "bytes": 110119,
@@ -381,16 +381,16 @@
       }
     },
     "stat-counter-stack": {
-      "variantId": "stat-counter-stack@1.0.0+193dd45a72e8",
+      "variantId": "stat-counter-stack@1.0.0+87a87cb20ce5",
       "renderedAt": "2026-09-04",
       "files": {
         "stat-counter-stack.mp4": {
           "bytes": 73505,
-          "sha256": "7b4c934af416814c5b5de0c66abdfa798bdd4c7f01e9eaedcb61c45e643acfb6"
+          "sha256": "62820c0635dd4fda47c6f18c0c2262051292869c019731341c84fbf02e9ff52a"
         },
         "stat-counter-stack.webm": {
           "bytes": 88754,
-          "sha256": "8c51a80c56c8aca0736a80f28555dc97edd0846d5a5f034b70fc87f441028420"
+          "sha256": "b06f962089bea2134bf7c505b1b3d31e36fec96daf1bac5acb4b05f1a3dfe3ee"
         },
         "stat-counter-stack.jpg": {
           "bytes": 125629,

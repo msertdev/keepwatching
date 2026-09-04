@@ -48,7 +48,8 @@
         "size": 150,
         "weight": 800,
         "color": "accent"
-      }
+      },
+      "claim": "running"
     },
     {
       "id": "rows",
