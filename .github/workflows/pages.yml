@@ -1,8 +1,20 @@
 name: pages
 
+# Manual until launch.
+#
+# GitHub Pages is not enabled on this repository, and Pages for a private repo
+# needs a paid plan, so an automatic run on every push would render all 24
+# formats for ~12 minutes and then fail at the deploy step — leaving the repo
+# permanently red for a reason that is not a defect.
+#
+# At launch: make the repo public, set Settings -> Pages -> Source to
+# "GitHub Actions", then add the `push` trigger back:
+#
+#   on:
+#     push:
+#       branches: [main]
+#     workflow_dispatch:
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -25,6 +37,19 @@ jobs:
           cache: npm
 
       - run: npm ci
+
+      - name: Cache Inter
+        uses: actions/cache@v4
+        with:
+          path: engine/assets/fonts
+          key: inter-4.1-${{ hashFiles('engine/src/fonts.ts') }}
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
       - run: npm run setup
 
       # The gallery is the product, so the previews it shows are rendered fresh

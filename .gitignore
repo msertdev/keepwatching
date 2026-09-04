@@ -18,3 +18,6 @@ measure/report.md
 .DS_Store
 Thumbs.db
 *.log
+
+# Raw analytics exports. Yours, not the library's.
+data/seed/raw/

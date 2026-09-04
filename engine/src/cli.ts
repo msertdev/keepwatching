@@ -65,6 +65,7 @@ keepwatching — a measured retention database for short-form formats, that rend
   kw site serve [--port=8080]     serve site/ locally
   kw measure                      ingest CSVs, then report
   kw measure ingest|report|apply
+  kw measure seed                 read data/seed/raw/ exports into axis results
 `;
 
 /* ------------------------------------------------------------------ utils */
@@ -385,6 +386,11 @@ async function cmdMeasure(): Promise<void> {
   }
   if (sub === "apply") {
     applyReport();
+    return;
+  }
+  if (sub === "seed") {
+    const { runSeed } = await import("../../measure/src/seed-run.js");
+    runSeed();
     return;
   }
   if (sub === "all") {
