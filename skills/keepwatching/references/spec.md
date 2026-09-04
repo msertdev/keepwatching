@@ -82,6 +82,29 @@ The font is fitted against the *widest value the counter ever shows*, so digits
 never resize mid-count. Values are floored, never rounded — a counter must not
 briefly display a number it has not reached. `clock: true` renders `mm:ss`.
 
+**`claim` — required when the format is `sampleContent: sourced`.**
+
+| value | meaning |
+|---|---|
+| `"final"` | Only the settled number is the claim. Every intermediate value is wrong. |
+| `"running"` | Every intermediate value is true as a running total ("frames so far"). |
+
+A counter animating to 299,792,458 shows a false number for six seconds. If a
+unit and a word like "exactly" sit under it the whole time, anyone who pauses or
+screenshots sees a sourced, precision-marked claim that is untrue — and the
+citation lends authority to the wrong figure.
+
+So in a `sourced` format, **every element on screen while a `claim: "final"`
+counter is still counting must set `neutralWhileCounting: true`**, asserting its
+wording stays true while the number is wrong. `kw check` fails otherwise; the
+default is the unsafe case being rejected. Put the unit and any certainty
+language at `at: <the counter's endSec>`, and show something neutral
+("counting…") until then.
+
+`kw frame0` checks the other half: a `claim: "final"` counter must actually
+display the cited number at its settle time, so a citation can never back a
+figure the clip never reaches.
+
 ### `bar`
 ```jsonc
 { "id": "b", "type": "bar", "box": { "y": 1090, "x": 180, "w": 720 },

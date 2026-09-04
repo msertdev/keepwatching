@@ -14,6 +14,7 @@
   },
   "data": {
     "label": "Light travels, every second",
+    "counting": "counting…",
     "unit": "metres per second — exactly",
     "context": "Not measured. Defined. The metre is derived from this number."
   },
@@ -30,7 +31,8 @@
         "weight": 600,
         "color": "muted"
       },
-      "at": 0
+      "at": 0,
+      "neutralWhileCounting": true
     },
     {
       "id": "value",
@@ -48,7 +50,24 @@
         "weight": 800,
         "tracking": -0.03
       },
-      "at": 0
+      "at": 0,
+      "claim": "final"
+    },
+    {
+      "id": "counting",
+      "type": "text",
+      "box": {
+        "y": 940
+      },
+      "text": "{{counting}}",
+      "font": {
+        "size": 52,
+        "weight": 600,
+        "color": "muted"
+      },
+      "at": 0.4,
+      "until": 6.4,
+      "neutralWhileCounting": true
     },
     {
       "id": "unit",
@@ -62,7 +81,7 @@
         "weight": 600,
         "color": "accent"
       },
-      "at": 0.4
+      "at": 6.4
     },
     {
       "id": "bar",
@@ -78,7 +97,8 @@
       "endSec": 6.4,
       "height": 18,
       "fill": "accent",
-      "at": 0.2
+      "at": 0.2,
+      "neutralWhileCounting": true
     },
     {
       "id": "context",

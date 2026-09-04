@@ -587,6 +587,73 @@ export function validateMeta(meta: FormatMeta, slug: string): string[] {
   return problems;
 }
 
+/**
+ * A sourced number must never share the screen with a certainty it has not
+ * earned yet.
+ *
+ * A counter animating to 299,792,458 shows a wrong number for six seconds. If
+ * "metres per second — exactly" and a BIPM citation sit under it the whole
+ * time, then anyone who pauses, screenshots, or simply looks early sees a
+ * sourced, precision-marked claim that is false. The citation makes it worse,
+ * not better: it lends authority to the wrong figure.
+ *
+ * So in a `sourced` format, every element on screen while a `claim: "final"`
+ * counter is still counting must declare `neutralWhileCounting`. The default is
+ * the unsafe case failing, because the author who adds a unit label is the one
+ * who has to think about when it becomes true.
+ *
+ * Counters marked `claim: "running"` are exempt by construction: "390 frames so
+ * far" is true at every frame, so its unit can sit beside it throughout.
+ */
+export function validateClaims(spec: FormatSpec, meta: FormatMeta, slug: string): string[] {
+  const problems: string[] = [];
+  const duration = spec.canvas.durationSec;
+
+  const counters = spec.scene.filter((el): el is Element & { type: "counter" } =>
+    el.type === "counter"
+  ) as Array<Element & Record<string, unknown>>;
+
+  if (meta.sampleContent !== "sourced") return problems;
+
+  for (const counter of counters) {
+    const claim = counter.claim as string | undefined;
+    if (!claim) {
+      problems.push(
+        `${slug}: counter "${counter.id}" must declare claim: "final" | "running" ` +
+          `because this format's sample content is sourced`
+      );
+      continue;
+    }
+    if (claim === "running") continue;
+
+    /* The moment the number becomes the sourced fact. */
+    const settle =
+      (counter.endSec as number | undefined) ??
+      (counter.until as number | undefined) ??
+      duration;
+
+    for (const el of spec.scene) {
+      if (el.id === counter.id) continue;
+      if (el.neutralWhileCounting) continue;
+
+      const at = el.at ?? 0;
+      const until = el.until ?? duration;
+      /* Only elements actually on screen before the number lands. */
+      const overlaps = at < settle - 1e-6 && until > 0;
+      if (!overlaps) continue;
+
+      problems.push(
+        `${slug}: "${el.id}" is on screen from ${at}s while the sourced counter ` +
+          `"${counter.id}" is still counting (settles at ${settle}s). Either move it to ` +
+          `at >= ${settle}, or mark it neutralWhileCounting: true if its wording stays ` +
+          `true while the number is wrong.`
+      );
+    }
+  }
+
+  return problems;
+}
+
 /** Cross-check that every axis referenced by a measurement is a declared axis. */
 export function validateAxes(fmt: LoadedFormat, axes: ContentAxis[]): string[] {
   const known = new Set(axes.map((a) => a.id));

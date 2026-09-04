@@ -181,6 +181,22 @@ npx kw previews check
           preview was rendered from tier-list@1.0.0+a49fcf451285
 ```
 
+**A sourced number is not sourced until it lands.** A counter animating to
+299,792,458 displays a false number for six seconds; a unit reading "metres per
+second — exactly" sitting under it the whole time makes the citation vouch for
+the wrong figure. So in a `sourced` format, anything on screen while a
+`claim: "final"` counter is counting must declare `neutralWhileCounting`, and
+`kw check` refuses the format otherwise. `kw frame0` checks the other direction:
+the counter must actually display the cited number at its settle time.
+
+**The gallery page is tested too, not just the clips.** `kw layout` opens the
+built gallery in a real browser at 390, 768 and 1440px and asserts every filter
+chip, control and card row is on screen and would actually receive a click
+(`elementFromPoint`), with no horizontal scrollbar and nothing parked outside a
+sideways-scrolling strip. It exists because a filter chip slid under the sort
+controls and hid an entire format family while the page still screenshotted
+fine.
+
 **The first frame is tested, in every format.** It is the hook and it is the
 cover image the platform shows before playback, and it broke twice for unrelated
 reasons — both times because the contract was eyeballed on one format. `kw

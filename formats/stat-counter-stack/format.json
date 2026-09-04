@@ -43,7 +43,8 @@
       "font": {
         "size": 220,
         "weight": 800
-      }
+      },
+      "claim": "running"
     },
     {
       "id": "grid",

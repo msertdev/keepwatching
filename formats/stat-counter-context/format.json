@@ -47,7 +47,8 @@
         "size": 300,
         "weight": 800,
         "tracking": -0.04
-      }
+      },
+      "claim": "running"
     },
     {
       "id": "unit",
