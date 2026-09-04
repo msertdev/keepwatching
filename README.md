@@ -98,6 +98,12 @@ Axes are yours, not the library's. Declare whatever distinction you actually tes
 in [`data/content-axes.yml`](data/content-axes.yml) and tag videos with the
 optional `content_axis` column in `measure/mapping.csv`.
 
+**Videos whose format is not in this library** get `variant_id: not-in-library`.
+Those rows are content-axis samples and nothing else: no format board, no
+`data.yml`, no ranking — `kw check` and CI both fail if one leaks. The `carried
+by` column names the label so the gap is visible rather than hidden, which is
+why an axis can be measured while every format is still `n = 0`.
+
 ## Where the demo numbers come from
 
 A library about honest measurement cannot ship invented facts in its own screenshots.
@@ -131,6 +137,25 @@ npx kw render ranking-suspense --check-determinism
   variant ranking-suspense@1.0.0+7101b32c10da
   determinism ok (4 frames re-seeked out of order)
   verified  1080x1920 · 390 frames · 30fps
+```
+
+**The first frame is tested, in every format.** It is the hook and it is the
+cover image the platform shows before playback, and it broke twice for unrelated
+reasons — both times because the contract was eyeballed on one format. `kw
+frame0` now asserts across all 24 that frame 0 paints its promised elements
+(DOM) *and* contains real ink (pixels), independently, so a CSS or clip-path
+mistake cannot pass by satisfying the DOM alone. It runs in CI, and reinstating
+either historical bug fails all 24.
+
+```bash
+npx kw frame0
+```
+```
+▸ frame 0
+  24 formats checked — DOM, ink coverage, and element content
+  ok  bar-race               3 element(s), ink 1.11%
+  ...
+  every first frame paints its promised content
 ```
 
 Formats are **data, not code**. Eight element types — `text`, `counter`, `bar`,

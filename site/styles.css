@@ -177,13 +177,44 @@ h1 {
 
 .axis-row {
   display: flex;
-  align-items: baseline;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
   padding: 9px 12px;
   border: 1px solid var(--line);
   border-radius: 10px;
   font-size: 13.5px;
+}
+
+.axis-row .carried {
+  display: block;
+  margin-top: 3px;
+  font-size: 11.5px;
+  color: var(--dim);
+}
+
+.axis-row .carried .outside {
+  color: var(--axis);
+  font-weight: 700;
+}
+
+.axis-row .warn-lone {
+  color: var(--warn);
+}
+
+.axis-note {
+  margin-top: 4px;
+  padding: 9px 12px;
+  border: 1px dashed rgba(167, 139, 250, 0.35);
+  border-radius: 10px;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--dim);
+}
+
+.axis-note .outside {
+  color: var(--axis);
+  font-weight: 700;
 }
 
 .axis-row .an {

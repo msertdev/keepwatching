@@ -35,6 +35,26 @@ separate** leaderboard — how the subject performed, as opposed to how the scen
 structure performed. The two are never averaged; see section 2 of `report.md`.
 An unrecognised axis id is listed as unknown and ignored, never silently pooled.
 
+### Videos whose format is not in this library
+
+Some published videos use a format that is not part of this repo. Put the literal
+label in the `variant_id` column:
+
+```csv
+platform,external_id,variant_id,published_at,content_axis
+youtube,dQw4w9WgXcQ,not-in-library,2026-03-02T09:00:00Z,personal-body
+```
+
+Such a row is a **content-axis sample and nothing else**. There is no spec here
+to attribute it to, so it can never reach the format board, a format's
+`data.yml`, or the gallery ranking — `kw check` and CI both fail if one does.
+It counts toward the axis result, and the `carried by` column names
+`not-in-library` explicitly so a reader can see that part of an axis came from
+outside the library.
+
+The label says only that: the format is not here. It carries no information
+about what the format is.
+
 Get the variant id from `out/<slug>/variant.json`, or from the MP4 itself:
 
 ```bash

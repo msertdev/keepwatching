@@ -574,7 +574,13 @@ function paint(node: Node, t: number): void {
       const stagger = tx.stagger ?? 0;
       if (node.lines) {
         for (let i = 0; i < node.lines.length; i++) {
-          const p = stagger > 0 ? easeFn("smooth", (t - node.at - i * stagger) / 0.28) : 1;
+          /* A staggered line whose own start time is at or before zero is
+             painted whole on frame 0. Fading the first line in would blank the
+             hook and the platform cover image — the same failure the element-level
+             rule prevents, one level down. */
+          const start = node.at + i * stagger;
+          const p =
+            stagger > 0 ? (start <= 0 ? 1 : easeFn("smooth", (t - start) / 0.28)) : 1;
           node.lines[i].style.opacity = clamp01(p).toFixed(4);
           node.lines[i].style.transform = `translateY(${(18 * (1 - p)).toFixed(2)}px)`;
         }
@@ -620,7 +626,8 @@ function paint(node: Node, t: number): void {
       const n = node.rows!.length;
       for (let i = 0; i < n; i++) {
         const order = l.reverse ? n - 1 - i : i;
-        const p = clamp01(easeFn("smooth", (t - node.at - order * stagger) / 0.36));
+        const start = node.at + order * stagger;
+        const p = clamp01(start <= 0 ? 1 : easeFn("smooth", (t - start) / 0.36));
         const row = node.rows![i];
         row.style.opacity = p.toFixed(4);
         row.style.transform = `translateX(${((l.reverse ? -1 : 1) * 44 * (1 - p)).toFixed(2)}px)`;
@@ -631,7 +638,8 @@ function paint(node: Node, t: number): void {
       if (l.bars) {
         for (let i = 0; i < node.rowBars!.length; i++) {
           const order = l.reverse ? n - 1 - i : i;
-          const p = clamp01(easeFn("out", (t - node.at - order * stagger) / 0.55));
+          const barStart = node.at + order * stagger;
+          const p = clamp01(barStart <= 0 ? 1 : easeFn("out", (t - barStart) / 0.55));
           const target = clamp01(l.rows[i].weight ?? 1);
           node.rowBars![i].style.width = `${(target * p * 100).toFixed(3)}%`;
         }
