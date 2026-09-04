@@ -61,7 +61,9 @@ keepwatching — a measured retention database for short-form formats, that rend
   kw preview <slug> [--port=5173] scrub a format in a browser
   kw new <slug> [--from=<slug>]   scaffold a new format directory
   kw variant <slug>               print the variant id for the current spec
-  kw site build                   regenerate site/gallery.json + preview media
+  kw gallery [--port=8080]        render anything missing, build and open the gallery
+      --no-serve                  build only, do not start the server
+  kw site build [--allow-missing] rebuild site/gallery.json from existing renders
   kw site serve [--port=8080]     serve site/ locally
   kw measure                      ingest CSVs, then report
   kw measure ingest|report|apply
@@ -334,41 +336,95 @@ function cmdNew(): void {
   console.log(`  edit format.json + meta.yml, then:  npx kw render ${slug}\n`);
 }
 
+/**
+ * The one command a visitor runs. Renders whatever is missing, builds the
+ * gallery, and serves it — because the gallery is previews, and a page served
+ * without them is not the product.
+ */
+async function cmdGallery(): Promise<void> {
+  const formats = loadAllFormats();
+  const todo = formats.filter(
+    (f) => !fs.existsSync(path.join(OUT_DIR, f.slug, "preview.mp4"))
+  );
+
+  if (todo.length) {
+    console.log(
+      `
+▸ gallery
+  ${todo.length} of ${formats.length} formats need rendering ` +
+        `(~25s each, about ${Math.ceil((todo.length * 25) / 60)} min)
+`
+    );
+    const t0 = Date.now();
+    for (const [i, fmt] of todo.entries()) {
+      await renderFormat(fmt, { quiet: true });
+      const done = i + 1;
+      const elapsed = (Date.now() - t0) / 1000;
+      const eta = (elapsed / done) * (todo.length - done);
+      process.stdout.write(
+        `
+  ${String(done).padStart(2)}/${todo.length} rendered  ` +
+          `${fmt.slug.padEnd(22)} ${elapsed.toFixed(0)}s elapsed` +
+          `${done < todo.length ? `, ~${eta.toFixed(0)}s left` : ""}      `
+      );
+    }
+    process.stdout.write("\n");
+  } else {
+    console.log(`\n▸ gallery\n  all ${formats.length} previews already rendered`);
+  }
+
+  buildSite();
+
+  if (has("no-serve")) {
+    console.log(`  open site/index.html directly, or serve it with:  npx kw gallery
+`);
+    return;
+  }
+  serveSite(Number(opt("port") ?? 8080));
+}
+
 function cmdSite(): void {
   const sub = positional[0] ?? "build";
   if (sub === "build") {
-    buildSite();
+    buildSite({ allowMissing: has("allow-missing") });
     return;
   }
   if (sub === "serve") {
-    const port = Number(opt("port") ?? 8080);
-    const MIME: Record<string, string> = {
-      ".html": "text/html; charset=utf-8",
-      ".css": "text/css; charset=utf-8",
-      ".js": "text/javascript; charset=utf-8",
-      ".json": "application/json; charset=utf-8",
-      ".mp4": "video/mp4",
-      ".webm": "video/webm",
-      ".jpg": "image/jpeg",
-      ".png": "image/png",
-      ".svg": "image/svg+xml",
-    };
-    http
-      .createServer((req, res) => {
-        let p = decodeURIComponent(new URL(req.url ?? "/", "http://x").pathname);
-        if (p === "/") p = "/index.html";
-        const file = path.join(SITE_DIR, p);
-        if (!file.startsWith(SITE_DIR) || !fs.existsSync(file) || !fs.statSync(file).isFile()) {
-          res.writeHead(404).end("not found");
-          return;
-        }
-        res.writeHead(200, { "content-type": MIME[path.extname(file)] ?? "application/octet-stream" });
-        fs.createReadStream(file).pipe(res);
-      })
-      .listen(port, () => console.log(`\n▸ gallery  http://localhost:${port}\n`));
+    serveSite(Number(opt("port") ?? 8080));
     return;
   }
   fail(new Error(`unknown: kw site ${sub}`));
+}
+
+function serveSite(port: number): void {
+  const MIME: Record<string, string> = {
+    ".html": "text/html; charset=utf-8",
+    ".css": "text/css; charset=utf-8",
+    ".js": "text/javascript; charset=utf-8",
+    ".json": "application/json; charset=utf-8",
+    ".mp4": "video/mp4",
+    ".webm": "video/webm",
+    ".jpg": "image/jpeg",
+    ".png": "image/png",
+    ".svg": "image/svg+xml",
+  };
+  http
+    .createServer((req, res) => {
+      let p = decodeURIComponent(new URL(req.url ?? "/", "http://x").pathname);
+      if (p === "/") p = "/index.html";
+      const file = path.join(SITE_DIR, p);
+      if (!file.startsWith(SITE_DIR) || !fs.existsSync(file) || !fs.statSync(file).isFile()) {
+        res.writeHead(404).end("not found");
+        return;
+      }
+      res.writeHead(200, { "content-type": MIME[path.extname(file)] ?? "application/octet-stream" });
+      fs.createReadStream(file).pipe(res);
+    })
+    .listen(port, () => {
+      console.log(`  gallery ready:  [36mhttp://localhost:${port}[0m`);
+      console.log(`  Ctrl+C to stop.
+`);
+    });
 }
 
 async function cmdMeasure(): Promise<void> {
@@ -422,6 +478,8 @@ async function main(): Promise<void> {
       return cmdNew();
     case "variant":
       return cmdVariant();
+    case "gallery":
+      return cmdGallery();
     case "site":
       return cmdSite();
     case "measure":

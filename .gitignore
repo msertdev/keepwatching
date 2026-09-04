@@ -21,3 +21,4 @@ Thumbs.db
 
 # Raw analytics exports. Yours, not the library's.
 data/seed/raw/
+site/gallery.js

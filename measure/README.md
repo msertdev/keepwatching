@@ -20,7 +20,7 @@ Two paths, depending on where the numbers come from.
 
 ```bash
 npx kw measure seed     # -> data/content-axis-results.yml + report.md
-npx kw site build
+npx kw gallery
 ```
 
 Delimiter and decimal separator are sniffed per file, so a semicolon-delimited
@@ -34,7 +34,7 @@ this library:
 ```bash
 npx kw measure          # ingest CSVs, then build the report
 npx kw measure apply    # write results into formats/*/data.yml
-npx kw site build       # reorder the gallery
+npx kw gallery          # re-render + rebuild the gallery
 ```
 
 Hand-entered readings go in `measure/manual.yml` and are written with

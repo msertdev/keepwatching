@@ -69,7 +69,8 @@ jobs:
         run: npx kw render stat-counter-rise --check-determinism
 
       - name: Gallery builds
-        run: npx kw site build
+        # CI renders one format on purpose, so the partial build is explicit.
+        run: npx kw site build --allow-missing
 
       - name: The generated format index is committed and current
         run: git diff --exit-code skills/keepwatching/references/formats.md
