@@ -42,6 +42,7 @@ import {
   mean,
   numWithLocale,
   parseCsv,
+  parseDate,
   pick,
   sniffDelimiter,
   type Row,
@@ -253,19 +254,38 @@ function tiktokId(link: string | undefined): string | undefined {
 function readTikTok(file: string, measuredAt: string): Observation[] {
   const { rows, decimal } = readTable(file);
   const out: Observation[] = [];
+  /* This export writes dates as "3 Eylül" with no year. The year is taken from
+     the measurement date and the inference is recorded on the row, because a
+     date the data did not contain must never look like one it did. */
+  const contextYear = Number(measuredAt.slice(0, 4));
 
   for (const row of rows) {
     const link = pick(row, "Video link", "Video URL", "Link");
     const externalId = tiktokId(link) ?? pick(row, "Video ID", "id");
     if (!externalId) continue;
 
+    const published = parseDate(pick(row, "Post time", "Publish time"), contextYear);
+    const read = parseDate(pick(row, "Time"), contextYear);
+
+    const notes: string[] = [
+      "avgWatchSec and avgPctViewed null: this export carries no retention or " +
+        "watch-time column",
+      "viewsAt24h/48h/7d null: this export has no daily series",
+    ];
+    if (published?.yearInferred || read?.yearInferred) {
+      notes.push(
+        `date year inferred as ${contextYear}: this export writes dates without a ` +
+          `year (e.g. "${pick(row, "Post time", "Publish time") ?? ""}")`
+      );
+    }
+
     out.push({
       platform: "tiktok",
       externalId,
       variantId: NOT_IN_LIBRARY,
       title: pick(row, "Video title", "Title"),
-      publishedAt: isoDate(pick(row, "Post time", "Publish time")) ?? null,
-      measuredAt: isoDate(pick(row, "Time")) ?? measuredAt,
+      publishedAt: published?.iso ?? null,
+      measuredAt: read?.iso ?? measuredAt,
       dataThrough: null,
       durationSec: null,
       views: numWithLocale(pick(row, "Total views", "Video views", "Views"), decimal) ?? null,
@@ -279,11 +299,7 @@ function readTikTok(file: string, measuredAt: string): Observation[] {
       viewsAt48h: null,
       viewsAt7d: null,
       source: "csv",
-      notes: [
-        "avgWatchSec and avgPctViewed null: this export carries no retention or " +
-          "watch-time column",
-        "viewsAt24h/48h/7d null: this export has no daily series",
-      ],
+      notes,
     });
   }
   return out;
