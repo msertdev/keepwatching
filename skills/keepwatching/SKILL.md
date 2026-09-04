@@ -236,6 +236,13 @@ Content axes are declared in `data/content-axes.yml` and attached to a video by
 the optional `content_axis` column in `measure/mapping.csv`. They are the user's
 own axes, not the library's — add whatever distinction they actually test.
 
+**`variant_id: not-in-library`** marks a published video whose format is not in
+this repo. It is a content-axis sample only: it never reaches the format board or
+any `data.yml`, and `carried by` names it so the gap is visible. Repo-level axis
+results live in `data/content-axis-results.yml`, which is why an axis can be
+measured while every format is still `n = 0`. Do not speculate about what such a
+format is — the label deliberately says nothing about it.
+
 ## Honesty rules
 
 These are not style preferences. The repo is worthless if they slip.

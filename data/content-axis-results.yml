@@ -1,0 +1,13 @@
+# Repo-level content-axis results. Written by `kw measure apply` — never by hand.
+#
+# These are claims about SUBJECT MATTER, not about scene structure. They have
+# their own baseline and are never averaged with any number in formats/*/data.yml.
+#
+# `carriedBy` lists which formats produced each axis result. An axis carried by a
+# single entry is not isolated from that entry — it is the same videos under a
+# second label. The entry `not-in-library` means those samples came from a format
+# that is not part of this library; they count here and nowhere else.
+baseline:
+  avgViewedPct: null
+  source: not enough data
+axes: []
