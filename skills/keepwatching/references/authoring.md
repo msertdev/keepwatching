@@ -73,11 +73,23 @@ sources:
     claim: "The speed of light in vacuum is exactly 299,792,458 m/s."
 ```
 
-Prefer `placeholder` for a new format. Filler like "Option A" and "12,400 units"
-costs nothing and can never be mistaken for a finding. Reach for `sourced` only
-when the real number genuinely demonstrates the format better than filler would,
-and then cite a primary source and state the exact claim it backs — including any
-rounding you did for the screen.
+**Write the example copy about the format itself, or about the viewer.** That
+is how a card can look finished without asserting anything that needs a
+citation:
+
+> "The reason you are still watching is that this loop never finishes."
+> "You read this before deciding to scroll."
+> "You waited four seconds to find that out."
+
+The word "placeholder" must never appear in a rendered frame. A gallery is
+screenshotted, and copy that announces itself as filler makes the whole library
+look unfinished rather than honest. `sampleContent: placeholder` is still the
+right declaration for these — the field records whether the *claim* is sourced,
+not whether the *writing* is good.
+
+Reach for `sourced` only when the format's whole point is a factual claim
+(`myth-fact`, a real ranking). Then cite a primary source and state the exact
+claim it backs, including any rounding you did for the screen.
 
 ## Layout rules
 
@@ -90,6 +102,10 @@ The stage is 1080x1920. The safe zone is `y` 130–1600.
   are one beat — make sure they read as one.
 - **Frame 0 is not blank.** Anything at `t=0` with no explicit `in` paints
   instantly. Do not add a fade unless the fade is the point.
+- **Set `posterSec`.** It is the still the card rests on and the cover the
+  platform shows. Aim for the moment the scene is fullest — after the last
+  element lands, before the closing hold. `kw frame0` fails a poster that is too
+  sparse or whose content hugs one band of the frame.
 - **Let `fit` do the sizing.** Set the size you want and let shrink-to-fit
   protect you from a long input string. Do not hand-tune font sizes to your
   placeholder copy — someone else's copy will be longer.

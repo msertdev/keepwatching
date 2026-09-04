@@ -14,9 +14,9 @@
     "glowY": 700
   },
   "data": {
-    "myth": "A widely held belief goes here",
-    "fact": "The correction goes here, with a source",
-    "source": "Source: replace this with a real citation before publishing"
+    "myth": "The Great Wall is visible from space",
+    "fact": "It cannot be seen from orbit with the unaided eye",
+    "source": "NASA Earth Observatory"
   },
   "scene": [
     {
@@ -115,5 +115,6 @@
       },
       "at": 5.6
     }
-  ]
+  ],
+  "posterSec": 9.6
 }

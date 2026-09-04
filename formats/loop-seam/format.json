@@ -14,7 +14,7 @@
   },
   "data": {
     "line": "The reason you are still watching",
-    "answer": "is that this placeholder never finishes."
+    "answer": "is that this loop never finishes."
   },
   "scene": [
     {
@@ -69,5 +69,6 @@
       "fill": "accent",
       "trackColor": "rgba(255,255,255,0.08)"
     }
-  ]
+  ],
+  "posterSec": 5.4
 }

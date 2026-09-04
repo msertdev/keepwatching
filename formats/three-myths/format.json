@@ -13,7 +13,7 @@
     "glowY": 600
   },
   "data": {
-    "topic": "Three placeholder beliefs"
+    "topic": "Three things this format assumes about you"
   },
   "scene": [
     {
@@ -47,19 +47,19 @@
       },
       "rows": [
         {
-          "label": "Belief A",
-          "badge": "false",
-          "color": "#ef4444"
+          "label": "You will read all three",
+          "badge": "yes",
+          "color": "#22c55e"
         },
         {
-          "label": "Belief B",
-          "badge": "false",
-          "color": "#ef4444"
+          "label": "You will argue with one",
+          "badge": "likely",
+          "color": "#eab308"
         },
         {
-          "label": "Belief C",
-          "badge": "false",
-          "color": "#ef4444"
+          "label": "You will stay to see which",
+          "badge": "the point",
+          "color": "#22c55e"
         }
       ]
     },
@@ -69,7 +69,7 @@
       "box": {
         "y": 1220
       },
-      "text": "Replace these with sourced corrections.",
+      "text": "Three chances to be wrong is the mechanism.",
       "font": {
         "size": 56,
         "weight": 800,
@@ -78,5 +78,6 @@
       },
       "at": 8.4
     }
-  ]
+  ],
+  "posterSec": 11.2
 }

@@ -13,7 +13,7 @@
     "glowY": 720
   },
   "data": {
-    "label": "Placeholder units to make one item"
+    "label": "Frames you have watched so far"
   },
   "scene": [
     {
@@ -37,11 +37,11 @@
         "y": 620
       },
       "from": 0,
-      "to": 7600,
+      "to": 390,
       "startSec": 0.4,
       "endSec": 9.4,
       "ease": "linear",
-      "suffix": " L",
+      "suffix": "",
       "font": {
         "size": 220,
         "weight": 800
@@ -53,7 +53,7 @@
       "box": {
         "y": 940
       },
-      "text": "first threshold",
+      "text": "one second in",
       "font": {
         "size": 46,
         "weight": 700,
@@ -68,7 +68,7 @@
       "box": {
         "y": 940
       },
-      "text": "second threshold",
+      "text": "halfway",
       "font": {
         "size": 52,
         "weight": 700,
@@ -83,7 +83,7 @@
       "box": {
         "y": 940
       },
-      "text": "third threshold",
+      "text": "every frame of it",
       "font": {
         "size": 60,
         "weight": 800,
@@ -117,7 +117,7 @@
       "box": {
         "y": 1300
       },
-      "text": "One item.",
+      "text": "You noticed none of them.",
       "font": {
         "size": 72,
         "weight": 800,
@@ -125,5 +125,6 @@
       },
       "at": 9.6
     }
-  ]
+  ],
+  "posterSec": 10.2
 }

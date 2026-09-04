@@ -13,7 +13,7 @@
     "glowY": 780
   },
   "data": {
-    "title": "Placeholder escalation, four steps"
+    "title": "Each line is bigger than the last"
   },
   "scene": [
     {
@@ -35,7 +35,7 @@
       "box": {
         "y": 560
       },
-      "text": "Step 1  ·  smallest effect",
+      "text": "and you barely noticed this one",
       "font": {
         "size": 42,
         "weight": 700,
@@ -49,7 +49,7 @@
       "box": {
         "y": 700
       },
-      "text": "Step 2  ·  larger effect",
+      "text": "now you did",
       "font": {
         "size": 56,
         "weight": 700,
@@ -63,7 +63,7 @@
       "box": {
         "y": 880
       },
-      "text": "Step 3  ·  larger again",
+      "text": "and you expect more",
       "font": {
         "size": 70,
         "weight": 800,
@@ -78,7 +78,7 @@
       "box": {
         "y": 1120
       },
-      "text": "Step 4  ·  the largest effect",
+      "text": "so here it is",
       "font": {
         "size": 84,
         "weight": 800,
@@ -103,7 +103,7 @@
       "box": {
         "y": 1480
       },
-      "text": "Replace these with real, escalating values.",
+      "text": "That expectation is the format.",
       "font": {
         "size": 58,
         "weight": 800,
@@ -111,5 +111,6 @@
       },
       "at": 10.6
     }
-  ]
+  ],
+  "posterSec": 11
 }

@@ -13,7 +13,7 @@
     "glowY": 560
   },
   "data": {
-    "title": "Placeholder ranking, by units per week"
+    "title": "The five largest planets, by diameter"
   },
   "scene": [
     {
@@ -48,29 +48,29 @@
       },
       "rows": [
         {
-          "label": "Item A",
-          "value": "14,200",
+          "label": "Jupiter",
+          "value": "139,820 km",
           "weight": 1
         },
         {
-          "label": "Item B",
-          "value": "9,700",
-          "weight": 0.68
+          "label": "Saturn",
+          "value": "116,460 km",
+          "weight": 0.833
         },
         {
-          "label": "Item C",
-          "value": "6,100",
-          "weight": 0.43
+          "label": "Uranus",
+          "value": "50,724 km",
+          "weight": 0.363
         },
         {
-          "label": "Item D",
-          "value": "4,800",
-          "weight": 0.34
+          "label": "Neptune",
+          "value": "49,244 km",
+          "weight": 0.352
         },
         {
-          "label": "Item E",
-          "value": "2,300",
-          "weight": 0.16
+          "label": "Earth",
+          "value": "12,742 km",
+          "weight": 0.091
         }
       ]
     },
@@ -80,7 +80,7 @@
       "box": {
         "y": 1420
       },
-      "text": "Where does yours land?",
+      "text": "Earth is the small one.",
       "font": {
         "size": 54,
         "weight": 700,
@@ -88,5 +88,6 @@
       },
       "at": 5.6
     }
-  ]
+  ],
+  "posterSec": 10.4
 }

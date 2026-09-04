@@ -13,9 +13,9 @@
     "glowY": 760
   },
   "data": {
-    "setup": "The placeholder answer is",
-    "answer": "hidden",
-    "closer": "Replace this with your supporting line."
+    "setup": "The word hidden under this bar is",
+    "answer": "nothing",
+    "closer": "You waited four seconds to find that out."
   },
   "scene": [
     {
@@ -95,5 +95,6 @@
       },
       "at": 5.8
     }
-  ]
+  ],
+  "posterSec": 7.4
 }

@@ -13,9 +13,9 @@
     "glowY": 760
   },
   "data": {
-    "label": "Placeholder metric",
-    "unit": "units per item",
-    "context": "Replace this line with the comparison that reframes the number."
+    "label": "Frames of this clip so far",
+    "unit": "frames, at 30 per second",
+    "context": "You noticed none of them individually."
   },
   "scene": [
     {
@@ -38,8 +38,8 @@
         "y": 660
       },
       "from": 0,
-      "to": 12.4,
-      "decimals": 1,
+      "to": 330,
+      "decimals": 0,
       "startSec": 0.2,
       "endSec": 2.6,
       "ease": "out",
@@ -97,5 +97,6 @@
         ]
       }
     }
-  ]
+  ],
+  "posterSec": 8.6
 }
