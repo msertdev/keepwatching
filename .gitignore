@@ -1,6 +1,10 @@
 node_modules/
 out/
-site/previews/
+
+# site/previews/ is COMMITTED. The gallery is the product and the previews are
+# its visible surface, not a build artifact — and Pages publishes from the repo,
+# so leaving them out would mean re-rendering all 24 on every deploy.
+# `kw previews check` fails in CI if a committed preview no longer matches its spec.
 site/gallery.json
 
 # Fonts are fetched by `npm run setup`, not committed (SIL OFL 1.1).
