@@ -42,7 +42,6 @@ axes:
       - platform: youtube
         externalId: RycCFHdKbt0
         variantId: not-in-library
-        title: How much Apple earned since you started watching (30 seconds)
         publishedAt: 2026-09-02
         measuredAt: 2026-09-04
         dataThrough: 2026-09-03
@@ -68,8 +67,6 @@ axes:
       - platform: tiktok
         externalId: "7681074295207922952"
         variantId: not-in-library
-        title: "## TikTok How much does Apple earn while you watch a 30-second video?
-          #realtime #facts #didyouknow #apple #money"
         publishedAt: 2026-09-03
         measuredAt: 2026-09-04
         dataThrough: null
@@ -137,7 +134,6 @@ axes:
       - platform: youtube
         externalId: 9G3hZjyV30c
         variantId: not-in-library
-        title: What your body does while you watch this (30 seconds)
         publishedAt: 2026-09-03
         measuredAt: 2026-09-04
         dataThrough: 2026-09-03
@@ -186,7 +182,6 @@ axes:
       - platform: youtube
         externalId: CgLckp8GpW8
         variantId: not-in-library
-        title: How many plastic bottles the world buys while you watch this
         publishedAt: 2026-09-03
         measuredAt: 2026-09-04
         dataThrough: 2026-09-03

@@ -34,6 +34,47 @@ git add formats/*/data.yml measure/mapping.csv
 git commit -m "measure: 6 samples across ranking-*"
 ```
 
+### The one-click route
+
+If you would rather not clone anything:
+**[Submit a measurement →](https://github.com/msertdev/keepwatching/issues/new?template=measurement.yml)**
+
+The form asks for exactly the fields below, and refuses to submit without the
+ones that make a number checkable.
+
+### Required fields, and why each one
+
+| Field | Why it is required |
+|---|---|
+| `variant_id` | Without it the number is attached to nothing. `not-in-library` is a valid answer for a format that is not in this repo — it will count toward a content axis and never toward a format. |
+| `platform` + `external_id` | So the row can be audited against the export it came from. |
+| `published_at` | Age drives everything early. A day-one number and a week-one number are different measurements. |
+| **`measured_at`** | **Views and retention both move.** A figure with no reading date cannot be compared with anything, and it is the field people skip. Two readings of the same video days apart are two observations, not a contradiction — both are kept. |
+| `n` | Videos, not views. A retention figure without a sample size is a vibe. |
+| `source` | `csv` or `manual`. Hand-entered numbers are kept and rendered distinctly; neither is better, the difference just has to be visible. |
+| confounds | Follower band, posting time, whether topics differed. Every number here is confounded by something. |
+
+Anything your export does not contain is left **blank**. Never estimated, never
+interpolated, never rounded to something tidier. A null is more useful than a
+guess.
+
+### What each platform actually gives you
+
+| Platform | Export | Retention curve? |
+|---|---|---|
+| YouTube Studio | Analytics → Content → **Advanced mode** → Export → CSV | Yes, per video: Engagement → Audience retention → Export |
+| TikTok | Analytics → Content → Download data | Not in the export in most regions — read it by hand and mark `manual` |
+| Instagram | Professional dashboard, per reel | No export at all; `manual` only |
+
+A YouTube *table* export carries no retention column, so `hook_3s` comes from
+the separate audience-retention export or stays blank. Save that one as
+`measure/inbox/retention/<video_id>.csv` — the filename is how it gets matched.
+
+Delimiter and decimal separator are sniffed per file, so a semicolon-delimited
+export with comma decimals reads correctly with no configuration. A genuinely
+ambiguous number (`1,234` — is that 1234 or 1.234?) returns null rather than a
+guess.
+
 ### What a measurement PR must include
 
 - **The `data.yml` diffs**, written by `kw measure apply` — not by hand.

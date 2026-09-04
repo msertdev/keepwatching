@@ -6,13 +6,36 @@
     <title>keepwatching — measured short-form formats</title>
     <meta
       name="description"
-      content="An open database of named short-form video formats, each one rendered and each one carrying its measured retention and its sample size."
+      content="An open database of named short-form video formats. Every card is a JSON spec, a rendered 9:16 preview, and whatever the measurements actually say — with the sample size printed on it."
     />
-    <meta property="og:title" content="keepwatching" />
+    <link rel="canonical" href="https://msertdev.github.io/keepwatching/" />
+
+    <!-- Shared links unfurl into a card built by the repo's own renderer from
+         four real committed preview frames. See `npx kw social`. -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="keepwatching" />
+    <meta property="og:url" content="https://msertdev.github.io/keepwatching/" />
+    <meta property="og:title" content="keepwatching — a retention database for short-form formats" />
     <meta
       property="og:description"
-      content="Named short-form formats with rendered previews and measured retention. Sample sizes shown on every card."
+      content="24 named formats, each one rendered, each carrying its measured retention and its sample size. 0 measured so far, and it says so."
     />
+    <meta property="og:image" content="https://msertdev.github.io/keepwatching/social-card.png" />
+    <meta property="og:image:width" content="1280" />
+    <meta property="og:image:height" content="640" />
+    <meta
+      property="og:image:alt"
+      content="keepwatching — four rendered 9:16 format previews beside the project name"
+    />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="keepwatching — a retention database for short-form formats" />
+    <meta
+      name="twitter:description"
+      content="24 named formats, each one rendered, each carrying its measured retention and its sample size. 0 measured so far, and it says so."
+    />
+    <meta name="twitter:image" content="https://msertdev.github.io/keepwatching/social-card.png" />
+
     <link rel="stylesheet" href="styles.css" />
     <link
       rel="icon"
@@ -97,7 +120,7 @@
         <p>
           MIT licensed. Seed data is one creator's; the numbers are only worth what the sample
           sizes say they are.
-          <a href="https://github.com/msertdev/keepwatching/blob/main/CONTRIBUTING.md"
+          <a href="https://github.com/msertdev/keepwatching/issues/new?template=measurement.yml"
             >Send your own measurements →</a
           >
         </p>
