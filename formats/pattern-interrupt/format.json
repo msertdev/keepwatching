@@ -13,9 +13,9 @@
     "glowY": 740
   },
   "data": {
-    "claim": "The common assumption goes here.",
-    "interrupt": "And the contradiction here.",
-    "detail": "Replace this with the evidence that supports the reversal."
+    "claim": "You are about to scroll past this.",
+    "interrupt": "You didn't.",
+    "detail": "A broken prediction restarts attention. That is the whole format."
   },
   "scene": [
     {
@@ -83,5 +83,6 @@
       "at": 4.8,
       "wrapAt": 5
     }
-  ]
+  ],
+  "posterSec": 8
 }

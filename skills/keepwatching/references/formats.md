@@ -25,17 +25,17 @@ with the source listed in its meta.yml) or `placeholder` (obvious filler).
 **`cold-open-line`** — Cold open — one line  
 Use when: The sentence is strong enough to carry the clip alone.  
 Avoid when: The sentence needs a subject line to make sense.  
-9s · 30fps · `cold-open-line@1.0.0+68e76e5f572c`
+9s · 30fps · `cold-open-line@1.0.0+3638b9e2e4f3`
 
 **`cold-open-question`** — Cold open — question  
 Use when: The question has a specific, checkable answer.  
 Avoid when: The question is rhetorical — an unanswerable question closes the loop instantly.  
-10s · 30fps · `cold-open-question@1.0.0+6098e95ffdfb`
+10s · 30fps · `cold-open-question@1.0.0+7b44eae1f1dd`
 
 **`pattern-interrupt`** — Pattern interrupt  
 Use when: The common assumption is confidently wrong and you can prove it.  
 Avoid when: The reversal is a technicality — the viewer will feel tricked, not corrected.  
-10s · 30fps · `pattern-interrupt@1.0.0+e2e7881a343e`
+10s · 30fps · `pattern-interrupt@1.0.0+e13c70196c96`
 
 ## comparison
 
@@ -48,19 +48,19 @@ Avoid when: The reversal is a technicality — the viewer will feel tricked, not
 **`bar-race`** — Bar race — two lanes  
 Use when: The difference between two quantities is large and worth watching accumulate.  
 Avoid when: The two values are close — the race will look like a tie and land as nothing.  
-12s · 30fps · `bar-race@1.0.0+cec223897367`
+12s · 30fps · `bar-race@1.0.0+67ed0014823b`
 
 **`split-compare`** — Split comparison  
 Use when: Two options differ on one number the audience will find unintuitive.  
 Avoid when: The two things differ on many dimensions — a split will oversimplify them.  
 Source: [Survey Department of Nepal — joint Nepal/China announcement, 8 December 2020](https://www.dos.gov.np/) — Mount Everest reaches 8,848.86 m above sea level (shown rounded to 8,849 m) — the highest point on land.  
 Source: [USGS — Mauna Kea](https://www.usgs.gov/volcanoes/mauna-kea) — Mauna Kea rises about 10,210 m from its base on the ocean floor, making it the tallest mountain measured base to summit.  
-12s · 30fps · `split-compare@1.0.0+9dd01609c5d2`
+12s · 30fps · `split-compare@1.0.0+7c5dd3cd137c`
 
 **`split-verdict`** — Split — verdict  
 Use when: The audience expects you to take a side.  
 Avoid when: The honest answer is 'it depends' — a forced verdict will cost you credibility.  
-11s · 30fps · `split-verdict@1.0.0+4e0d090087d2`
+11s · 30fps · `split-verdict@1.0.0+1c07d03f959f`
 
 ## countdown
 
@@ -72,12 +72,12 @@ Avoid when: The honest answer is 'it depends' — a forced verdict will cost you
 **`countdown-clock`** — Countdown — clock  
 Use when: You have a payoff worth waiting for and the clip is under 15 seconds.  
 Avoid when: There is no payoff at zero — the format writes a cheque the ending must cash.  
-12s · 30fps · `countdown-clock@1.0.0+f2118521d22c`
+12s · 30fps · `countdown-clock@1.0.0+a30f5e5031fc`
 
 **`countdown-list`** — Countdown — 5 to 1  
 Use when: You have between three and six discrete items and the last one is the best.  
 Avoid when: The items are equally weighted — descending order will make the ending feel flat.  
-14s · 30fps · `countdown-list@1.0.0+47c1e4bc49fc`
+14s · 30fps · `countdown-list@1.0.0+b9bba1a4e6e2`
 
 ## escalation
 
@@ -89,29 +89,30 @@ Avoid when: The items are equally weighted — descending order will make the en
 **`escalation-counter`** — Escalation — threshold counter  
 Use when: The number crosses milestones the audience already recognises.  
 Avoid when: There are no meaningful thresholds — the labels will feel arbitrary.  
-13s · 30fps · `escalation-counter@1.0.0+4b07e902024e`
+13s · 30fps · `escalation-counter@1.0.0+7bd053e53445`
 
 **`escalation-ladder`** — Escalation ladder  
 Use when: The values genuinely escalate and the last one is dramatic.  
 Avoid when: The escalation flattens out — the format promises a peak it must deliver.  
-13s · 30fps · `escalation-ladder@1.0.0+61da0ee3162c`
+13s · 30fps · `escalation-ladder@1.0.0+99851cdc551a`
 
 ## myth-fact
 
 | Format | content | n | avg viewed | hook @3s | Hypothesis |
 |---|---|---|---|---|---|
-| `myth-vs-fact` | placeholder | 0 | — | — | Stating a belief the viewer probably holds triggers a defensive read, and defensiveness is attention: they stay to see whether they are the one being corrected. |
+| `myth-vs-fact` | sourced | 0 | — | — | Stating a belief the viewer probably holds triggers a defensive read, and defensiveness is attention: they stay to see whether they are the one being corrected. |
 | `three-myths` | placeholder | 0 | — | — | Three corrections in sequence give the viewer three chances to be personally wrong, and each miss raises the odds they stay for the next one. |
 
 **`myth-vs-fact`** — Myth vs fact  
 Use when: The myth is genuinely widespread and the correction is well-sourced.  
 Avoid when: You cannot source the correction. This format converts confidence into belief.  
-12s · 30fps · `myth-vs-fact@1.0.0+8f023a4666e0`
+Source: [NASA Earth Observatory — China's Wall Less Great in View from Space](https://earthobservatory.nasa.gov/images/6845/chinas-wall-less-great-in-view-from-space) — The Great Wall of China is generally not visible to the unaided eye from low Earth orbit.  
+12s · 30fps · `myth-vs-fact@1.0.0+eb0ac213a32a`
 
 **`three-myths`** — Three myths  
 Use when: You have three unrelated corrections in the same subject area.  
 Avoid when: One of the three is weak — the weakest item sets the credibility of all three.  
-13s · 30fps · `three-myths@1.0.0+1e78ede5102b`
+13s · 30fps · `three-myths@1.0.0+ac3bb1ea7039`
 
 ## progress
 
@@ -123,37 +124,38 @@ Avoid when: One of the three is weak — the weakest item sets the credibility o
 **`checklist-run`** — Checklist run  
 Use when: You have four to eight parallel items with no ordering.  
 Avoid when: The items build on each other — a checklist implies they are independent.  
-13s · 30fps · `checklist-run@1.0.0+7c39491a5eb2`
+13s · 30fps · `checklist-run@1.0.0+a5cb6e1aec81`
 
 **`progress-bar`** — Progress bar  
 Use when: The clip has genuine stages and the last stage is worth reaching.  
 Avoid when: There are no real stages — a fake progress bar is the fastest way to lose trust.  
-12s · 30fps · `progress-bar@1.0.0+12fe25f7b09a`
+12s · 30fps · `progress-bar@1.0.0+9d8f00120d2e`
 
 ## ranking
 
 | Format | content | n | avg viewed | hook @3s | Hypothesis |
 |---|---|---|---|---|---|
-| `ranking-reveal` | placeholder | 0 | — | — | Showing rank 1 immediately trades suspense for clarity: the viewer learns the answer in the first two seconds and stays only if the rest of the list surprises them. |
+| `ranking-reveal` | sourced | 0 | — | — | Showing rank 1 immediately trades suspense for clarity: the viewer learns the answer in the first two seconds and stays only if the rest of the list surprises them. |
 | `ranking-suspense` | sourced | 0 | — | — | Withholding rank 1 until the final second converts the whole clip into a single unanswered question, trading early drop-off for a higher completion rate among those who stay. |
 | `tier-list` | placeholder | 0 | — | — | Tier labels invite disagreement, and a viewer composing an objection in their head watches to the end to check whether their pick was ranked. |
 
 **`ranking-reveal`** — Ranking — top down  
 Use when: The headline is the ranking itself and you want shares over watch-through.  
 Avoid when: You are optimising for completion — this format gives away its own ending.  
-12s · 30fps · `ranking-reveal@1.0.0+28f8e79bddff`
+Source: [NASA — Planetary Fact Sheet](https://nssdc.gsfc.nasa.gov/planetary/factsheet/) — Equatorial diameters: Jupiter 139,820 km, Saturn 116,460 km, Uranus 50,724 km, Neptune 49,244 km, Earth 12,742 km.  
+12s · 30fps · `ranking-reveal@1.0.0+491bd5a2df12`
 
 **`ranking-suspense`** — Ranking — bottom up  
 Use when: Completion and replays matter more than immediate shares.  
 Avoid when: The audience already knows the likely #1 — the withholding will read as padding.  
 Source: [Survey Department of Nepal — joint Nepal/China announcement, 8 December 2020](https://www.dos.gov.np/) — Mount Everest's height is 8,848.86 m above sea level (shown rounded to 8,849 m).  
 Source: [USGS — Highest mountains of the world](https://www.usgs.gov/) — K2 8,611 m, Kangchenjunga 8,586 m, Lhotse 8,516 m and Makalu 8,485 m rank 2–5.  
-13s · 30fps · `ranking-suspense@1.0.0+b2ad4b0bb0ee`
+13s · 30fps · `ranking-suspense@1.0.0+ae5b90a70912`
 
 **`tier-list`** — Tier list  
 Use when: The audience has strong opinions and a comment section worth provoking.  
 Avoid when: The subject is factual — tiers imply judgement the data may not support.  
-13s · 30fps · `tier-list@1.0.0+a49fcf451285`
+13s · 30fps · `tier-list@1.0.0+4208d3681cd2`
 
 ## reveal
 
@@ -166,17 +168,17 @@ Avoid when: The subject is factual — tiers imply judgement the data may not su
 **`before-after`** — Before / after wipe  
 Use when: You can show the same subject in two states.  
 Avoid when: The two states look similar — the wipe will read as a glitch.  
-10s · 30fps · `before-after@1.0.0+f39d7c2d577e`
+10s · 30fps · `before-after@1.0.0+f15743a24d91`
 
 **`redacted-reveal`** — Redacted reveal  
 Use when: One word or number is the entire payload.  
 Avoid when: The hidden thing is guessable in under a second — the format will feel like a trick.  
-10s · 30fps · `redacted-reveal@1.0.0+79e79e8be72c`
+10s · 30fps · `redacted-reveal@1.0.0+60426efe5e63`
 
 **`reverse-reveal`** — Reverse reveal  
 Use when: The answer is strange enough to be its own hook.  
 Avoid when: The answer needs context to even parse — leading with it will read as noise.  
-11s · 30fps · `reverse-reveal@1.0.0+38ba06cc64c2`
+11s · 30fps · `reverse-reveal@1.0.0+e70300261244`
 
 ## reverse
 
@@ -187,7 +189,7 @@ Avoid when: The answer needs context to even parse — leading with it will read
 **`loop-seam`** — Loop seam  
 Use when: The clip is short and its content is genuinely circular.  
 Avoid when: The clip has a real ending — hiding it will frustrate rather than loop.  
-8s · 30fps · `loop-seam@1.0.0+bb23307ed7f0`
+8s · 30fps · `loop-seam@1.0.0+9d6920940e7a`
 
 ## stat-counter
 
@@ -200,15 +202,15 @@ Avoid when: The clip has a real ending — hiding it will frustrate rather than 
 **`stat-counter-context`** — Stat counter — context flip  
 Use when: The number is meaningless without a comparison, and the comparison is the actual payload.  
 Avoid when: The number already carries its own meaning — the pause will feel like stalling.  
-11s · 30fps · `stat-counter-context@1.0.0+94f0c7fb6954`
+11s · 30fps · `stat-counter-context@1.0.0+86e15546e6b6`
 
 **`stat-counter-rise`** — Stat counter — rise  
 Use when: You have one number that is large, surprising, and easy to say out loud.  
 Avoid when: The number needs a paragraph of setup before it means anything.  
 Source: [BIPM — The International System of Units (SI), 9th edition, 2019](https://www.bipm.org/en/publications/si-brochure) — The speed of light in vacuum is exactly 299,792,458 m/s; the metre is defined from it.  
-10s · 30fps · `stat-counter-rise@1.0.0+e7f000a3e266`
+10s · 30fps · `stat-counter-rise@1.0.0+1afb24fca512`
 
 **`stat-counter-stack`** — Stat counter — stacking proof  
 Use when: The number counts discrete things a viewer can picture one at a time.  
 Avoid when: The quantity is continuous (money, time, mass) — the icons will read as decoration.  
-12s · 30fps · `stat-counter-stack@1.0.0+8817f542c04a`
+12s · 30fps · `stat-counter-stack@1.0.0+193dd45a72e8`

@@ -13,7 +13,7 @@
     "glowY": 820
   },
   "data": {
-    "title": "Placeholder — the same subject, twice.",
+    "title": "Watch the edge cross the frame",
     "before": "BEFORE",
     "after": "AFTER"
   },
@@ -162,7 +162,7 @@
       "box": {
         "y": 1400
       },
-      "text": "Replace this with what changed.",
+      "text": "Your eye followed it. That is the format.",
       "font": {
         "size": 58,
         "weight": 700,
@@ -170,5 +170,6 @@
       },
       "at": 5.8
     }
-  ]
+  ],
+  "posterSec": 6.6
 }

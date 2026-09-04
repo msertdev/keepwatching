@@ -13,7 +13,7 @@
     "glowY": 620
   },
   "data": {
-    "title": "Five placeholder items, counted down"
+    "title": "Five reasons a countdown keeps you here"
   },
   "scene": [
     {
@@ -68,26 +68,27 @@
       },
       "rows": [
         {
-          "label": "Item A",
-          "value": "8%"
+          "label": "You know how many remain",
+          "value": "5"
         },
         {
-          "label": "Item B",
-          "value": "11%"
+          "label": "The end is visible",
+          "value": "4"
         },
         {
-          "label": "Item C",
-          "value": "14%"
+          "label": "Leaving costs you the rest",
+          "value": "3"
         },
         {
-          "label": "Item D",
-          "value": "22%"
+          "label": "The best is held back",
+          "value": "2"
         },
         {
-          "label": "Item E",
-          "value": "27%"
+          "label": "You are still here",
+          "value": "1"
         }
       ]
     }
-  ]
+  ],
+  "posterSec": 12.6
 }

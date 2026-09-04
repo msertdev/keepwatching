@@ -13,7 +13,7 @@
     "glowY": 620
   },
   "data": {
-    "title": "Placeholder checklist, six items"
+    "title": "What a checklist does to your attention"
   },
   "scene": [
     {
@@ -64,27 +64,27 @@
       },
       "rows": [
         {
-          "label": "Item A",
-          "value": "-18%"
+          "label": "It sets a cadence",
+          "value": "1.7s"
         },
         {
-          "label": "Item B",
-          "value": "-12%"
+          "label": "You predict the next tick",
+          "value": "✓"
         },
         {
-          "label": "Item C",
-          "value": "+60%"
+          "label": "You feel the list shrink",
+          "value": "×6"
         },
         {
-          "label": "Item D",
-          "value": "-9 min"
+          "label": "Order stops mattering",
+          "value": "any"
         },
         {
-          "label": "Item E",
-          "value": "gone"
+          "label": "The end is in sight",
+          "value": "13s"
         },
         {
-          "label": "Item F",
+          "label": "Nothing is withheld",
           "value": "0"
         }
       ]
@@ -95,7 +95,7 @@
       "box": {
         "y": 1500
       },
-      "text": "Twenty minutes.",
+      "text": "You stayed for the rhythm.",
       "font": {
         "size": 60,
         "weight": 800,
@@ -103,5 +103,6 @@
       },
       "at": 11
     }
-  ]
+  ],
+  "posterSec": 11.4
 }

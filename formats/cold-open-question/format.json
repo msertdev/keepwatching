@@ -13,9 +13,9 @@
     "glowY": 780
   },
   "data": {
-    "question": "A specific, answerable question goes here?",
-    "partial": "A partial answer, about 12,400 units.",
-    "closer": "Replace all three lines with your own."
+    "question": "How long did you look before deciding?",
+    "partial": "Long enough to finish this line.",
+    "closer": "The question is the format. The answer is you."
   },
   "scene": [
     {
@@ -87,5 +87,6 @@
       },
       "at": 6
     }
-  ]
+  ],
+  "posterSec": 7.6
 }

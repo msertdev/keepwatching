@@ -14,8 +14,8 @@
     "glowY": 700
   },
   "data": {
-    "title": "Placeholder comparison, two lanes",
-    "closer": "Same lane. Different value."
+    "title": "You saw the gap before you read this",
+    "closer": "That is the whole format."
   },
   "scene": [
     {
@@ -39,7 +39,7 @@
         "x": 60,
         "w": 400
       },
-      "text": "Lane A",
+      "text": "First bar",
       "font": {
         "size": 46,
         "weight": 700,
@@ -73,7 +73,7 @@
         "x": 84,
         "w": 400
       },
-      "text": "12,400",
+      "text": "moves early",
       "font": {
         "size": 46,
         "weight": 800,
@@ -90,7 +90,7 @@
         "x": 60,
         "w": 400
       },
-      "text": "Lane B",
+      "text": "Second bar",
       "font": {
         "size": 46,
         "weight": 700,
@@ -124,7 +124,7 @@
         "x": 84,
         "w": 400
       },
-      "text": "36,500",
+      "text": "ends higher",
       "font": {
         "size": 46,
         "weight": 800,
@@ -147,5 +147,6 @@
       },
       "at": 7
     }
-  ]
+  ],
+  "posterSec": 8.2
 }

@@ -13,9 +13,9 @@
     "glowY": 760
   },
   "data": {
-    "answer": "Twelve.",
-    "question": "That is the placeholder answer. Replace both lines with yours.",
-    "tag": "the answer"
+    "tag": "the answer",
+    "answer": "Two seconds.",
+    "question": "That is how long you spent wondering what the question was."
   },
   "scene": [
     {
@@ -93,5 +93,6 @@
       "wrapAt": 4,
       "stagger": 0.5
     }
-  ]
+  ],
+  "posterSec": 8.4
 }

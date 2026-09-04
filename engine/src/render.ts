@@ -293,7 +293,12 @@ export async function renderFormat(fmt: LoadedFormat, opts: RenderOptions = {}):
     Number(((i / 5) * (spec.canvas.durationSec - 1 / fps)).toFixed(3))
   );
   const sheetFrames = sheetTimes.map((s) => Math.min(total - 1, Math.round(s * fps)));
-  const posterFrame = Math.min(total - 1, Math.round(spec.canvas.durationSec * 0.35 * fps));
+  /* The poster is the card's resting state and the platform's cover image, so
+     the format chooses it. 35% is only a fallback for a spec that has not. */
+  const posterFrame = Math.min(
+    total - 1,
+    Math.round((spec.posterSec ?? spec.canvas.durationSec * 0.35) * fps)
+  );
 
   let determinismNote = "not checked";
 

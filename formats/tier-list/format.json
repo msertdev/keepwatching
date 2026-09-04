@@ -13,7 +13,7 @@
     "glowY": 600
   },
   "data": {
-    "title": "Placeholder options, tiered"
+    "title": "How this format ranks itself"
   },
   "scene": [
     {
@@ -47,35 +47,35 @@
       },
       "rows": [
         {
-          "label": "Option A",
+          "label": "Provokes disagreement",
           "badge": "S",
           "value": "",
           "weight": 1,
           "color": "#22c55e"
         },
         {
-          "label": "Option B",
+          "label": "Reads in one pass",
           "badge": "A",
           "value": "",
           "weight": 0.82,
           "color": "#84cc16"
         },
         {
-          "label": "Option C",
+          "label": "Fits in thirteen seconds",
           "badge": "B",
           "value": "",
           "weight": 0.6,
           "color": "#eab308"
         },
         {
-          "label": "Option D",
+          "label": "Needs no data",
           "badge": "D",
           "value": "",
           "weight": 0.3,
           "color": "#f97316"
         },
         {
-          "label": "Option E",
+          "label": "Proves nothing",
           "badge": "F",
           "value": "",
           "weight": 0.12,
@@ -97,5 +97,6 @@
       },
       "at": 8.6
     }
-  ]
+  ],
+  "posterSec": 11.4
 }
