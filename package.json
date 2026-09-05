@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "license": "MIT",
-  "description": "A measured retention database for short-form video formats \u2014 that renders.",
+  "description": "A measured retention database for short-form video formats — that renders.",
   "keywords": [
     "short-form",
     "video",
@@ -40,7 +40,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
-    "esbuild": "^0.24.2",
+    "esbuild": "^0.28.2",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2"
   }
