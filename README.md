@@ -4,6 +4,11 @@
 
 [Gallery](https://msertdev.github.io/keepwatching) · 24 formats · 0 measured · MIT
 
+**Current status:** the renderer, evidence model and measurement pipeline are
+working; the format findings are deliberately not claimed yet. One
+pre-registered experiment is running, and every untested format stays visible
+until real samples arrive.
+
 ## Why this exists
 
 I built this to stop myself publishing numbers I hadn't measured.
